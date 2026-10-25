@@ -3,7 +3,7 @@ title: "Domain Use Cases"
 date: 2026-OCT-11
 author: "Mark Shaffer"
 description: "Fifteen domain use cases were identified covering the most common areas a software engineer needs a solution."
-image: "https://https://codemelted.com/assets/images/logo-codemelted-dev.png"
+image: "https://codemelted.com/assets/images/logo-codemelted-dev.png"
 twitter_site: "@CodeMeltedDEV"
 tags: [Software Engineering, Rust, JavaScript, Front End, Back End, Full Stack, Use Cases]
 children:

@@ -4,7 +4,7 @@ date: 2026-OCT-11
 author: "Mark Shaffer"
 description: "A Software Engineer over engineering two modules for a full stack solution in an AI era."
 tags: [codemelted.js, ES6 Module, JavaScript, TypeScript, HTML, CSS, Web Worker, full-stack, codemelted.rs, Rust, Native, TAURI, Android, iOS, BSD, Mac, Linux, Windows]
-image: "https://https://codemelted.com/assets/images/logo-codemelted-dev.png"
+image: "https://codemelted.com/assets/images/logo-codemelted-dev.png"
 twitter_site: "@CodeMeltedDEV"
 ---
 <cm-page-header></cm-page-header>

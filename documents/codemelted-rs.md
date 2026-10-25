@@ -4,7 +4,7 @@ date: 2026-OCT-11
 author: "Mark Shaffer"
 description: "The Software Development Kit (SDK) for using the codemelted.rs module."
 tags: [Rust, Crate, Module, Dynamic Library, Memory Safety, Speed, SDK]
-image: "https://https://codemelted.com/assets/images/logo-codemelted-dev.png"
+image: "https://codemelted.com/assets/images/logo-codemelted-dev.png"
 twitter_site: "@CodeMeltedDEV"
 ---
 <cm-page-header title="Module codemelted.rs SDK"></cm-page-header>

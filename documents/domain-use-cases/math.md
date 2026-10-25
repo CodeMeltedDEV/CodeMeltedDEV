@@ -3,7 +3,7 @@ title: "Math"
 date: 2026-OCT-11
 author: "Mark Shaffer"
 description: "A collection of mathematical formulas for computational purposes."
-image: "https://https://codemelted.com/assets/images/logo-codemelted-dev.png"
+image: "https://codemelted.com/assets/images/logo-codemelted-dev.png"
 twitter_site: "@CodeMeltedDEV"
 tags: [Mathematics, Formulas, Physics, Science, Statistics]
 ---

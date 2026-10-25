@@ -1,10 +1,10 @@
 ---
 title: "Buy Me A Coffee"
-date: 2026-OCT-24
+date: 2026-OCT-25
 author: "Mark Shaffer"
-description: ""
-tags: []
-image: "https://https://codemelted.com/assets/images/logo-codemelted-dev.png"
+description: "Where the CodeMeltedDEV Newsletter is hosted along with services offered as a result of this project."
+tags: [Support CodeMeltedDEV, CodeMeltedDEV Services, CodeMeltedDEV Project, CodeMeltedDEV Newsletter]
+image: "https://codemelted.com/assets/images/logo-codemelted-dev.png"
 twitter_site: "@CodeMeltedDEV"
 ---
 

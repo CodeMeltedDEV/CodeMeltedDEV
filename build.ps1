@@ -75,8 +75,6 @@ function main {
       -ErrorAction Stop
     Copy-Item $PSScriptRoot/tests $PSScriptRoot/dev -Force -Recurse `
       -ErrorAction Stop
-    "js.codemelted.com" | Out-File -FilePath $PSScriptRoot/dev/CNAME `
-      -NoNewLine
     message "codemelted.js module build completed."
   }
 

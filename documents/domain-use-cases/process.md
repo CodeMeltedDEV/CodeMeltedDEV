@@ -3,7 +3,7 @@ title: "Process"
 date: 2026-OCT-11
 author: "Mark Shaffer"
 description: "An instance of a computer program that is actively being executed by the operating system and the CPU. Bidirectional communication occurs via STDIN / STDOUT / STDERR."
-image: "https://https://codemelted.com/assets/images/logo-codemelted-dev.png"
+image: "https://codemelted.com/assets/images/logo-codemelted-dev.png"
 twitter_site: "@CodeMeltedDEV"
 tags: [System Process, POSIX, STDIN, STDOUT, STDERR]
 ---

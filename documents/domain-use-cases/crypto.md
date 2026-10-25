@@ -3,7 +3,7 @@ title: "Crypto"
 date: 2026-OCT-11
 author: "Mark Shaffer"
 description: "Apps needs to secure information from unauthorized usage. Cryptographic algorithms allow for hiding or coding information so that only authorized parties can read and process it."
-image: "https://https://codemelted.com/assets/images/logo-codemelted-dev.png"
+image: "https://codemelted.com/assets/images/logo-codemelted-dev.png"
 twitter_site: "@CodeMeltedDEV"
 tags: [cybersecurity, cyber, cryptography]
 ---

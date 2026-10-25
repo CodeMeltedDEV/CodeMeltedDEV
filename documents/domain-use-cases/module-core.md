@@ -3,7 +3,7 @@ title: "Module Core"
 date: 2026-OCT-11
 author: "Mark Shaffer"
 description: "Defines the reusable objects / API violation rules that apply to the entire module and not just a specific use case."
-image: "https://https://codemelted.com/assets/images/logo-codemelted-dev.png"
+image: "https://codemelted.com/assets/images/logo-codemelted-dev.png"
 twitter_site: "@CodeMeltedDEV"
 tags: [JavaScript, Rust, API Violation]
 ---

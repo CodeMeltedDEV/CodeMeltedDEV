@@ -3,7 +3,7 @@
 
   "favicon": "https://js.codemelted.com/assets/favicon/favicon.ico",
   "customDescription": "The CodeMeltedDEV Project aims to give software engineers the ability to deliver on this full stack engineering premise.",
-  "customImage": "https://https://codemelted.com/assets/images/logo-codemelted-dev.png",
+  "customImage": "https://codemelted.com/assets/images/logo-codemelted-dev.png",
   "customTwitter": "@CodeMeltedDEV",
   "alwaysCreateEntryPointModule": true,
   "excludeExternals": true,

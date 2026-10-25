@@ -21,3 +21,5 @@ TAURI
 TypeDoc
 cmocha
 NONINFRINGEMENT
+CodeMeltedDEV
+CodeMeltedDEV

@@ -3,7 +3,7 @@ title: "Monitor"
 date: 2026-OCT-11
 author: "Mark Shaffer"
 description: "An ability to measure aspects of the host computer / operating system of a developed application is key in identifying metrics that can point to issues with the host system."
-image: "https://https://codemelted.com/assets/images/logo-codemelted-dev.png"
+image: "https://codemelted.com/assets/images/logo-codemelted-dev.png"
 twitter_site: "@CodeMeltedDEV"
 tags: [CPU Utilization, Memory Utilization, Disk Utilization]
 ---

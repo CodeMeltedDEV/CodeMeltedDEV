@@ -3,7 +3,7 @@ title: "Async"
 date: 2026-OCT-11
 author: "Mark Shaffer"
 description: "Complex applications require the ability to asynchronously time slice up work as to not block the main synchronous processing thread."
-image: "https://https://codemelted.com/assets/images/logo-codemelted-dev.png"
+image: "https://codemelted.com/assets/images/logo-codemelted-dev.png"
 twitter_site: "@CodeMeltedDEV"
 tags: [Async Processing, Async IO, Threading]
 ---

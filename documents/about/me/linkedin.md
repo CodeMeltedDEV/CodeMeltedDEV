@@ -1,10 +1,10 @@
 ---
 title: "LinkedIn"
-date: 2026-OCT-24
+date: 2026-OCT-25
 author: "Mark Shaffer"
-description: ""
-tags: []
-image: "https://https://codemelted.com/assets/images/logo-codemelted-dev.png"
+description: "Where professional networking happens. Want to know my software engineering background, that's where to find it 😁."
+tags: [CodeMeltedDEV LinkedIn, Professional Networking, Software Engineering]
+image: "https://codemelted.com/assets/images/logo-codemelted-dev.png"
 twitter_site: "@CodeMeltedDEV"
 ---
 

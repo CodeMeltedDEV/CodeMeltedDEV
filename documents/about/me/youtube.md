@@ -1,10 +1,10 @@
 ---
 title: "YouTube"
-date: 2026-OCT-24
+date: 2026-OCT-25
 author: "Mark Shaffer"
-description: ""
-tags: []
-image: "https://https://codemelted.com/assets/images/logo-codemelted-dev.png"
+description: "When I make videos about this project or other topics of interest, that is where to find them."
+tags: [CodeMeltedDEV YouTube, Videos, Podcast, Reviews, Lessons]
+image: "https://codemelted.com/assets/images/logo-codemelted-dev.png"
 twitter_site: "@CodeMeltedDEV"
 ---
 

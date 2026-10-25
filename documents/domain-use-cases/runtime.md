@@ -3,7 +3,7 @@ title: "Runtime"
 date: 2026-OCT-11
 author: "Mark Shaffer"
 description: "The supporting software, libraries, and virtual layer that sit between the app and the operating system to make the program run."
-image: "https://https://codemelted.com/assets/images/logo-codemelted-dev.png"
+image: "https://codemelted.com/assets/images/logo-codemelted-dev.png"
 twitter_site: "@CodeMeltedDEV"
 tags: [Runtime, Operating System, Virtualization]
 ---

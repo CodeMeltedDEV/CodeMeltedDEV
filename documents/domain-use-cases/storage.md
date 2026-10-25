@@ -3,7 +3,7 @@ title: "Storage"
 date: 2026-OCT-11
 author: "Mark Shaffer"
 description: "A string based key / value pair combination for simple information storage and retrieval."
-image: "https://https://codemelted.com/assets/images/logo-codemelted-dev.png"
+image: "https://codemelted.com/assets/images/logo-codemelted-dev.png"
 twitter_site: "@CodeMeltedDEV"
 tags: [Key Value Pairs, Local Storage, Session Storage, Cookie Store, Local File]
 ---

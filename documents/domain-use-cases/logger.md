@@ -3,7 +3,7 @@ title: "Logger"
 date: 2026-OCT-11
 author: "Mark Shaffer"
 description: "A utility that automatically records, tracks, and stores sequential data, system events, or user actions over time."
-image: "https://https://codemelted.com/assets/images/logo-codemelted-dev.png"
+image: "https://codemelted.com/assets/images/logo-codemelted-dev.png"
 twitter_site: "@CodeMeltedDEV"
 tags: [Console, Logging, Debugging]
 ---

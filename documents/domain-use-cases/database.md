@@ -3,7 +3,7 @@ title: "Databse"
 date: 2026-OCT-11
 author: "Mark Shaffer"
 description: "Complicated data requires a way to be stored, recalled, and utilized. Embedded database technologies (IndexedDB codemelted.js / SQLite3 codemelted.rs) allow for this complex data storage."
-image: "https://https://codemelted.com/assets/images/logo-codemelted-dev.png"
+image: "https://codemelted.com/assets/images/logo-codemelted-dev.png"
 twitter_site: "@CodeMeltedDEV"
 tags: [IndexedDB, SQLite3, SQLite]
 ---

@@ -113,7 +113,8 @@ module.exports.load = function load(app) {
       JSX.createElement("meta", { name: "twitter:site", content: twitterHandle }),
       JSX.createElement("meta", { name: "twitter:title", content: finalTitle }),
       JSX.createElement("meta", { name: "twitter:description", content: finalDescription }),
-      JSX.createElement("meta", { name: "twitter:image", content: finalImage })
+      JSX.createElement("meta", { name: "twitter:image", content: finalImage }),
+      JSX.createElement("link", { rel: "icon", type: "image/png", href: "https://codemelted.com/favicon.png" })
     );
   });
 };

@@ -4,7 +4,7 @@ date: 2026-OCT-11
 author: "Mark Shaffer"
 description: "A Software Engineering Knowledge Repository."
 tags: [Software Engineering, Developer, Programmer, ACM, IEEE]
-image: "https://https://codemelted.com/assets/images/logo-codemelted-dev.png"
+image: "https://codemelted.com/assets/images/logo-codemelted-dev.png"
 twitter_site: "@CodeMeltedDEV"
 children:
   - starter-templates.md

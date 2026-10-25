@@ -1,10 +1,10 @@
 ---
 title: "Spotify"
-date: 2026-OCT-24
+date: 2026-OCT-25
 author: "Mark Shaffer"
-description: ""
-tags: []
-image: "https://https://codemelted.com/assets/images/logo-codemelted-dev.png"
+description: "Hosts the CodeMeltedDEV Podcast. Discussions of project progress, any reviews, and the happenings of the tech industry."
+tags: [CodeMeltedDEV Podcast, Podcasting, Spotify, iHeartRadio, YouTube Music]
+image: "https://codemelted.com/assets/images/logo-codemelted-dev.png"
 twitter_site: "@CodeMeltedDEV"
 ---
 

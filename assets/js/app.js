@@ -38,16 +38,16 @@ class CPageHeader extends CHtmlComponent {
         <img style="width: 100%;" src="https://codemelted.com/assets/images/logo-codemelted-dev.png" />
         <div id="github-controls">
           <a aria-label="Follow @CodeMeltedDEV on GitHub" class="github-button" data-color-scheme="no-preference: dark; light: dark; dark: dark;" data-show-count="true" data-size="small" href="https://github.com/CodeMeltedDEV" title="Follow @CodeMeltedDEV on GitHub">CodeMeltedDEV</a>
-          <a aria-label="Watch codemelteddev/codemelted.js on GitHub" class="github-button" data-color-scheme="no-preference: dark; light: dark; dark: dark;" data-icon="octicon-eye" data-show-count="true" data-size="small" href="https://github.com/codemelteddev/codemelted.js/subscription" title="Watch codemelteddev/codemelted.js on GitHub">Watch</a>
-          <a aria-label="Sponsor @CodeMeltedDEV on GitHub" class="github-button" data-color-scheme="no-preference: dark; light: dark; dark: dark;" data-icon="octicon-heart" data-size="small" href="https://github.com/sponsors/CodeMeltedDEV" title="Sponsor @CodeMeltedDEV and the codemelted.js Project on GitHub">Sponsor</a>
-          <a aria-label="Discuss codemelteddev/codemelted.js on GitHub" class="github-button" data-color-scheme="no-preference: dark; light: dark; dark: dark;" data-icon="octicon-comment-discussion" data-size="small" href="https://github.com/codemelteddev/codemelted.js/discussions" title="Discuss codemelteddev/codemelted.js on GitHub">Discuss</a>
-          <a aria-label="Download codemelteddev/codemelted.js on GitHub" class="github-button" data-color-scheme="no-preference: dark; light: dark; dark: dark;" data-size="small" href="https://github.com/codemelteddev/codemelted.js/archive/HEAD.zip" tabindex="1" title="Download codemelteddev/codemelted.js on GitHu">Download</a>
-          <a aria-label="Issue codemelteddev/codemelted.js on GitHub" class="github-button" data-color-scheme="no-preference: dark; light: dark; dark: dark;" data-icon="octicon-issue-opened" data-size="small" href="https://github.com/codemelteddev/codemelted.js/issues" title="Issue codemelteddev/codemelted.js on GitHub">Issue</a>
+          <a aria-label="Watch CodeMeltedDEV on GitHub" class="github-button" data-color-scheme="no-preference: dark; light: dark; dark: dark;" data-icon="octicon-eye" data-show-count="true" data-size="small" href="https://github.com/CodeMeltedDEV/CodeMeltedDEV/subscription" title="Watch CodeMeltedDEV on GitHub">Watch</a>
+          <a aria-label="Sponsor @CodeMeltedDEV on GitHub" class="github-button" data-color-scheme="no-preference: dark; light: dark; dark: dark;" data-icon="octicon-heart" data-size="small" href="https://github.com/sponsors/CodeMeltedDEV" title="Sponsor @CodeMeltedDEV and the CodeMeltedDEV Modules on GitHub">Sponsor</a>
+          <a aria-label="Discuss CodeMeltedDEV on GitHub" class="github-button" data-color-scheme="no-preference: dark; light: dark; dark: dark;" data-icon="octicon-comment-discussion" data-size="small" href="https://github.com/CodeMeltedDEV/CodeMeltedDEV/discussions" title="Discuss CodeMeltedDEV on GitHub">Discuss</a>
+          <a aria-label="Download CodeMeltedDEV on GitHub" class="github-button" data-color-scheme="no-preference: dark; light: dark; dark: dark;" data-size="small" href="https://github.com/CodeMeltedDEV/CodeMeltedDEV/archive/HEAD.zip" tabindex="1" title="Download CodeMeltedDEV on GitHu">Download</a>
+          <a aria-label="Issue CodeMeltedDEV on GitHub" class="github-button" data-color-scheme="no-preference: dark; light: dark; dark: dark;" data-icon="octicon-issue-opened" data-size="small" href="https://github.com/CodeMeltedDEV/CodeMeltedDEV/issues" title="Issue CodeMeltedDEV on GitHub">Issue</a>
         </div>
         <div>
           <cm-print-button></cm-print-button>
-          <cm-share-button></cm-share-button>
-          <cm-tts-button></cm-tts-button>
+          <!-- <cm-share-button></cm-share-button> -->
+          <!-- <cm-tts-button></cm-tts-button> -->
         </div>
       </center>
       <hr>
@@ -167,7 +167,7 @@ class CProjectToolbar extends CHtmlComponent {
           <cm-app-toolbar position="bottom">
             <img style="height: 50px;" src="https://codemelted.com/assets/images/logo-codemelted-dev-twitterx.png" />
             <cm-data-spacer></cm-data-spacer>
-            <cm-button tooltip="External Services" style="margin-right: auto;" icon="⚙️"></cm-button>
+            <!-- <cm-button tooltip="External Services" style="margin-right: auto;" icon="⚙️"></cm-button> -->
           </cm-app-toolbar>
         `;
       }
