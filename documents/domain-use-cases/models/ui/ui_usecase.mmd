@@ -1,0 +1,83 @@
+classDiagram
+  direction LR
+  namespace codemelted_ns["codemelted"] {
+    %% Enumerations
+    class ACTION_REQUEST {
+      <<enum>>
+      +Copy
+      +Focus
+      +MoveBy
+      +MoveTo
+      +Paste
+      +PostMessage
+      +Print
+      +ResizeBy
+      +ResizeTo
+      +Scroll
+      +ScrollBy
+      +ScrollTo
+      +Share
+      +Vibrate
+    }
+
+    class DOCUMENT_REQUEST {
+      +CssVariable
+      +ElementById
+      +ElementsByClassName
+      +ElementsByTagName
+    }
+
+    class SCHEMA_TYPE {
+      <<enum>>
+      +File
+      +Http
+      +Https
+      +Mailto
+      +Sms
+      +Tel
+    }
+
+    class SCREEN_REQUEST {
+      +AvailableHeight
+      +AvailableWidth
+      +ColorDepth
+      +CssVariable
+      +DevicePixelRatio
+      +Height
+      +InnerHeight
+      +InnerWidth
+      +OuterHeight
+      +OuterWidth
+      +PixelDepth
+      +ScreenLeft
+      +ScreenOrientationAngle
+      +ScreenOrientationType
+      +ScreenTop
+      +ScreenX
+      +ScreenY
+      +ScrollX
+      +ScrollY
+      +Width
+    }
+
+    class TARGET_TYPE {
+      +Blank
+      +Parent
+      +Self
+      +Top
+    }
+
+    class codemelted {
+      <<public api>>
+      +ui_document()
+      +ui_screen(request) number | string
+      +ui_open(schema, popup_window, url, mailto, cc, bcc, subject, body, target, width, height) Window | null
+    }
+
+    note "Only available within a Browser runtime.<br>Individual elements may not be available in WebViews so utilize runtime_availability() to check"
+  }
+  codemelted --> ACTION_REQUEST: consumes
+  codemelted --> DOCUMENT_REQUEST: consumes
+  codemelted --> SCHEMA_TYPE: consumes
+  codemelted --> SCREEN_REQUEST: consumes
+  codemelted --> TARGET_TYPE: consumes

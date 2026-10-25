@@ -1,0 +1,72 @@
+classDiagram
+  namespace codemelted_ns["codemelted"] {
+    %% Enumerations
+    class PROTOCOL_EVENT {
+      +Close
+      +Error
+      +Message
+      +MessageError
+      +ModuleError
+      +Open
+    }
+
+    class PROTOCOL_TYPE {
+      +Audio
+      +Bluetooth
+      +BroadcastChannel
+      +EventSource
+      +Gamepad
+      +MIDI
+      +Orientation
+      +Timer
+      +SerialPort
+      +TextToSpeech
+      +USB
+      +WebSocket
+      +WebRTC
+      +WebTransport
+      +Worker
+    }
+
+    %% Data Objects
+    class CModuleError {
+      +MISUSE: string
+      +NOT_IMPLEMENTED: string
+      +TYPE_VIOLATION: string
+      +UNSUPPORTED_RUNTIME: string
+      +handle_error(any err) void
+      toString() string
+    }
+    note for CModuleError "Thrown for any codemelted.js<br>module violations"
+
+    class CResult~T~ {
+      error() string | Error | null
+      is_error() boolean
+      is_ok() boolean
+      value() T
+    }
+    note for CResult "Provides a Rust like Result construct<br>for returns from functions"
+
+    class CProtocolEvent~T~ {
+      +protocol() CProtocol~T~
+      +data() T
+      +event_fired() PROTOCOL_EVENT
+    }
+
+    class CProtocolEventHandler {
+      +callback(CProtocolEvent evt) void
+    }
+
+    class CProtocol~T~ {
+      #report() void
+      +name() string
+      +type() PROTOCOL_TYPE
+      +post_message() void
+      +terminate() void
+    }
+  }
+  CProtocol --> CProtocolEvent: creates
+  CProtocol --> CProtocolEventHandler: fires
+  PROTOCOL_EVENT --> CProtocol: uses
+  PROTOCOL_TYPE --> CProtocol: identifies
+

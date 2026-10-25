@@ -1,0 +1,420 @@
+<!DOCTYPE html><html class="default" lang="en" data-base="../../"><head><meta charset="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>Async Use Case | CodeMeltedDEV Project</title><link rel="icon" href="https://js.codemelted.com/assets/favicon/favicon.ico"/><meta name="description" content="Documentation for CodeMeltedDEV Project"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../../assets/style.css"/><link rel="stylesheet" href="../../assets/highlight.css"/><script defer src="../../assets/main.js"></script><script async src="../../assets/icons.js" id="tsd-icons-script"></script><script async src="../../assets/search.js" id="tsd-search-script"></script><script async src="../../assets/navigation.js" id="tsd-nav-script"></script><script async src="../../assets/hierarchy.js" id="tsd-hierarchy-script"></script><meta property="og:type" content="website"/><meta property="og:title" content="Async Use Case"/><meta property="og:description" content="Complex applications require the ability to asynchronously time slice up work as to not block the main synchronous processing thread."/><meta property="og:url" content="https://js.codemelted.com/Domain_Use_Cases/Async_Use_Case/index.html"/><meta property="og:image" content="https://https://codemelted.com/assets/images/logo-codemelted-dev.png"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:site" content="@CodeMeltedDEV"/><meta name="twitter:title" content="Async Use Case"/><meta name="twitter:description" content="Complex applications require the ability to asynchronously time slice up work as to not block the main synchronous processing thread."/><meta name="twitter:image" content="https://https://codemelted.com/assets/images/logo-codemelted-dev.png"/>
+<style>
+/* Contain mermaid blocks */
+.mermaid-block {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.mermaid-block > .mermaid {
+  max-width: 100%;
+}
+
+.mermaid-block svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Hide fallback pre when mermaid is enabled */
+:root.mermaid-enabled .mermaid-block > pre {
+  display: none;
+}
+
+/* Hide mermaid divs until JS reveals the correct one (visibility allows rendering) */
+.mermaid-block > .mermaid {
+  visibility: hidden;
+  position: absolute;
+}
+
+/* Once JS has applied inline display styles, make visible */
+.mermaid-block > .mermaid[style*="display: block"] {
+  visibility: visible;
+  position: static;
+}
+</style>
+</head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => window.app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar">
+<div class="tsd-toolbar-contents container"><a href="../../index.html" class="title">CodeMeltedDEV Project</a>
+<div id="tsd-toolbar-links"></div><button id="tsd-search-trigger" class="tsd-widget" aria-label="Search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="../../assets/icons.svg#icon-search"></use></svg></button><dialog id="tsd-search" aria-label="Search"><input role="combobox" id="tsd-search-input" aria-controls="tsd-search-results" aria-autocomplete="list" aria-expanded="true" autocapitalize="off" autocomplete="off" placeholder="Search the docs" maxLength="100"/>
+<ul role="listbox" id="tsd-search-results"></ul>
+<div id="tsd-search-status" aria-live="polite" aria-atomic="true">
+<div>Preparing search index...</div></div></dialog><a href="#" class="tsd-widget menu" id="tsd-toolbar-menu-trigger" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="../../assets/icons.svg#icon-menu"></use></svg></a></div></header>
+<div class="container container-main">
+<div class="col-content">
+<div class="tsd-page-title">
+<ul class="tsd-breadcrumb" aria-label="Breadcrumb">
+<li><a href="../">Domain Use Cases</a></li>
+<li><a href="" aria-current="page">Async Use Case</a></li></ul></div>
+<div class="tsd-panel tsd-typography"><p><cm-page-header title="Async Use Case"></cm-page-header></p>
+<p>Complex applications require the ability to asynchronously time slice up work as to not block the main synchronous processing thread.</p>
+<p><strong>Table of Contents</strong></p>
+<ul>
+<li><a href="#functional-analysis">FUNCTIONAL ANALYSIS</a>
+<ul>
+<li><a href="#uc-01-a-sleep">UC-01-A: Sleep</a></li>
+<li><a href="#uc-01-b-task">UC-01-B: Task</a></li>
+<li><a href="#uc-01-c-timer">UC-01-C: Timer</a></li>
+<li><a href="#uc-01-d-worker">UC-01-D: Worker</a></li>
+</ul>
+</li>
+<li><a href="#notes">NOTES</a>
+<ul>
+<li><a href="#javascript-module">JavaScript Module</a></li>
+<li><a href="#rust-module">Rust Module</a></li>
+<li><a href="#references">References</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="functional-analysis" class="tsd-anchor-link">FUNCTIONAL ANALYSIS<a href="#functional-analysis" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></h1>
+<div class="mermaid-block"><div class="mermaid dark">%%{init:{"theme":"dark"}}%%
+usecase-beta
+  direction LR
+  actor tech_stack("Tech Stack")
+  systemBoundary "UC-01: Async"
+    async_sleep("Sleep")
+    async_task("Task")
+    async_timer("Timer")
+    async_worker("Worker")
+  end
+  tech_stack --> async_sleep
+  tech_stack --> async_task
+  tech_stack --> async_timer
+  tech_stack --> async_worker</div><div class="mermaid light">%%{init:{"theme":"default"}}%%
+usecase-beta
+  direction LR
+  actor tech_stack("Tech Stack")
+  systemBoundary "UC-01: Async"
+    async_sleep("Sleep")
+    async_task("Task")
+    async_timer("Timer")
+    async_worker("Worker")
+  end
+  tech_stack --> async_sleep
+  tech_stack --> async_task
+  tech_stack --> async_timer
+  tech_stack --> async_worker</div><pre><code class="language-mermaid">usecase-beta
+  direction LR
+  actor tech_stack(&quot;Tech Stack&quot;)
+  systemBoundary &quot;UC-01: Async&quot;
+    async_sleep(&quot;Sleep&quot;)
+    async_task(&quot;Task&quot;)
+    async_timer(&quot;Timer&quot;)
+    async_worker(&quot;Worker&quot;)
+  end
+  tech_stack --&gt; async_sleep
+  tech_stack --&gt; async_task
+  tech_stack --&gt; async_timer
+  tech_stack --&gt; async_worker</code></pre></div>
+
+<h2 id="uc-01-a-sleep" class="tsd-anchor-link">UC-01-A: Sleep<a href="#uc-01-a-sleep" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<ol>
+<li>WHEN invoking a Sleep, THE module SHALL delay for a specified amount of milliseconds.</li>
+<li>IF the delay is not a number, THEN the module SHALL raise an API violation error.</li>
+</ol>
+<h2 id="uc-01-b-task" class="tsd-anchor-link">UC-01-B: Task<a href="#uc-01-b-task" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<p><mark> TO BE DETERMINES </mark></p>
+<h2 id="uc-01-c-timer" class="tsd-anchor-link">UC-01-C: Timer<a href="#uc-01-c-timer" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<p><mark> TO BE DETERMINES </mark></p>
+<h2 id="uc-01-d-worker" class="tsd-anchor-link">UC-01-D: Worker<a href="#uc-01-d-worker" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<p><mark> TO BE DETERMINES </mark></p>
+<h1 id="notes" class="tsd-anchor-link">NOTES<a href="#notes" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></h1>
+<h2 id="javascript-module" class="tsd-anchor-link">JavaScript Module<a href="#javascript-module" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<div class="tsd-alert tsd-alert-note"><div class="tsd-alert-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><use href="../../assets/icons.svg#icon-alertNote"></use></svg><span>Note</span></div><p> <code>codemelted.js</code> Front End Module</p>
+<ol>
+<li>Sleep, Task, and Timers are asynchronous processing on the Browser runtime main thread. Meaning it carves up the time and is not running in the background. Worker is a dedicated background thread.</li>
+<li>Worker will not work in Node runtime.</li>
+<li>API Violations will result in a thrown <code>CModuleError</code></li>
+</ol>
+</div>
+<p><strong>Class Architecture</strong></p>
+<div class="mermaid-block"><div class="mermaid dark">%%{init:{"theme":"dark"}}%%
+classDiagram
+  namespace codemelted_ns["codemelted"] {
+    %% Module Core
+    class CResult
+    class CProtocol
+
+    %% Async Use Case Specifics
+    class CFuture~T~ {
+      +cancel() void
+      +execute(T data) void
+      +has_completed() boolean
+      +result() Promise~CResult~T~~
+    }
+
+    class CTaskCB~T~ {
+      +callback(T data) T
+    }
+
+    class CTimerEvent {
+      +interval() number
+    }
+
+    class CTimerProtocol
+
+    class CWorkerEvent {
+      +as_error_event() ErrorEvent
+      +as_message_event() MessageEvent
+      +event() ErrorEvent | MessageEvent
+      +is_error() boolean
+    }
+
+    class CWorkerOptions {
+      +credentials string
+      +name string
+      +type string
+    }
+
+    class CWorkerProtocol
+    note for CWorkerProtocol "Not supported on Node runtime.<br>Make sure to use runtime_available()<br>to make sure it exists within the JavaScript runtime"
+
+    class codemelted {
+      <<module api>>
+      +async_sleep(delay) Promise~void~
+      +async_task(task, data, delay) CFuture~T~
+      +async_timer(name, interval, rx_handler) CTimerProtocol
+      +async_worker(name, options, rx_handler, url) CWorkerProtocol
+    }
+  }
+
+  CFuture --> CResult: returns
+  CTimerProtocol --> CTimerEvent: fires
+  CTimerProtocol --|> CProtocol: implements
+  CWorkerProtocol --> CWorkerOptions: consumes
+  CWorkerProtocol --> CWorkerEvent: fires
+  CWorkerProtocol --|> CProtocol: implements
+  codemelted --> CFuture: creates
+  codemelted --> CTaskCB: consumes
+  codemelted --> CTimerProtocol: creates
+  codemelted --> CWorkerProtocol: creates</div><div class="mermaid light">%%{init:{"theme":"default"}}%%
+classDiagram
+  namespace codemelted_ns["codemelted"] {
+    %% Module Core
+    class CResult
+    class CProtocol
+
+    %% Async Use Case Specifics
+    class CFuture~T~ {
+      +cancel() void
+      +execute(T data) void
+      +has_completed() boolean
+      +result() Promise~CResult~T~~
+    }
+
+    class CTaskCB~T~ {
+      +callback(T data) T
+    }
+
+    class CTimerEvent {
+      +interval() number
+    }
+
+    class CTimerProtocol
+
+    class CWorkerEvent {
+      +as_error_event() ErrorEvent
+      +as_message_event() MessageEvent
+      +event() ErrorEvent | MessageEvent
+      +is_error() boolean
+    }
+
+    class CWorkerOptions {
+      +credentials string
+      +name string
+      +type string
+    }
+
+    class CWorkerProtocol
+    note for CWorkerProtocol "Not supported on Node runtime.<br>Make sure to use runtime_available()<br>to make sure it exists within the JavaScript runtime"
+
+    class codemelted {
+      <<module api>>
+      +async_sleep(delay) Promise~void~
+      +async_task(task, data, delay) CFuture~T~
+      +async_timer(name, interval, rx_handler) CTimerProtocol
+      +async_worker(name, options, rx_handler, url) CWorkerProtocol
+    }
+  }
+
+  CFuture --> CResult: returns
+  CTimerProtocol --> CTimerEvent: fires
+  CTimerProtocol --|> CProtocol: implements
+  CWorkerProtocol --> CWorkerOptions: consumes
+  CWorkerProtocol --> CWorkerEvent: fires
+  CWorkerProtocol --|> CProtocol: implements
+  codemelted --> CFuture: creates
+  codemelted --> CTaskCB: consumes
+  codemelted --> CTimerProtocol: creates
+  codemelted --> CWorkerProtocol: creates</div><pre><code class="language-mermaid">classDiagram
+  namespace codemelted_ns[&quot;codemelted&quot;] {
+    %% Module Core
+    class CResult
+    class CProtocol
+
+    %% Async Use Case Specifics
+    class CFuture~T~ {
+      +cancel() void
+      +execute(T data) void
+      +has_completed() boolean
+      +result() Promise~CResult~T~~
+    }
+
+    class CTaskCB~T~ {
+      +callback(T data) T
+    }
+
+    class CTimerEvent {
+      +interval() number
+    }
+
+    class CTimerProtocol
+
+    class CWorkerEvent {
+      +as_error_event() ErrorEvent
+      +as_message_event() MessageEvent
+      +event() ErrorEvent | MessageEvent
+      +is_error() boolean
+    }
+
+    class CWorkerOptions {
+      +credentials string
+      +name string
+      +type string
+    }
+
+    class CWorkerProtocol
+    note for CWorkerProtocol &quot;Not supported on Node runtime.&lt;br&gt;Make sure to use runtime_available()&lt;br&gt;to make sure it exists within the JavaScript runtime&quot;
+
+    class codemelted {
+      &lt;&lt;module api&gt;&gt;
+      +async_sleep(delay) Promise~void~
+      +async_task(task, data, delay) CFuture~T~
+      +async_timer(name, interval, rx_handler) CTimerProtocol
+      +async_worker(name, options, rx_handler, url) CWorkerProtocol
+    }
+  }
+
+  CFuture --&gt; CResult: returns
+  CTimerProtocol --&gt; CTimerEvent: fires
+  CTimerProtocol --|&gt; CProtocol: implements
+  CWorkerProtocol --&gt; CWorkerOptions: consumes
+  CWorkerProtocol --&gt; CWorkerEvent: fires
+  CWorkerProtocol --|&gt; CProtocol: implements
+  codemelted --&gt; CFuture: creates
+  codemelted --&gt; CTaskCB: consumes
+  codemelted --&gt; CTimerProtocol: creates
+  codemelted --&gt; CWorkerProtocol: creates</code></pre></div>
+
+<h2 id="rust-module" class="tsd-anchor-link">Rust Module<a href="#rust-module" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<p><mark> TO BE DETERMINES </mark></p>
+<h2 id="references" class="tsd-anchor-link">References<a href="#references" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></h2>
+<table>
+<thead>
+<tr>
+<th>Reference</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://en.cppreference.com/cpp/thread/future">C++ Future</a></td>
+<td>To get a general reference design for designing the <code>CFuture</code> object.</td>
+</tr>
+<tr>
+<td><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></td>
+<td>A way of dividing up the webpage main thread with different work elements.</td>
+</tr>
+<tr>
+<td><a href="https://developer.mozilla.org/en-US/docs/Web/API/Worker">Worker</a></td>
+<td>Providing a way to spawn background thread processing for a webpage.</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<div class="col-sidebar">
+<div class="page-menu">
+<div class="tsd-navigation settings">
+<details class="tsd-accordion"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../../assets/icons.svg#icon-chevronDown"></use></svg>
+<h3>Settings</h3></summary>
+<div class="tsd-accordion-details">
+<div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span>
+<ul id="tsd-filter-options">
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li></ul></div>
+<div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div>
+<details open class="tsd-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../../assets/icons.svg#icon-chevronDown"></use></svg>
+<h3>On This Page</h3></summary>
+<div class="tsd-accordion-details"><a href="#functional-analysis"><span>FUNCTIONAL <wbr/>ANALYSIS</span></a>
+<ul>
+<li><a href="#uc-01-a-sleep"><span>UC-<wbr/>01-<wbr/>A: <wbr/>Sleep</span></a></li>
+<li><a href="#uc-01-b-task"><span>UC-<wbr/>01-<wbr/>B: <wbr/>Task</span></a></li>
+<li><a href="#uc-01-c-timer"><span>UC-<wbr/>01-<wbr/>C: <wbr/>Timer</span></a></li>
+<li><a href="#uc-01-d-worker"><span>UC-<wbr/>01-<wbr/>D: <wbr/>Worker</span></a></li></ul><a href="#notes"><span>NOTES</span></a>
+<ul>
+<li><a href="#javascript-module"><span>Java<wbr/>Script <wbr/>Module</span></a></li>
+<li><a href="#rust-module"><span>Rust <wbr/>Module</span></a></li>
+<li><a href="#references"><span>References</span></a></li></ul></div></details></div>
+<div class="site-menu">
+<nav class="tsd-navigation"><a href="../../modules.html">CodeMeltedDEV Project</a>
+<ul class="tsd-small-nested-navigation" id="tsd-nav-container">
+<li>Loading...</li></ul></nav></div></div></div><footer><script type='module' src='/assets/js/app.js'></script><cm-project-toolbar></cm-project-toolbar></footer>
+<div class="overlay"></div>
+<script type="module">
+import mermaid from "https://unpkg.com/mermaid@latest/dist/mermaid.esm.min.mjs";
+
+document.documentElement.classList.add("mermaid-enabled");
+
+mermaid.initialize({
+  startOnLoad: true,
+  flowchart: { useMaxWidth: true },
+  sequence: { useMaxWidth: true },
+});
+
+// Determine if we're in dark mode
+function isDarkMode() {
+  // TypeDoc uses data-theme attribute on html element
+  const theme = document.documentElement.dataset.theme;
+  if (theme === "dark") return true;
+  if (theme === "light") return false;
+  // Fall back to system preference
+  return window.matchMedia("(prefers-color-scheme: dark)").matches;
+}
+
+// Update diagram visibility based on current theme
+function updateDiagramVisibility() {
+  const dark = isDarkMode();
+  document.querySelectorAll(".mermaid-block .mermaid.dark").forEach(el => {
+    el.style.display = dark ? "block" : "none";
+  });
+  document.querySelectorAll(".mermaid-block .mermaid.light").forEach(el => {
+    el.style.display = dark ? "none" : "block";
+  });
+}
+
+// Wait for mermaid to render ALL SVGs before setting initial visibility
+requestAnimationFrame(function check() {
+  const allMermaids = document.querySelectorAll("div.mermaid");
+  const rendered = document.querySelectorAll("div.mermaid svg");
+
+  if (rendered.length < allMermaids.length) {
+    // Still waiting for mermaid to render
+    requestAnimationFrame(check);
+  } else {
+    // All diagrams rendered, now apply visibility
+    updateDiagramVisibility();
+  }
+});
+
+// Watch for theme changes via attribute mutation
+const observer = new MutationObserver((mutations) => {
+  for (const mutation of mutations) {
+    if (mutation.attributeName === "data-theme") {
+      updateDiagramVisibility();
+    }
+  }
+});
+observer.observe(document.documentElement, { attributes: true });
+
+// Also watch system preference changes
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", updateDiagramVisibility);
+
+</script>
+</body></html>

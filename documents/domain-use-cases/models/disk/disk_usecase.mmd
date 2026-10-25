@@ -1,0 +1,22 @@
+classDiagram
+  direction TB
+  namespace codemelted_ns["codemelted"] {
+    %% Module Core
+    class CResult
+
+    %% Use Case Objects
+    class DISK_DATA_TYPE {
+      + ArrayBuffer
+      + Text
+      + Uint8Array
+    }
+    class codemelted {
+      <<public api>>
+      + disk_read_file() Promise~CResult~
+      + disk_write_file() Promise~CResult~
+    }
+
+    note "Only supported within a Browser JavaScript runtime.<br>Will throw CModuleError in any other JavaScript runtime."
+  }
+  codemelted --> DISK_DATA_TYPE: consumes
+  codemelted --> CResult: creates

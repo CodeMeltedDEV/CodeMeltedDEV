@@ -1,0 +1,331 @@
+<!DOCTYPE html><html class="default" lang="en" data-base="../../"><head><meta charset="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>CButton | CodeMeltedDEV Project</title><link rel="icon" href="https://js.codemelted.com/assets/favicon/favicon.ico"/><meta name="description" content="Documentation for CodeMeltedDEV Project"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../../assets/style.css"/><link rel="stylesheet" href="../../assets/highlight.css"/><script defer src="../../assets/main.js"></script><script async src="../../assets/icons.js" id="tsd-icons-script"></script><script async src="../../assets/search.js" id="tsd-search-script"></script><script async src="../../assets/navigation.js" id="tsd-nav-script"></script><script async src="../../assets/hierarchy.js" id="tsd-hierarchy-script"></script><meta property="og:type" content="website"/><meta property="og:title" content="CButton"/><meta property="og:description" content="`<cm-button>` Web Component Documentation
+
+A highly flexible, accessible custom button element that perfectly aligns
+text and media (emojis or images)..."/><meta property="og:url" content="https://js.codemelted.com/codemelted.js_SDK/CButton/index.html"/><meta property="og:image" content="https://https://codemelted.com/assets/images/logo-codemelted-dev.png"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:site" content="@CodeMeltedDEV"/><meta name="twitter:title" content="CButton"/><meta name="twitter:description" content="`<cm-button>` Web Component Documentation
+
+A highly flexible, accessible custom button element that perfectly aligns
+text and media (emojis or images)..."/><meta name="twitter:image" content="https://https://codemelted.com/assets/images/logo-codemelted-dev.png"/></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => window.app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar">
+<div class="tsd-toolbar-contents container"><a href="../../index.html" class="title">CodeMeltedDEV Project</a>
+<div id="tsd-toolbar-links"></div><button id="tsd-search-trigger" class="tsd-widget" aria-label="Search"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="../../assets/icons.svg#icon-search"></use></svg></button><dialog id="tsd-search" aria-label="Search"><input role="combobox" id="tsd-search-input" aria-controls="tsd-search-results" aria-autocomplete="list" aria-expanded="true" autocapitalize="off" autocomplete="off" placeholder="Search the docs" maxLength="100"/>
+<ul role="listbox" id="tsd-search-results"></ul>
+<div id="tsd-search-status" aria-live="polite" aria-atomic="true">
+<div>Preparing search index...</div></div></dialog><a href="#" class="tsd-widget menu" id="tsd-toolbar-menu-trigger" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><use href="../../assets/icons.svg#icon-menu"></use></svg></a></div></header>
+<div class="container container-main">
+<div class="col-content">
+<div class="tsd-page-title">
+<ul class="tsd-breadcrumb" aria-label="Breadcrumb">
+<li><a href="../">codemelted.js SDK</a></li>
+<li><a href="" aria-current="page">CButton</a></li></ul>
+<h1>Class CButton</h1></div>
+<section class="tsd-panel tsd-comment">
+<div class="tsd-comment tsd-typography"><p><code>&lt;cm-button&gt;</code> Web Component Documentation</p>
+<p>A highly flexible, accessible custom button element that perfectly aligns
+text and media (emojis or images) horizontally or vertically.</p>
+<p>LAYOUT CONFIGURATIONS</p>
+<p>By default, the button places media on the LEFT and text on the RIGHT.
+To change this, pass the &quot;layout&quot; attribute:</p>
+<ol>
+<li>Default (Side-by-Side):</li>
+</ol>
+<pre><code class="html"><span class="hl-9">&lt;</span><span class="hl-10">cm-button</span><span class="hl-3"> </span><span class="hl-11">label</span><span class="hl-3">=</span><span class="hl-12">&quot;Launch&quot;</span><span class="hl-3"> </span><span class="hl-11">icon</span><span class="hl-3">=</span><span class="hl-12">&quot;🚀&quot;</span><span class="hl-3"> </span><span class="hl-11">tooltip</span><span class="hl-3">=</span><span class="hl-12">&quot;We are launching today&quot;</span><span class="hl-9">&gt;</span><br/><span class="hl-9">&lt;/</span><span class="hl-10">cm-button</span><span class="hl-9">&gt;</span>
+</code><button type="button">Copy</button></pre>
+
+<ol start="2">
+<li>Stacked (Media Top, Text Bottom):</li>
+</ol>
+<pre><code class="html"><span class="hl-9">&lt;</span><span class="hl-10">cm-button</span><br/><span class="hl-3">  </span><span class="hl-11">label</span><span class="hl-3">=</span><span class="hl-12">&quot;Launch&quot;</span><br/><span class="hl-3">  </span><span class="hl-11">icon</span><span class="hl-3">=</span><span class="hl-12">&quot;icon.png&quot;</span><br/><span class="hl-3">  </span><span class="hl-11">tooltip</span><span class="hl-3">=</span><span class="hl-12">&quot;We are launching today&quot;</span><br/><span class="hl-3">  </span><span class="hl-11">layout</span><span class="hl-3">=</span><span class="hl-12">&quot;stacked&quot;</span><span class="hl-9">&gt;</span><br/><span class="hl-9">&lt;/</span><span class="hl-10">cm-button</span><span class="hl-9">&gt;</span>
+</code><button type="button">Copy</button></pre>
+
+<p>EXPOSED CSS VARIABLES (THEMING)</p>
+<p>Override these properties using inline styles or an external stylesheet:</p>
+<p>Layout &amp; Spacing:</p>
+<ul>
+<li><code>--padding</code>         : Internal padding of the button (Default: 10px 20px)</li>
+<li><code>--gap</code>             : Spacing between the media and text (Default: 8px)</li>
+<li><code>--border-radius</code>   : Roundness of the button corners (Default: 4px)</li>
+<li><code>--border</code>          : Button border style (Default: 1px solid #ccc)</li>
+</ul>
+<p>Typography:</p>
+<ul>
+<li><code>--font-size</code>       : Text size (Default: 16px)</li>
+<li><code>--font-weight</code>     : Font weight/thickness (Default: 500)</li>
+</ul>
+<p>Color States:</p>
+<ul>
+<li><code>--bg-color</code>        : Normal background color (Default: #f0f0f0)</li>
+<li><code>--hover-bg-color</code>  : Background color on hover (Default: #e0e0e0)</li>
+<li><code>--color</code>           : Normal text color (Default: #333333)</li>
+<li><code>--hover-color</code>     : Text color on hover (Default: #000000)</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="css"><span class="hl-10">cm-button</span><span class="hl-3"> {</span><br/><span class="hl-3">  </span><span class="hl-11">--border</span><span class="hl-3">: </span><span class="hl-16">none</span><span class="hl-3">;</span><br/><span class="hl-3">}</span>
+</code><button type="button">Copy</button></pre>
+
+<p>ACCESSIBILITY &amp; EVENTS</p>
+<ul>
+<li>Standard native &quot;click&quot; events automatically bubble up to this component.</li>
+<li>Built-in Keyboard Accessibility allows users to focus the button using
+the &quot;Tab&quot; key and trigger it using &quot;Enter&quot; or &quot;Space&quot;.</li>
+</ul>
+</div></section>
+<section class="tsd-panel tsd-hierarchy" data-refl="896">
+<h4>Hierarchy (<a href="../../hierarchy.html#codemelted.js SDK.CButton">View Summary</a>)</h4>
+<ul class="tsd-hierarchy">
+<li class="tsd-hierarchy-item"><a href="../CHtmlComponent/" class="tsd-signature-type tsd-kind-class">CHtmlComponent</a>
+<ul class="tsd-hierarchy">
+<li class="tsd-hierarchy-item"><span class="tsd-hierarchy-target">CButton</span>
+<ul class="tsd-hierarchy">
+<li class="tsd-hierarchy-item"><a href="../CPrintButton/" class="tsd-signature-type tsd-kind-class">CPrintButton</a></li></ul></li></ul></li></ul></section>
+<section class="tsd-panel-group tsd-index-group">
+<section class="tsd-panel tsd-index-panel">
+<details class="tsd-index-content tsd-accordion" open><summary class="tsd-accordion-summary tsd-index-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../../assets/icons.svg#icon-chevronDown"></use></svg>
+<h5 class="tsd-index-heading uppercase">Index</h5></summary>
+<div class="tsd-accordion-details">
+<section class="tsd-index-section">
+<h3 class="tsd-index-heading tsd-anchor-link" id="constructors">Constructors<a href="#constructors" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-index-list"><a href="#constructor" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Constructor"><use href="../../assets/icons.svg#icon-512"></use></svg><span>constructor</span></a>
+</div></section>
+<section class="tsd-index-section">
+<h3 class="tsd-index-heading tsd-anchor-link" id="properties">Properties<a href="#properties" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-index-list"><a href="#title" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../../assets/icons.svg#icon-1024"></use></svg><span>title</span></a>
+</div></section>
+<section class="tsd-index-section">
+<h3 class="tsd-index-heading tsd-anchor-link" id="accessors">Accessors<a href="#accessors" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-index-list"><a href="#observedattributes" class="tsd-index-link"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Accessor"><use href="../../assets/icons.svg#icon-262144"></use></svg><span>observed<wbr/>Attributes</span></a>
+</div></section>
+<section class="tsd-index-section">
+<h3 class="tsd-index-heading tsd-anchor-link" id="methods">Methods<a href="#methods" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-index-list"><a href="#adoptedcallback" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../../assets/icons.svg#icon-2048"></use></svg><span>adopted<wbr/>Callback</span></a>
+<a href="#attributechangedcallback" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../../assets/icons.svg#icon-2048"></use></svg><span>attribute<wbr/>Changed<wbr/>Callback</span></a>
+<a href="#connectedcallback" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../../assets/icons.svg#icon-2048"></use></svg><span>connected<wbr/>Callback</span></a>
+<a href="#connectedmovecallback" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../../assets/icons.svg#icon-2048"></use></svg><span>connected<wbr/>Move<wbr/>Callback</span></a>
+<a href="#disconnectedcallback" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../../assets/icons.svg#icon-2048"></use></svg><span>disconnected<wbr/>Callback</span></a>
+<a href="#get_attribute" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../../assets/icons.svg#icon-2048"></use></svg><span>get_<wbr/>attribute</span></a>
+<a href="#has_attribute" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../../assets/icons.svg#icon-2048"></use></svg><span>has_<wbr/>attribute</span></a>
+<a href="#refresh" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../../assets/icons.svg#icon-2048"></use></svg><span>refresh</span></a>
+<a href="#set_attribute" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../../assets/icons.svg#icon-2048"></use></svg><span>set_<wbr/>attribute</span></a>
+<a href="#register_component" class="tsd-index-link tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../../assets/icons.svg#icon-2048"></use></svg><span>register_<wbr/>component</span></a>
+</div></section></div></details></section></section>
+<details class="tsd-panel-group tsd-member-group tsd-accordion" open><summary class="tsd-accordion-summary" data-key="section-Constructors"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../../assets/icons.svg#icon-chevronDown"></use></svg>
+<h2 class="tsd-anchor-link" id="constructors-1">Constructors<a href="#constructors-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></h2></summary>
+<section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="constructor"><span>constructor</span><a href="#constructor" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li class="">
+<div class="tsd-signature tsd-anchor-link" id="constructorcbutton"><span class="tsd-signature-keyword">new</span> <span class="tsd-kind-constructor-signature">CButton</span><span class="tsd-signature-symbol">(</span><br/>    <span class="tsd-kind-parameter">params</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-symbol">{</span><br/>        <span class="tsd-kind-property">click_handler</span><span class="tsd-signature-symbol">?:</span> <a href="../CEventHandler/" class="tsd-signature-type tsd-kind-type-alias">CEventHandler</a><span class="tsd-signature-symbol">;</span><br/>        <span class="tsd-kind-property">icon</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">;</span><br/>        <span class="tsd-kind-property">label</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">;</span><br/>        <span class="tsd-kind-property">tooltip</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">;</span><br/>    <span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">,</span><br/><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type tsd-kind-class">CButton</a><a href="#constructorcbutton" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">params</span>: <span class="tsd-signature-symbol">{</span><br/>    <span class="tsd-kind-property">click_handler</span><span class="tsd-signature-symbol">?:</span> <a href="../CEventHandler/" class="tsd-signature-type tsd-kind-type-alias">CEventHandler</a><span class="tsd-signature-symbol">;</span><br/>    <span class="tsd-kind-property">icon</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">;</span><br/>    <span class="tsd-kind-property">label</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">;</span><br/>    <span class="tsd-kind-property">tooltip</span><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">;</span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol"> = {}</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="" class="tsd-signature-type tsd-kind-class">CButton</a></h4><aside class="tsd-sources">
+<p>Overrides <a href="../CHtmlComponent/">CHtmlComponent</a>.<a href="../CHtmlComponent/#constructor">constructor</a></p></aside></div></li></ul></section></section></details>
+<details class="tsd-panel-group tsd-member-group tsd-accordion" open><summary class="tsd-accordion-summary" data-key="section-Properties"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../../assets/icons.svg#icon-chevronDown"></use></svg>
+<h2 class="tsd-anchor-link" id="properties-1">Properties<a href="#properties-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></h2></summary>
+<section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="title"><span>title</span><a href="#title" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<div class="tsd-signature"><span class="tsd-kind-property">title</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div><aside class="tsd-sources">
+<p>Inherited from CHtmlComponent.title</p></aside></section></section></details>
+<details class="tsd-panel-group tsd-member-group tsd-accordion" open><summary class="tsd-accordion-summary" data-key="section-Accessors"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../../assets/icons.svg#icon-chevronDown"></use></svg>
+<h2 class="tsd-anchor-link" id="accessors-1">Accessors<a href="#accessors-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></h2></summary>
+<section>
+<section class="tsd-panel tsd-member">
+<h3 class="tsd-anchor-link" id="observedattributes"><code class="tsd-tag">Static</code><span>observed<wbr/>Attributes</span><a href="#observedattributes" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures">
+<li>
+<div class="tsd-signature" id="observedattributesobservedattributes"><span class="tsd-signature-keyword">get</span> <span class="tsd-kind-get-signature">observedAttributes</span><span class="tsd-signature-symbol">()</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
+<div class="tsd-description">
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h4></div></li></ul></section></section></details>
+<details class="tsd-panel-group tsd-member-group tsd-accordion" open><summary class="tsd-accordion-summary" data-key="section-Methods"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../../assets/icons.svg#icon-chevronDown"></use></svg>
+<h2 class="tsd-anchor-link" id="methods-1">Methods<a href="#methods-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></h2></summary>
+<section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="adoptedcallback"><span>adopted<wbr/>Callback</span><a href="#adoptedcallback" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-is-inherited">
+<li class="tsd-is-inherited">
+<div class="tsd-signature tsd-anchor-link" id="adoptedcallback-1"><span class="tsd-kind-call-signature">adoptedCallback</span><span class="tsd-signature-symbol">()</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#adoptedcallback-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Called each time the element is moved to a new document.</p>
+</div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="../CHtmlComponent/">CHtmlComponent</a>.<a href="../CHtmlComponent/#adoptedcallback">adoptedCallback</a></p></aside></div></li></ul></section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="attributechangedcallback"><span>attribute<wbr/>Changed<wbr/>Callback</span><a href="#attributechangedcallback" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-is-inherited">
+<li class="tsd-is-inherited">
+<div class="tsd-signature tsd-anchor-link" id="attributechangedcallback-1"><span class="tsd-kind-call-signature">attributeChangedCallback</span><span class="tsd-signature-symbol">(</span><br/>    <span class="tsd-kind-parameter">name</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">old_value</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-kind-parameter">new_value</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span><br/><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#attributechangedcallback-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Called when attributes are changed, added, removed, or replaced.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">name</span>: <span class="tsd-signature-type">string</span></span>
+<div class="tsd-comment tsd-typography"><p>The name of a observedAttributes allowing access
+into the internals of the custom component.</p>
+</div></li>
+<li><span><span class="tsd-kind-parameter">old_value</span>: <span class="tsd-signature-type">string</span></span>
+<div class="tsd-comment tsd-typography"><p>The original value held by the attribute.</p>
+</div></li>
+<li><span><span class="tsd-kind-parameter">new_value</span>: <span class="tsd-signature-type">string</span></span>
+<div class="tsd-comment tsd-typography"><p>The new value to apply.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="../CHtmlComponent/">CHtmlComponent</a>.<a href="../CHtmlComponent/#attributechangedcallback">attributeChangedCallback</a></p></aside></div></li></ul></section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="connectedcallback"><span>connected<wbr/>Callback</span><a href="#connectedcallback" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-is-inherited">
+<li class="tsd-is-inherited">
+<div class="tsd-signature tsd-anchor-link" id="connectedcallback-1"><span class="tsd-kind-call-signature">connectedCallback</span><span class="tsd-signature-symbol">()</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#connectedcallback-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Called each time the element is added to the document. The specification
+recommends that, as far as possible, developers should implement custom
+element setup in this callback rather than the constructor.</p>
+</div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="../CHtmlComponent/">CHtmlComponent</a>.<a href="../CHtmlComponent/#connectedcallback">connectedCallback</a></p></aside></div></li></ul></section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="connectedmovecallback"><span>connected<wbr/>Move<wbr/>Callback</span><a href="#connectedmovecallback" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-is-inherited">
+<li class="tsd-is-inherited">
+<div class="tsd-signature tsd-anchor-link" id="connectedmovecallback-1"><span class="tsd-kind-call-signature">connectedMoveCallback</span><span class="tsd-signature-symbol">()</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#connectedmovecallback-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>When defined, this is called instead of connectedCallback() and
+disconnectedCallback() each time the element is moved to a different
+place in the DOM via Element.moveBefore(). Use this to avoid running
+initialization/cleanup code in the connectedCallback() and
+disconnectedCallback() callbacks when the element is not actually
+being added to or removed from the DOM. See Lifecycle callbacks and
+state-preserving moves for more details.</p>
+</div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="../CHtmlComponent/">CHtmlComponent</a>.<a href="../CHtmlComponent/#connectedmovecallback">connectedMoveCallback</a></p></aside></div></li></ul></section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="disconnectedcallback"><span>disconnected<wbr/>Callback</span><a href="#disconnectedcallback" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-is-inherited">
+<li class="tsd-is-inherited">
+<div class="tsd-signature tsd-anchor-link" id="disconnectedcallback-1"><span class="tsd-kind-call-signature">disconnectedCallback</span><span class="tsd-signature-symbol">()</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#disconnectedcallback-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Called each time the element is removed from the document.</p>
+</div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="../CHtmlComponent/">CHtmlComponent</a>.<a href="../CHtmlComponent/#disconnectedcallback">disconnectedCallback</a></p></aside></div></li></ul></section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="get_attribute"><span>get_<wbr/>attribute</span><a href="#get_attribute" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-is-inherited">
+<li class="tsd-is-inherited">
+<div class="tsd-signature tsd-anchor-link" id="get_attribute-1"><span class="tsd-kind-call-signature">get_attribute</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">name</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">null</span><a href="#get_attribute-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>The get_attribute() method of the Element interface returns the
+string value of the specified attribute of the specified element. It
+returns null if the element doesn't have an attribute with the given
+name.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">name</span>: <span class="tsd-signature-type">string</span></span>
+<div class="tsd-comment tsd-typography"><p>A string specifying the name of the attribute. When
+called on an HTML element in a DOM flagged as an HTML document, the name
+is normalized to lowercase.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span> <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">null</span></h4><p>A string containing the attribute's value,
+or null if the element doesn't have an attribute with the given name.</p>
+<aside class="tsd-sources">
+<p>Inherited from <a href="../CHtmlComponent/">CHtmlComponent</a>.<a href="../CHtmlComponent/#get_attribute">get_attribute</a></p></aside></div></li></ul></section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="has_attribute"><span>has_<wbr/>attribute</span><a href="#has_attribute" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-is-inherited">
+<li class="tsd-is-inherited">
+<div class="tsd-signature tsd-anchor-link" id="has_attribute-1"><span class="tsd-kind-call-signature">has_attribute</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">name</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><a href="#has_attribute-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">name</span>: <span class="tsd-signature-type">string</span></span></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="../CHtmlComponent/">CHtmlComponent</a>.<a href="../CHtmlComponent/#has_attribute">has_attribute</a></p></aside></div></li></ul></section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="refresh"><span>refresh</span><a href="#refresh" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-is-inherited">
+<li class="tsd-is-inherited">
+<div class="tsd-signature tsd-anchor-link" id="refresh-1"><span class="tsd-kind-call-signature">refresh</span><span class="tsd-signature-symbol">()</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#refresh-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Forces a refresh of the component.</p>
+</div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="../CHtmlComponent/">CHtmlComponent</a>.<a href="../CHtmlComponent/#refresh">refresh</a></p></aside></div></li></ul></section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="set_attribute"><span>set_<wbr/>attribute</span><a href="#set_attribute" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-is-inherited">
+<li class="tsd-is-inherited">
+<div class="tsd-signature tsd-anchor-link" id="set_attribute-1"><span class="tsd-kind-call-signature">set_attribute</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">name</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">value</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#set_attribute-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>The set_attribute() method of the Element interface sets the value of
+an attribute on the specified element. If the attribute already exists,
+the value is updated; otherwise a new attribute is added with the
+specified name and value.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">name</span>: <span class="tsd-signature-type">string</span></span>
+<div class="tsd-comment tsd-typography"><p>A string containing the qualified name of the
+attribute whose value is to be set. The attribute name is automatically
+converted to all lower-case when set_attribute() is called on an HTML
+element in an HTML document.</p>
+</div></li>
+<li><span><span class="tsd-kind-parameter">value</span>: <span class="tsd-signature-type">string</span></span>
+<div class="tsd-comment tsd-typography"><p>A trusted type or string containing the value
+to assign to the attribute.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="../CHtmlComponent/">CHtmlComponent</a>.<a href="../CHtmlComponent/#set_attribute">set_attribute</a></p></aside></div></li></ul></section>
+<section class="tsd-panel tsd-member tsd-is-inherited">
+<h3 class="tsd-anchor-link" id="register_component"><code class="tsd-tag">Static</code><span>register_<wbr/>component</span><a href="#register_component" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-is-inherited">
+<li class="tsd-is-inherited">
+<div class="tsd-signature tsd-anchor-link" id="register_component-1"><span class="tsd-kind-call-signature">register_component</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">name</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">element_def</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span><a href="#register_component-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../../assets/icons.svg#icon-anchor"></use></svg></a></div>
+<div class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Utility function to register a custom component if it has not already
+been defined.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li><span><span class="tsd-kind-parameter">name</span>: <span class="tsd-signature-type">string</span></span>
+<div class="tsd-comment tsd-typography"><p>The name of the component.</p>
+</div></li>
+<li><span><span class="tsd-kind-parameter">element_def</span>: <span class="tsd-signature-type">any</span></span>
+<div class="tsd-comment tsd-typography"><p>The constructor definition.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
+<p>Inherited from <a href="../CHtmlComponent/">CHtmlComponent</a>.<a href="../CHtmlComponent/#register_component">register_component</a></p></aside></div></li></ul></section></section></details></div>
+<div class="col-sidebar">
+<div class="page-menu">
+<div class="tsd-navigation settings">
+<details class="tsd-accordion"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../../assets/icons.svg#icon-chevronDown"></use></svg>
+<h3>Settings</h3></summary>
+<div class="tsd-accordion-details">
+<div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span>
+<ul id="tsd-filter-options">
+<li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li></ul></div>
+<div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div>
+<details open class="tsd-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../../assets/icons.svg#icon-chevronDown"></use></svg>
+<h3>On This Page</h3></summary>
+<div class="tsd-accordion-details">
+<details open class="tsd-accordion tsd-page-navigation-section"><summary class="tsd-accordion-summary" data-key="section-Constructors"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../../assets/icons.svg#icon-chevronDown"></use></svg>Constructors</summary>
+<div><a href="#constructor"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Constructor"><use href="../../assets/icons.svg#icon-512"></use></svg><span>constructor</span></a></div></details>
+<details open class="tsd-accordion tsd-page-navigation-section"><summary class="tsd-accordion-summary" data-key="section-Properties"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../../assets/icons.svg#icon-chevronDown"></use></svg>Properties</summary>
+<div><a href="#title" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property"><use href="../../assets/icons.svg#icon-1024"></use></svg><span>title</span></a></div></details>
+<details open class="tsd-accordion tsd-page-navigation-section"><summary class="tsd-accordion-summary" data-key="section-Accessors"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../../assets/icons.svg#icon-chevronDown"></use></svg>Accessors</summary>
+<div><a href="#observedattributes"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Accessor"><use href="../../assets/icons.svg#icon-262144"></use></svg><span>observed<wbr/>Attributes</span></a></div></details>
+<details open class="tsd-accordion tsd-page-navigation-section"><summary class="tsd-accordion-summary" data-key="section-Methods"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../../assets/icons.svg#icon-chevronDown"></use></svg>Methods</summary>
+<div><a href="#adoptedcallback" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../../assets/icons.svg#icon-2048"></use></svg><span>adopted<wbr/>Callback</span></a><a href="#attributechangedcallback" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../../assets/icons.svg#icon-2048"></use></svg><span>attribute<wbr/>Changed<wbr/>Callback</span></a><a href="#connectedcallback" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../../assets/icons.svg#icon-2048"></use></svg><span>connected<wbr/>Callback</span></a><a href="#connectedmovecallback" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../../assets/icons.svg#icon-2048"></use></svg><span>connected<wbr/>Move<wbr/>Callback</span></a><a href="#disconnectedcallback" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../../assets/icons.svg#icon-2048"></use></svg><span>disconnected<wbr/>Callback</span></a><a href="#get_attribute" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../../assets/icons.svg#icon-2048"></use></svg><span>get_<wbr/>attribute</span></a><a href="#has_attribute" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../../assets/icons.svg#icon-2048"></use></svg><span>has_<wbr/>attribute</span></a><a href="#refresh" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../../assets/icons.svg#icon-2048"></use></svg><span>refresh</span></a><a href="#set_attribute" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../../assets/icons.svg#icon-2048"></use></svg><span>set_<wbr/>attribute</span></a><a href="#register_component" class="tsd-is-inherited"><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method"><use href="../../assets/icons.svg#icon-2048"></use></svg><span>register_<wbr/>component</span></a></div></details></div></details></div>
+<div class="site-menu">
+<nav class="tsd-navigation"><a href="../../modules.html">CodeMeltedDEV Project</a>
+<ul class="tsd-small-nested-navigation" id="tsd-nav-container">
+<li>Loading...</li></ul></nav></div></div></div><footer><script type='module' src='/assets/js/app.js'></script><cm-project-toolbar></cm-project-toolbar></footer>
+<div class="overlay"></div></body></html>

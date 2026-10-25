@@ -1,0 +1,25 @@
+classDiagram
+  direction LR
+  namespace codemelted_ns["codemelted"] {
+    class CAttributeCB {
+      +callback(name, old_value, new_value)
+    }
+
+    class CHtmlComponentCB {
+      +callback()
+    }
+
+    class CHtmlComponent {
+      <<abstract>>
+      +shadow_root
+      +refresh()
+      +register_component(name, element_def)$
+      +constructor(adopted_cb, attribute_changed_cb, connected_cb, connected_moved_cb, disconnected_cb)
+    }
+
+    note "Only available in a Browser runtime"
+  }
+
+  CHtmlComponent --> CAttributeCB: uses
+  CHtmlComponent --> CHtmlComponentCB: uses
+  CHtmlComponent --|> HTMLElement: inherits

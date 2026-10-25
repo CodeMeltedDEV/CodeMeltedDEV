@@ -1,0 +1,58 @@
+{
+  "name": "CodeMeltedDEV",
+
+  "favicon": "https://js.codemelted.com/assets/favicon/favicon.ico",
+  "customDescription": "The CodeMeltedDEV Project aims to give software engineers the ability to deliver on this full stack engineering premise.",
+  "customImage": "https://https://codemelted.com/assets/images/logo-codemelted-dev.png",
+  "customTwitter": "@CodeMeltedDEV",
+  "alwaysCreateEntryPointModule": true,
+  "excludeExternals": true,
+  "excludeProtected": true,
+  "excludePrivate": true,
+  "disableSources": true,
+  "darkHighlightTheme": "dark-plus",
+  "readme": "README.md",
+  "hideGenerator": true,
+  "router": "structure-dir",
+  "entryPoints": [
+    "./codemelted.js"
+  ],
+  "plugin": [
+    "./assets/js/typedoc-plugin-og.js",
+    "typedoc-material-theme",
+    "@boneskull/typedoc-plugin-mermaid"
+  ],
+  "themeColor": "#262B2F",
+  "out": "dev",
+  "highlightLanguages": [
+    "bash",
+    "console",
+    "css",
+    "html",
+    "javascript",
+    "json",
+    "jsonc",
+    "json5",
+    "markdown",
+    "powershell",
+    "tsx",
+    "typescript",
+    "rust",
+    "yaml"
+  ],
+  "ignoredHighlightLanguages": ["mermaid"],
+  "projectDocuments": [
+    "documents/about/index.md",
+    "documents/domain-use-cases/index.md",
+    "documents/software-engineering/index.md",
+    "documents/codemelted-cli.md",
+    "documents/codemelted-rs.md"
+  ],
+  "navigation": {
+    "includeCategories": false,
+    "includeGroups": false,
+    "includeFolders": false
+  },
+  "customFooterHtml": "<script type='module' src='/assets/js/app.js'></script><cm-project-toolbar></cm-project-toolbar>",
+  "customFooterHtmlDisableWrapper": true,
+}

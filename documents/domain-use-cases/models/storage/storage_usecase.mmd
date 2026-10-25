@@ -1,0 +1,20 @@
+classDiagram
+  namespace codemelted_ns["codemelted"] {
+    %% Enumerations
+    class STORAGE_TYPE {
+      + Cookie
+      + Local
+      + Session
+    }
+    class codemelted {
+      <<public api>>
+      + storage_clear(type) Promise~void~
+      + storage_get(type, key) Promise~string | null~
+      + storage_key(type, index) Promise~string | null~
+      + storage_length(type) Promise~number~
+      + storage_remove(type, key) Promise~void~
+      + storage_set(type, key, value) Promise~void~
+    }
+    note "Browser: All Available<br>Deno: Local / Session<br>Node: None<br>Worker: None"
+  }
+  codemelted --> STORAGE_TYPE: consumes

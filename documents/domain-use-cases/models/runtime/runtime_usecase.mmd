@@ -1,0 +1,48 @@
+classDiagram
+  namespace codemelted_ns["codemelted"] {
+    %% Enum
+    class AVAILABILITY_REQUEST {
+      <<enum>>
+      + AskRuntime
+      + Audio
+      + Beacon
+      + BroadcastChannel
+      + Browser
+      + Bun
+      + Bluetooth
+      + CookieStore
+      + Deno
+      + EventSource
+      + IFrame
+      + LocalStorage
+      + Midi
+      + Node
+      + Open
+      + Orientation
+      + Pwa
+      + SerialPort
+      + SecureContext
+      + SessionStorage
+      + Share
+      + TextToSpeech
+      + TouchEnabled
+      + Usb
+      + Vibrate
+      + WebRTC
+      + WebSocket
+      + WebTransport
+      + WorkerAvailable
+      + WorkerRuntime
+    }
+    class CEventHandler {
+      +callback(evt)
+    }
+    class codemelted {
+      <<public api>>
+      +runtime_available(request, name, obj) boolean
+      +runtime_event(request, type, handler, target)
+    }
+    note "runtime_event() is not available in Node Runtime"
+  }
+  codemelted --> AVAILABILITY_REQUEST: consumes
+  codemelted --> CEventHandler: consumes

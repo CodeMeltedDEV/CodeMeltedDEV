@@ -1,0 +1,16 @@
+classDiagram
+  namespace codemelted_ns["codemelted"] {
+    class codemelted {
+      <<Public API>>
+      +json_atob(data) string | null
+      +json_btoa(data) boolean
+      +json_check_type(type, data, count, should_throw) boolean
+      +json_create_array(data) array
+      +json_create_object(data) object
+      +json_has_key(obj, key, should_throw) boolean
+      +json_has_value(obj, value, should_throw) boolean
+      +json_parse(data) any | null
+      +json_stringify(data) string | null
+    }
+    note "Works in all JavaScript runtimes"
+  }

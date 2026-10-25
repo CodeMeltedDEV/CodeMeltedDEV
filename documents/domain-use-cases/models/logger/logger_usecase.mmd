@@ -1,0 +1,29 @@
+classDiagram
+  namespace codemelted_ns["codemelted"] {
+    class LOGGER {
+      +Debug
+      +Info
+      +Warning
+      +Error
+      +Off
+    }
+    class CLogHandler {
+      +callback(record: CLogRecord)
+    }
+    class CLogRecord {
+      +time() Date
+      +level() LOGGER
+      +data() any
+    }
+
+    class codemelted {
+      <<Public API>>
+      +logger_handler() void
+      +logger_level() string
+      +logger_log() void
+    }
+    note "Works in all JavaScript runtimes"
+  }
+  codemelted --> LOGGER: consumes
+  codemelted --> CLogHandler: consumes / fires
+  codemelted --> CLogRecord: creates
