@@ -14,6 +14,6 @@ Reflects the overall updates to the `codemelted.js`, `codemelted.rs`, and the co
 
 | Version | Description |
 | ------- | ----------- |
-| [v26.0.0-alpha]() | Completed the layout of the PWA site. It is installable but with no offline capability just yet. `codemelted.js` is fully coded and generating SDK docs but needs some cleanup. Consider it an alpha release at this point. `codemelted.rs` represents a stub of how the overall interface will be before building out the bindings for the `codemelted.js` module to properly utilize it with TAURI. Once that gets defined, will start building out the `codemelted` CLI native command.
+| [v26.0.0-alpha]() | Completed the layout of the PWA site. It is installable but with no offline capability just yet. `codemelted.js` is fully coded and generating SDK docs but needs some cleanup. Consider it an alpha release at this point. `codemelted.rs` represents a stub of how the overall interface will be before building out the bindings for the `codemelted.js` module to properly utilize it with TAURI. Once that gets defined, will start building out the `codemelted` CLI native command. <mark>THIS IS TRULY ALPHA. NOT PRODUCTION READY YET.</mark> |
 
 <cm-page-footer></cm-page-footer>
