@@ -43,6 +43,7 @@
   "ignoredHighlightLanguages": ["mermaid"],
   "projectDocuments": [
     "documents/about/index.md",
+    "documents/articles/index.md",
     "documents/domain-use-cases/index.md",
     "documents/software-engineering/index.md",
     "documents/codemelted-cli.md",
@@ -55,4 +56,5 @@
   },
   "customFooterHtml": "<script type='module' src='/assets/js/app.js'></script><cm-project-toolbar></cm-project-toolbar>",
   "customFooterHtmlDisableWrapper": true,
+  "customCss": "./assets/css/custom.css"
 }

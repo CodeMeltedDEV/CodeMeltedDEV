@@ -32,3 +32,6 @@ node_modules/
 codemelted_playground.html
 blogger_widgets.js
 assets/js/codemelted.js
+
+# Ignore articles from repo minus the index.md
+/documents/articles/

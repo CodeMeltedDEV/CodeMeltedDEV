@@ -12,3 +12,5 @@
 {"rule":"ENGLISH_WORD_REPEAT_RULE","sentence":"^\\Q07 JSON JSON (JavaScript Object Notation) is a lightweight, plain-text format used to store and transfer structured data between a server and an application.\\E$"}
 {"rule":"ENGLISH_WORD_REPEAT_RULE","sentence":"^\\QUC-06 Hardware Hardware peripherals are auxiliary devices connected to a computer to expand its capabilities.\\E$"}
 {"rule":"ENGLISH_WORD_REPEAT_RULE","sentence":"^\\QUC-07 JSON JSON (JavaScript Object Notation) is a lightweight, plain-text format used to store and transfer structured data between a server and an application.\\E$"}
+{"rule":"EN_A_VS_AN","sentence":"^\\Q2019-AUG Bringing an Idea to a MVP\\E$"}
+{"rule":"EN_A_VS_AN","sentence":"^\\Q2019-AUG Bringing an Idea to a MVP Before COVID I had a plan with my 2005 Jeep TJ to make a trip to Prudhoe Bay, Alaska.\\E$"}

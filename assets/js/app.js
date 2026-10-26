@@ -24,7 +24,7 @@ class CPageHeader extends CHtmlComponent {
           --height: 20px;
         }
         @media print {
-          cm-page-header {
+          #center_header {
             display: none;
           }
           cm-page-footer {
@@ -33,9 +33,9 @@ class CPageHeader extends CHtmlComponent {
         }
       </style>
       <h1>${title}</h1>
-      <hr>
-      <center>
-        <img style="width: 100%;" src="https://codemelted.com/assets/images/logo-codemelted-dev.png" />
+      <center id="center_header">
+        <hr>
+        <img style="max-height: 300px; width: 100%;" src="https://codemelted.com/assets/images/logo-codemelted-dev.png" />
         <div id="github-controls">
           <a aria-label="Follow @CodeMeltedDEV on GitHub" class="github-button" data-color-scheme="no-preference: dark; light: dark; dark: dark;" data-show-count="true" data-size="small" href="https://github.com/CodeMeltedDEV" title="Follow @CodeMeltedDEV on GitHub">CodeMeltedDEV</a>
           <a aria-label="Watch CodeMeltedDEV on GitHub" class="github-button" data-color-scheme="no-preference: dark; light: dark; dark: dark;" data-icon="octicon-eye" data-show-count="true" data-size="small" href="https://github.com/CodeMeltedDEV/CodeMeltedDEV/subscription" title="Watch CodeMeltedDEV on GitHub">Watch</a>
@@ -49,8 +49,9 @@ class CPageHeader extends CHtmlComponent {
           <!-- <cm-share-button></cm-share-button> -->
           <!-- <cm-tts-button></cm-tts-button> -->
         </div>
+        <hr>
       </center>
-      <hr>
+
     `;
     const script = document.createElement('script');
     script.src = "https://buttons.github.io/buttons.js";
@@ -97,6 +98,7 @@ class CPageFooter extends CHtmlComponent {
               --height: 35px;
             }
           </style>
+          <p>
           <center>
             <br><br>
             <cm-button
@@ -116,6 +118,7 @@ class CPageFooter extends CHtmlComponent {
             <cm-button tooltip="Where all the Tech Peeps Hang Out" onclick="window.open('/About/Me/TwitterX/index.html', target='_self');" icon="https://codemelted.com/assets/images/icon-twitterx.png"></cm-button>
             <cm-button tooltip="Where to Find My Videos" onclick="window.open('/About/Me/YouTube/index.html', target='_self');" icon="https://codemelted.com/assets/images/icon-youtube.png"></cm-button>
           </div>
+          </p>
         `;
 
         // Attach the event listeners
@@ -136,6 +139,66 @@ class CPageFooter extends CHtmlComponent {
 }
 CHtmlComponent.register_component("cm-page-footer", CPageFooter);
 
+class CSwEngButtons extends CHtmlComponent {
+  #btn_clicked = async (evt) => {
+    const url = evt.target.id === "btn_acm"
+      ? "https://acm.org"
+      : "https://ieee.org";
+    const is_popup_window = await storage_get({
+      key: "cm_is_popup_window"
+    });
+    ui_open({
+      schema: SCHEMA_TYPE.Https,
+      url: url,
+      popup_window: is_popup_window === "true",
+      target: TARGET_TYPE.Blank
+    });
+  };
+
+  constructor() {
+    super({
+      shadow_mode: "open",
+      connected_cb: () => {
+        this.shadow_root().innerHTML = `
+          <style>
+            :root {
+              color-scheme: light dark;
+            }
+
+            .button-container {
+              display: flex;
+              justify-content: space-between;
+              width: 100%;
+            }
+
+            .button-container button {
+              flex: 1;
+            }
+
+            cm-button {
+              --bg-color: light-dark(#ffffff, #3d444d);
+              --border: none;
+              --hover-bg-color: light-dark(#3d444d, #ffffff);
+              --padding: 2px 5px;
+            }
+          </style>
+          <div class="button-container">
+            <cm-button id="btn_acm" class="left-btn" icon="https://codemelted.com/assets/images/logo-acm.png"></cm-button>
+            <cm-button id="btn_ieee" class="right-btn" icon="https://codemelted.com/assets/images/logo-ieee.png"></cm-button>
+          </div>
+        `;
+
+        this.shadow_root().getElementById("btn_acm").addEventListener("click", this.#btn_clicked);
+        this.shadow_root().getElementById("btn_ieee").addEventListener("click", this.#btn_clicked);
+      },
+      disconnected_cb: () => {
+        this.shadow_root().getElementById("btn_acm").removeEventListener("click", this.#btn_clicked);
+        this.shadow_root().getElementById("btn_ieee").removeEventListener("click", this.#btn_clicked);
+      }
+    })
+  }
+}
+CHtmlComponent.register_component("cm-sw-eng-buttons", CSwEngButtons);
 
 class CProjectToolbar extends CHtmlComponent {
   constructor() {

@@ -1,0 +1,10 @@
+/* 1. Hide the nested sub-items dropdown across all pages */
+details:has(> summary[data-key="Articles"]) > .tsd-accordion-details {
+  display: none !important;
+}
+
+/* 2. Target ONLY the accordion toggle chevron (right arrow), keeping the document icon on the left */
+summary[data-key="Articles"] > svg,
+summary[data-key="Articles"] .tsd-accordion-summary-icon {
+  display: none !important;
+}

@@ -9,8 +9,10 @@ twitter_site: "@CodeMeltedDEV"
 ---
 <cm-page-header title="Module codemelted.rs SDK"></cm-page-header>
 
-<div style="height: 0px; overflow: hidden; padding-bottom: 2048px; position: relative;">
-  <iframe allowfullscreen="" src="/codemelted/codemelted/index.html" style="border: 0; position: absolute; top: 0; left: 0; height: 100%;  width: 100%;"></iframe>
-</div>
+<cm-embedded-frame
+  style="height: 2048px;"
+  frame_src="/codemelted/codemelted/index.html"
+  open_src="https://dev.codemeltec.com/codemelted/codemelted/index.html">
+</cm-embedded-frame>
 
 <cm-page-footer></cm-page-footer>
