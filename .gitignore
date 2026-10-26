@@ -35,3 +35,4 @@ assets/js/codemelted.js
 
 # Ignore articles from repo minus the index.md
 /documents/articles/
+dev.zip

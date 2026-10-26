@@ -55,6 +55,19 @@ function main {
   # [MAKE FUNCTIONS] ----------------------------------------------------------
   # ---------------------------------------------------------------------------
 
+  # Takes care of deploying the full build of the project to the
+  # codemelted.com/dev domain.
+  function deploy {
+    message "Now uploading codemelted.com/dev content."
+    Compress-Archive -Path dev -DestinationPath dev.zip -Force
+    $hostService = $env:CODEMELTED_USER_AND_IP + $env:CODEMELTED_HOME
+    scp dev.zip $hostService
+    ssh $env:CODEMELTED_USER_AND_IP
+    Remove-Item -Path dev.zip
+    Remove-Item -Path dev -Recurse -Force
+    message "Upload completed."
+  }
+
   function make_js {
     message "Now building codemelted.js module."
 
@@ -109,6 +122,7 @@ function main {
   try {
     [string]$action = $args[0] ?? ""
     switch ($action) {
+      "--deploy" { deploy }
       "--make-js" { make_js }
       "--make-rust" { make_rust }
       "" {
