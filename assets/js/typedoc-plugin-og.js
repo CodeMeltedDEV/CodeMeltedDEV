@@ -6,6 +6,38 @@ const { JSX, ParameterType } = require("typedoc");
 // =========================================================================
 const SITE_DOMAIN = "https://js.codemelted.com/";
 
+// Represents the first part of the PWA deployment.
+// This will at least get us to online installation.
+const manifest = Object.freeze({
+  id: "/",
+  name: "CodeMeltedDEV PWA",
+  short_name: "CodeMeltedDEV",
+  start_url: "/",
+  display: "standalone",
+  background_color: "black",
+  theme_color: "black",
+  orientation: "portrait",
+  icons: [
+    {
+      src: "https://codemelted.com/assets/favicon/android-chrome-192x192.png",
+      sizes: "192x192",
+      type: "image/png"
+    },
+    {
+      src: "https://codemelted.com/assets/favicon/android-chrome-512x512.png",
+      sizes: "512x512",
+      type: "image/png"
+    },
+    {
+      src: "https://codemelted.com/assets/favicon/android-chrome-512x512.png",
+      sizes: "512x512",
+      type: "image/png",
+      purpose: "maskable"
+    }
+  ]
+});
+const manifest_str = "data:application/json," + JSON.stringify(manifest);
+
 /**
  * Strips markdown and HTML artifacts to generate clean plain-text for SEO.
  * @param {string} mdText
@@ -114,7 +146,8 @@ module.exports.load = function load(app) {
       JSX.createElement("meta", { name: "twitter:title", content: finalTitle }),
       JSX.createElement("meta", { name: "twitter:description", content: finalDescription }),
       JSX.createElement("meta", { name: "twitter:image", content: finalImage }),
-      JSX.createElement("link", { rel: "icon", type: "image/png", href: "https://codemelted.com/favicon.png" })
+      JSX.createElement("link", { rel: "icon", type: "image/png", href: "https://codemelted.com/favicon.png" }),
+      JSX.createElement("link", { rel: "manifest", href: manifest_str})
     );
   });
 };
