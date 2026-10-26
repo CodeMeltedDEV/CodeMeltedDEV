@@ -211,7 +211,7 @@ $ABOUT_SCRIPT = @{
 file = @"
 What does the script do...
 "@
-author = "mark.shaffer@codemelted.com / dev.codemelted.com"
+author = "mark.shaffer@codemelted.com / codemelted.dev"
 copyright = "© 2025 - 2026 Mark Shaffer. All Rights Reserved."
 license = @"
 MIT License

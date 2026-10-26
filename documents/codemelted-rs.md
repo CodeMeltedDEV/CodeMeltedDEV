@@ -11,8 +11,8 @@ twitter_site: "@CodeMeltedDEV"
 
 <cm-embedded-frame
   style="height: 2048px;"
-  frame_src="/codemelted/codemelted/index.html"
-  open_src="https://dev.codemeltec.com/codemelted/codemelted/index.html">
+  frame_src="/codemelted.rs/codemelted/index.html"
+  open_src="https://codemelted.dev/codemelted.rs/codemelted/index.html">
 </cm-embedded-frame>
 
 <cm-page-footer></cm-page-footer>

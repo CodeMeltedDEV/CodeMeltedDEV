@@ -59,7 +59,7 @@ Fifteen domain use cases were identified covering the most common areas a Softwa
 
 # PWA Companion
 
-The `dev.codemelted.com` domain is more than just a website. It serves a Software Engineer's companion for building full stack tech solutions. It is a [TypeDoc](https://typedoc.org/) built site with added useful information, services, and utilizes the very modules this project is building.
+The `codemelted.dev` domain is more than just a website. It serves a Software Engineer's companion for building full stack tech solutions. It is a [TypeDoc](https://typedoc.org/) built site with added useful information, services, and utilizes the very modules this project is building.
 
 | Service                               | Description                                                                                                                                                                     |
 |---------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -85,6 +85,6 @@ Support for this project is appreciated. I am just getting started so follow the
 |-------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
 | <a href="https://www.buymeacoffee.com/codemelteddev"><img src="https://codemelted.com/assets/images/icon-buy-me-a-coffee.png" height="35px" />Buy Me A Coffee</a> | Direct support for the CodeMeltedDEV website content and services offered.                                                     |
 | <a href="https://github.com/sponsors/CodeMeltedDEV"><img src="https://codemelted.com/assets/images/icon-github.png" height="35px" /> GitHub Sponsorship</a>       | Direct support for the CodeMeltedDEV repo and module development either through a one time donation or a monthly subscription. |
-| <a href="https://dev.codemelted.com"><img src="https://codemelted.com/assets/favicon/apple-touch-icon.png" height="35px" /> CodeMeltedDEV PWA</a>                 | The [CodeMeltedDEV PWA Companion](#pwa-companion) for this repo.                                                               |
+| <a href="https://codemelted.dev"><img src="https://codemelted.com/assets/favicon/apple-touch-icon.png" height="35px" /> CodeMeltedDEV PWA</a>                 | The [CodeMeltedDEV PWA Companion](#pwa-companion) for this repo.                                                               |
 
 <cm-page-footer></cm-page-footer>

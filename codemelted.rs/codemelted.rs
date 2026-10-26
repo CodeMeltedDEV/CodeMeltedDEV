@@ -1,7 +1,7 @@
 // ============================================================================
 //! | Key       | Value                                                       |
 //! | --------- | ----------------------------------------------------------- |
-//! | AUTHOR    | mark.shaffer@codemelted.com / dev.codemelted.com            |
+//! | AUTHOR    | mark.shaffer@codemelted.com / codemelted.dev            |
 //! | COPYRIGHT | © 2025-Present Mark Shaffer. All Rights Reserved.           |
 //!
 //! # FEATURES

@@ -1,7 +1,7 @@
 #!/usr/bin/pwsh
 # =============================================================================
 $ABOUT_SCRIPT = @{
-author = "mark.shaffer@codemelted.com / dev.codemelted.com"
+author = "mark.shaffer@codemelted.com / codemelted.dev"
 copyright = "© 2025 - 2026 Mark Shaffer. All Rights Reserved."
 license = @"
 MIT License
@@ -60,9 +60,9 @@ function main {
   function deploy {
     message "Now uploading codemelted.com/dev content."
     Compress-Archive -Path dev -DestinationPath dev.zip -Force
-    $hostService = $env:CODEMELTED_USER_AND_IP + $env:CODEMELTED_HOME
+    $hostService = $env:CODEMELTEDDEV_USER_AND_IP + $env:CODEMELTEDDEV_HOME
     scp dev.zip $hostService
-    ssh $env:CODEMELTED_USER_AND_IP
+    ssh $env:CODEMELTEDDEV_USER_AND_IP
     Remove-Item -Path dev.zip
     Remove-Item -Path dev -Recurse -Force
     message "Upload completed."
@@ -110,7 +110,7 @@ function main {
     }
     # TODO: Will need to copy all those additional target compiles
     #       to the lib folder.
-    Copy-Item target/doc $PSScriptRoot/dev/codemelted -Force -Recurse `
+    Copy-Item target/doc $PSScriptRoot/dev/codemelted.rs -Force -Recurse `
       -ErrorAction Stop
     Set-Location $PSScriptRoot
     message "codemelted_lib static library build completed."
