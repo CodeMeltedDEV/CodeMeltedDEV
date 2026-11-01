@@ -74,8 +74,7 @@ The `codemelted.dev` domain is more than just a website. It serves a Software En
 | Code Editor (Future)                  | An online editor for quickly writing snippets of code and UML models based on the project modules and starter templates.                                                        |
 | Chat (Future)                         | Bringing back online text chat rooms in the style of AOL / MSN with audio and video chat so like-minded software engineers can collaborate.                                     |
 | External Services (Future)            | Access to external services that make the PWA a one-stop solution for a software engineer regardless of how they access this PWA.                                               |
-| Page Controls (Future)                | The full ability to print, share (utilizing OpenGraph), and read the page aloud via Text To Speech (TTS)                                                                        |
-| codemelted.com Domain Access (Future) | Quick access to the other subdomain projects under the `codemelted.com` domain.                                                                                                 |
+| Page Controls                         | The full ability to print, share (utilizing OpenGraph), and read the page aloud via Text To Speech (TTS)                                                                        |
 
 # Support
 

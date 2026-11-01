@@ -15,10 +15,10 @@ children:
 
 <center>
 
-| Page                                                                                                                                    | Description                                                                                                                         |
-|-----------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
-| <a href="./Me/index.html"><img style="height: 50px;" src="https://codemelted.com/assets/images/icon-me-animated.png" /></a>             | Discover all you would like to know about the Software Engineer building this thing.                                                |
-| <a href="./Project/index.html"><img style="height: 50px;" src="https://codemelted.com/assets/favicon/android-chrome-512x512.png" /></a> | Two overly engineered modules to offer a full stack solution in an AI era. Covers releases and validation metrics of those modules. |
+| Page                                                                                                                                  | Description                                                                                                                         |
+|---------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
+| <a href="./me/index.md"><img style="height: 50px;" src="https://codemelted.com/assets/images/icon-me-animated.png" /></a>             | Discover all you would like to know about the Software Engineer building this thing.                                                |
+| <a href="./project/index.md"><img style="height: 50px;" src="https://codemelted.com/assets/favicon/android-chrome-512x512.png" /></a> | Two overly engineered modules to offer a full stack solution in an AI era. Covers releases and validation metrics of those modules. |
 
 </center>
 

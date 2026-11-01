@@ -850,20 +850,6 @@ export class CWorkerProtocol extends CProtocol {
   #worker;
 
   /**
-   * Identifies the number of background threads are available to the worker.
-   * @returns {number}
-   */
-  static cpu_count() {
-    return runtime_available({
-      request: AVAILABILITY_REQUEST.AskRuntime,
-      name: "hardwareConcurrency",
-      obj: globalThis["navigator"]
-    })
-      ? globalThis.navigator.hardwareConcurrency
-      : 1;
-  }
-
-  /**
    * Sends a message, which can be of any kind of Object, to the background
    * worker for processing based on how it was setup to be processed.
    * @override
@@ -2667,17 +2653,6 @@ export function logger_log({level, data}) {
 
 // [ENUMS] --------------------------------------------------------------------
 
-/**
- * Provides the support for the {@link network_query} function.
- * @private
- * @enum {string}
- * @property {string} Online
- * @property {string} Hostname
- */
-export const NETWORK_REQUEST = Object.freeze({
-  Online: "online",
-  Hostname: "hostname",
-});
 
 // [DATA DEFINITION] ----------------------------------------------------------
 
@@ -3448,39 +3423,6 @@ export class CEventSourceProtocol extends CProtocol {
 // [PUBLIC API] ---------------------------------------------------------------
 
 /**
- * <mark>Expand with all globalThis.location queries</mark>
- * @private
- * @param {NETWORK_REQUEST} request
- * @returns {boolean | string}
- */
-export function network_query(request) {
-  try {
-    switch (request) {
-      case NETWORK_REQUEST.Online:
-        return runtime_available({
-          request: AVAILABILITY_REQUEST.AskRuntime,
-          name: "onLine",
-          obj: globalThis["navigator"]
-        })
-          ? globalThis.navigator.onLine
-          : false;
-      case NETWORK_REQUEST.Hostname:
-        return runtime_available({
-          request: AVAILABILITY_REQUEST.AskRuntime,
-          name: "location"
-        })
-          ? globalThis.location.hostname
-          : "UNKNOWN";
-      default:
-        throw new CModuleError(CModuleError.MISUSE);
-    }
-  } catch (err) {
-    CModuleError.handle_error(err);
-    throw new CModuleError("network_query() error.", err);
-  }
-}
-
-/**
  * @private
  * Sends an HTTP POST request containing a small amount of data to a web
  * server.
@@ -3746,6 +3688,7 @@ export function npu_compute({formula, args}) {
  * protocol is available.
  * @property {string} Browser Determine if the runtime is a Web Browser.
  * @property {string} Bluetooth Determines if bluetooth is available.
+ * @property {string} Clipboard Determines if copy and paste are available.
  * @property {string} CookieStore Determines if cookie store is
  * available to the runtime.
  * @property {string} EventSource Determines if an EventSource protocol
@@ -3796,6 +3739,7 @@ export const AVAILABILITY_REQUEST = Object.freeze({
   BroadcastChannel: "broadcast_channel",
   Browser: "browser",
   Bluetooth: "bluetooth",
+  Clipboard: "clipboard",
   CookieStore: "cookie_store",
   EventSource: "event_source",
   IFrame: "iframe",
@@ -3832,6 +3776,26 @@ export const EVENT_REQUEST = Object.freeze({
   Add: "add",
   Remove: "remove",
 });
+
+/**
+ * Provides the request queries of the {@link runtime_query} function.
+ * @readonly
+ * @enum {string}
+ * @property {string} CpuCount The number of CPUs available for
+ * {@link CWorkerProtocol} to take advantage.
+ * @property {string} Hostname The hostname running the website.
+ * @property {string} Href The href of the page being hosted.
+ * @property {string} Online Determines if the website has access to the
+ * Internet.
+ * @property {string} Search Will access any search parameters on the URL.
+ */
+export const QUERY_REQUEST = Object.freeze({
+  CpuCount: "cpu_count",
+  Hostname: "hostname",
+  Href: "href",
+  Online: "online",
+  Search: "search",
+})
 
 // [DATA DEFINITION] ----------------------------------------------------------
 
@@ -3916,6 +3880,11 @@ export function runtime_available({request, name="", obj = globalThis}) {
         return is_available({property: "HTMLElement"}) &&
           !is_available({property: "process"}) &&
           !is_available({property: "WorkerGlobalScope"});
+      case AVAILABILITY_REQUEST.Clipboard:
+        return is_available({
+          property: "clipboard",
+          obj: globalThis["navigator"]
+        });
       case AVAILABILITY_REQUEST.CookieStore:
         return is_available({property: "cookieStore"});
       case AVAILABILITY_REQUEST.EventSource:
@@ -4069,21 +4038,61 @@ export function runtime_event({
   }
 }
 
-// TODO: add other queryable elements from
-//       along with things from other items.
-// export function runtime_query({request, name}) {
-//   try {
-//     switch (request) {
-//       case DOCUMENT_REQUEST.Environment:
-//         return (new URLSearchParams(
-//           globalThis.location.search)
-//         ).get(name);
-//     }
-//   } catch (err) {
-//     CModuleError.handle_error(err);
-//     throw new CModuleError("storage_get() error.", err);
-//   }
-// }
+/**
+ * <mark> UNDER DEVELOPMENT </mark>
+ * @param {object} params The named params
+ * @param {QUERY_REQUEST} params.request The query to carry out.
+ * @param {string} [params.name] Optional name associated with some queries.
+ * @returns {boolean | number | string} The returned value of the query. If an
+ * item cannot be determined, then the minimum valid value is returned. So for
+ * boolean results, it will be false, strings will be empty string, and
+ * numbers the smallest valid value is returned.
+ */
+export function runtime_query({request, name}) {
+  try {
+    switch (request) {
+      case QUERY_REQUEST.CpuCount:
+        return runtime_available({
+          request: AVAILABILITY_REQUEST.AskRuntime,
+          name: "hardwareConcurrency",
+          obj: globalThis["navigator"]
+        })
+          ? globalThis.navigator.hardwareConcurrency
+          : 1;
+      case QUERY_REQUEST.Online:
+        return runtime_available({
+          request: AVAILABILITY_REQUEST.AskRuntime,
+          name: "onLine",
+          obj: globalThis["navigator"]
+        })
+          ? globalThis.navigator.onLine
+          : false;
+      case QUERY_REQUEST.Hostname:
+        return runtime_available({
+          request: AVAILABILITY_REQUEST.AskRuntime,
+          name: "location"
+        })
+          ? globalThis.location.hostname
+          : "";
+      case QUERY_REQUEST.Href:
+        return runtime_available({
+          request: AVAILABILITY_REQUEST.AskRuntime,
+          name: "location"
+        })
+          ? globalThis.location.href
+          : "";
+      case QUERY_REQUEST.Search:
+        return (new URLSearchParams(
+          globalThis.location.search)
+        ).get(name ?? "") ?? "";
+      default:
+        throw new CModuleError(CModuleError.MISUSE);
+    }
+  } catch (err) {
+    CModuleError.handle_error(err);
+    throw new CModuleError("runtime_query() error.", err);
+  }
+}
 
 // ============================================================================
 // [STORAGE USE CASE] =========================================================
@@ -4474,6 +4483,18 @@ export const ACTION_REQUEST = Object.freeze({
 });
 
 /**
+ * Request types for audio processing.
+ * @readonly
+ * @enum {string}
+ * @property {string} File Audio provided via a URL for playback.
+ * @property {string} TextToSpeech Audio generated on-the-fly from text input.
+ */
+export const AUDIO_REQUEST = Object.freeze({
+  File: "file",
+  TextToSpeech: "text_to_speech"
+});
+
+/**
  * Provides a {@link ui_document} to interact with the loaded HTML document.
  * @readonly
  * @enum {string}
@@ -4484,16 +4505,17 @@ export const ACTION_REQUEST = Object.freeze({
  * HTMLElements by class name.
  * @property {string} ElementsByTagName Will query for a collection of
  * HTMLElements by tag name.
+ * @property {string} Title Retrieves the title of the document.
  */
 export const DOCUMENT_REQUEST = Object.freeze({
   CssVariable: "css_variable",
   ElementById: "element_by_id",
   ElementsByClassName: "elements_by_class_name",
   ElementsByTagName: "elements_by_tag_name",
+  Title: "title"
 });
 
 /**
- * @private UNDER DEVELOPMENT
  * Provides the request actions of the {@link ui_notify} function.
  * @readonly
  * @enum {string}
@@ -4501,13 +4523,9 @@ export const DOCUMENT_REQUEST = Object.freeze({
  * @property {string} Choose Provides a selection to the user.
  * @property {string} Close Closes any given prompt to the user.
  * @property {string} Confirm Get confirmation from a user.
- * @property {string} Custom Provides a custom notification mechanism to the
- * user.
+ * @property {string} Custom Provides a custom notification mechanism to the user.
  * @property {string} Prompt Prompt the user for input.
  * @property {string} SnackBar Tell the user something happened passively.
- * @property {string} SystemNotification Provides an operating system
- * notification even when the page is not active. Requires permission to be
- * granted to the website.
  * @property {string} Wait Tell the user to wait for an action to complete.
  */
 export const NOTIFY_REQUEST = Object.freeze({
@@ -4518,7 +4536,6 @@ export const NOTIFY_REQUEST = Object.freeze({
   Custom: "custom",
   Prompt: "prompt",
   SnackBar: "snack_bar",
-  SystemNotification: "system_notification",
   Wait: "wait",
 });
 
@@ -4641,30 +4658,10 @@ export const TARGET_TYPE = Object.freeze({
 
 // /**
 //  * <mark>UNDER DEVELOPMENT</mark>
-//  * @private
-//  * @template T
-//  * @extends {CProtocol<T>}
-//  */
-// class CAudioProtocol extends CProtocol {
-
-// }
-
-// /**
-//  * <mark>UNDER DEVELOPMENT</mark>
 //  * @template T
 //  * @extends {CProtocol<T>}
 //  */
 // class CGamepadProtocol extends CProtocol {
-
-// }
-
-// /**
-//  * <mark>UNDER DEVELOPMENT</mark>
-//  * @private
-//  * @template T
-//  * @extends {CProtocol<T>}
-//  */
-// class CTextToSpeechProtocol extends CProtocol {
 
 // }
 
@@ -4707,7 +4704,7 @@ export async function ui_action({
     switch (request) {
       case ACTION_REQUEST.Copy:
         json_check_type({type: "string", data: data, should_throw: true});
-        // @ts-ignore
+        // @ts-ignore data is checked above.
         await globalThis.navigator.clipboard.writeText(data);
         break;
       case ACTION_REQUEST.Focus:
@@ -4716,13 +4713,13 @@ export async function ui_action({
       case ACTION_REQUEST.MoveBy:
         json_check_type({type: "number", data: x, should_throw: true});
         json_check_type({type: "number", data: y, should_throw: true});
-        // @ts-ignore
+        // @ts-ignore data is checked above.
         globalThis.moveBy(x, y);
         break;
       case ACTION_REQUEST.MoveTo:
         json_check_type({type: "number", data: x, should_throw: true});
         json_check_type({type: "number", data: y, should_throw: true});
-        // @ts-ignore
+        // @ts-ignore data is checked above.
         globalThis.moveTo(x, y);
         break;
       case ACTION_REQUEST.Paste:
@@ -4737,38 +4734,39 @@ export async function ui_action({
       case ACTION_REQUEST.ResizeBy:
         json_check_type({type: "number", data: x, should_throw: true});
         json_check_type({type: "number", data: y, should_throw: true});
-        // @ts-ignore
+        // @ts-ignore data is checked above.
         globalThis.resizeBy(x, y);
         break;
       case ACTION_REQUEST.ResizeTo:
         json_check_type({type: "number", data: x, should_throw: true});
         json_check_type({type: "number", data: y, should_throw: true});
-        // @ts-ignore
+        // @ts-ignore data is checked above.
         globalThis.resizeTo(x, y);
         break;
       case ACTION_REQUEST.Scroll:
         json_check_type({type: "number", data: x, should_throw: true});
         json_check_type({type: "number", data: y, should_throw: true});
-        // @ts-ignore
+        // @ts-ignore data is checked above.
         globalThis.scroll(x, y);
         break;
       case ACTION_REQUEST.ScrollBy:
         json_check_type({type: "number", data: x, should_throw: true});
         json_check_type({type: "number", data: y, should_throw: true});
-        // @ts-ignore
+        // @ts-ignore data is checked above.
         globalThis.scrollBy(x, y);
         break;
       case ACTION_REQUEST.ScrollTo:
         json_check_type({type: "number", data: x, should_throw: true});
         json_check_type({type: "number", data: y, should_throw: true});
-        // @ts-ignore
+        // @ts-ignore data is checked above.
         globalThis.scrollTo(x, y);
         break;
       case ACTION_REQUEST.Share:
         if (!runtime_available({request: AVAILABILITY_REQUEST.Share})) {
           throw new CModuleError(CModuleError.UNSUPPORTED_RUNTIME);
         }
-        // @ts-ignore
+        json_check_type({type: "object", data: data, should_throw: true});
+        // @ts-ignore data is checked above
         await globalThis.navigator.share(data);
         break;
       case ACTION_REQUEST.Vibrate:
@@ -4785,7 +4783,85 @@ export async function ui_action({
   } catch (err) {
     if (json_check_type({type: CModuleError, data: err})) {
       CModuleError.handle_error(err);
-      throw new CModuleError("runtime_action() error.", err);
+      throw new CModuleError("ui_action() error.", err);
+    }
+    return new CResult({error: err});
+  }
+}
+
+/**
+ * Provides the ability to either playback an audio file with an option to
+ * loop or read text out loud. No pause is provided. Audio begins when loaded
+ * and will terminate either when it reaces the end or when calling this
+ * function but not specifying the data parameter.
+ * @param {object} params The named parameters
+ * @param {AUDIO_REQUEST} params.request The type of audio we are handling.
+ * @param {string} [params.data] The data to playback or empty to stop
+ * playing.
+ * @param {CEventHandler} [params.event_handler] The event handler to help
+ * do post processing of events.
+ * @param {boolean} [params.should_loop=false] Signals whether a playback
+ * (file only) will repeat until terminated rather than just ending.
+ * @returns {Promise<CResult<void>>} A promise signaling things were successful.
+ * A rejected promise is an API violation.
+ */
+export async function ui_audio({request, data, event_handler, should_loop=false}) {
+  try {
+    switch (request) {
+      case AUDIO_REQUEST.File: {
+        throw new CModuleError(CModuleError.NOT_IMPLEMENTED);
+      }
+      case AUDIO_REQUEST.TextToSpeech: {
+        if (!runtime_available({request: AVAILABILITY_REQUEST.TextToSpeech})) {
+          throw new CModuleError(CModuleError.UNSUPPORTED_RUNTIME);
+        }
+        const synth = globalThis.speechSynthesis;
+        // @ts-ignore data is checked above so it will be a string.
+        let utterance = new SpeechSynthesisUtterance(data);
+        if (data) {
+          json_check_type({type: "string", data: data, should_throw: true});
+          // Clear out any other speech jobs running in the browser
+          synth.cancel();
+
+          // Give Chrome 100ms to free up its native audio
+          // hardware thread
+          await async_sleep(100);
+          utterance.rate = 1.0;
+          utterance.pitch = 1.0;
+          utterance.volume = 1.0;
+          utterance.lang = globalThis.document.documentElement.lang
+            || globalThis.navigator.language
+            || "en-US";
+
+          // Hookup the event handlers and begin speaking.
+          if (event_handler) {
+            utterance.onend = event_handler;
+            utterance.onerror = (evt) => {
+              if (evt.error !== 'interrupted') {
+                 event_handler(evt);
+              }
+            }
+          }
+          synth.speak(utterance);
+        } else {
+          // We have been signaled to stop. So go stop.
+          if (utterance) {
+            utterance.onend = null;
+            utterance.onerror = null;
+          }
+          synth.cancel();
+        }
+        break;
+      }
+      default: {
+        throw new CModuleError(CModuleError.MISUSE)
+      }
+    }
+    return new CResult();
+  } catch (err) {
+    if (json_check_type({type: CModuleError, data: err})) {
+      CModuleError.handle_error(err);
+      throw new CModuleError("ui_audio() error.", err);
     }
     return new CResult({error: err});
   }
@@ -4797,7 +4873,7 @@ export async function ui_action({
  * @param {object} params The named parameters
  * @param {DOCUMENT_REQUEST} params.request The request to carry out with
  * the document.
- * @param {string} params.name The name of the element to perform the action.
+ * @param {string} [params.name] The name of the element to perform the action.
  * @returns {HTMLElement | HTMLElement[] | string | null}
  * @example
  * // To query for an element within the document. Not being found will fire
@@ -4809,11 +4885,9 @@ export async function ui_action({
  *  name: "id_value"
  * });
  */
-export function ui_document({request, name}) {
+export function ui_document({request, name=""}) {
   try {
-    if (!runtime_available({request: AVAILABILITY_REQUEST.Browser})) {
-      throw new CModuleError(CModuleError.UNSUPPORTED_RUNTIME);
-    }
+    json_check_type({type: "string", data: name, should_throw: true});
     switch (request) {
       case DOCUMENT_REQUEST.CssVariable: {
         const cs = globalThis.window.getComputedStyle(
@@ -4844,6 +4918,9 @@ export function ui_document({request, name}) {
         // @ts-ignore
         return Array.from(col2);
       }
+      case DOCUMENT_REQUEST.Title: {
+        return globalThis.document.title;
+      }
       default:
         throw new CModuleError(CModuleError.MISUSE);
     }
@@ -4854,43 +4931,135 @@ export function ui_document({request, name}) {
 }
 
 /**
- * @private UNDER DEVELOPMENT. Needs embedded dialog.
- * Provides a mechanism for interacting with a user by gather data or
- * useful information.
+ * Provides an asynchronous mechanism for interacting with a user via dialogs,
+ * wait spinners, choice selectors, custom modals, or passive snackbars.
+ *
  * @param {object} params The named parameters
- * @param {NOTIFY_REQUEST} params.request The request to carry out.
- * @param {string} params.message The message to associate with the request.
- * @returns {Promise<boolean | string | void>} The data associated with the
- * notification request. Any rejected promise is an API violation.
+ * @param {NOTIFY_REQUEST} params.request The notification action to execute.
+ * @param {string} [params.title] Title text for the banner or dialog header.
+ * @param {string} [params.message] The descriptive content or wait status text.
+ * @param {string[]} [params.choices] String array of items for NOTIFY_REQUEST.Choose.
+ * @param {string} [params.default_value] Initial text field string for NOTIFY_REQUEST.Prompt.
+ * @param {number} [params.duration=3500] Auto-dismiss duration in ms for NOTIFY_REQUEST.SnackBar.
+ * @param {string | CDialog} [params.dialog] Element selector or reference for NOTIFY_REQUEST.Custom.
+ * @param {boolean} [params.show_actions=false] Display standard OK/Cancel actions in Custom mode.
+ * @param {any} [params.data=null] Payload returned when invoking NOTIFY_REQUEST.Close.
+ * @returns {Promise<CResult<string | boolean | null>>} Reflecting success
+ * or failure of the given request. A rejected promise is an API violation.
  * @example
  * // TBD
  */
-export async function ui_notify({request, message}) {
+export async function ui_notify({
+  request,
+  title,
+  message,
+  choices,
+  default_value,
+  duration,
+  dialog,
+  show_actions = false,
+  data = null,
+}) {
   try {
     let value;
+
+    // Helper to query open dialog
+    const get_active_dialog = () =>
+      /** @type {CDialog | null} */ (
+        document.querySelector(`${CDialog.TAG_NAME}[open], ${CDialog.TAG_NAME}:has(dialog[open])`)
+      );
+
     switch (request) {
+      case NOTIFY_REQUEST.Close: {
+        const active = get_active_dialog();
+        if (active) {
+          active.close(data);
+        }
+        break;
+      }
       case NOTIFY_REQUEST.Alert:
-        json_check_type({type: "string", data: message, should_throw: true});
-        // @ts-ignore
-        globalThis.alert(data);
-        break;
       case NOTIFY_REQUEST.Confirm:
-        json_check_type({type: "string", data: message, should_throw: true});
-        // @ts-ignore
-        value = globalThis.confirm(data);
-        break;
       case NOTIFY_REQUEST.Prompt:
-        json_check_type({type: "string", data: message, should_throw: true});
-        // @ts-ignore
-        value = globalThis.prompt(data) ?? "";
+      case NOTIFY_REQUEST.Choose: {
+        json_check_type({ type: "string", data: message, should_throw: true });
+        get_active_dialog()?.close(null);
+        const instance = /** @type {CDialog} */ (
+          document.createElement(CDialog.TAG_NAME)
+        );
+        document.body.appendChild(instance);
+        value = await instance.prompt_modal({
+          type: request,
+          title,
+          message,
+          choices,
+          default_value,
+        });
         break;
-      default:
+      }
+      case NOTIFY_REQUEST.Wait: {
+        get_active_dialog()?.close(null);
+        const instance = /** @type {CDialog} */ (
+          document.createElement(CDialog.TAG_NAME)
+        );
+        document.body.appendChild(instance);
+        value = instance.prompt_modal({
+          type: "wait",
+          title,
+          message,
+        });
+        break;
+      }
+      case NOTIFY_REQUEST.Custom: {
+        get_active_dialog()?.close(null);
+        /** @type {CDialog | null} */
+        let targetDialog = null;
+        if (typeof dialog === "string") {
+          targetDialog = document.querySelector(dialog);
+        } else if (dialog instanceof HTMLElement) {
+          targetDialog = /** @type {CDialog} */ (dialog);
+        }
+        if (!targetDialog || !(targetDialog instanceof CDialog)) {
+          throw new CModuleError(
+            "Valid CDialog target required for Custom request."
+          );
+        }
+        value = await targetDialog.prompt_modal({
+          type: "custom",
+          title,
+          message,
+          show_actions,
+        });
+        break;
+      }
+      case NOTIFY_REQUEST.SnackBar: {
+        json_check_type({ type: "string", data: message, should_throw: true });
+        const activeSnack = document.querySelector(CSnackBar.TAG_NAME);
+        if (activeSnack && "dismiss" in activeSnack) {
+          /** @type {CSnackBar} */ (activeSnack).dismiss();
+        }
+        const snackbar = /** @type {CSnackBar} */ (
+          document.createElement(CSnackBar.TAG_NAME)
+        );
+        document.body.appendChild(snackbar);
+        await snackbar.show({
+          title,
+          // @ts-ignore Checked with the json_check_type()
+          message,
+          duration: duration ?? 3500,
+        });
+        break;
+      }
+      default: {
         throw new CModuleError(CModuleError.MISUSE);
+      }
     }
-    return value;
+    return new CResult({value: value});
   } catch (err) {
-    CModuleError.handle_error(err);
-    throw new CModuleError("runtime_message() error.", err);
+    if (json_check_type({type: CModuleError, data: err})) {
+      CModuleError.handle_error(err);
+      throw new CModuleError("ui_action() error.", err);
+    }
+    return new CResult({error: err});
   }
 }
 
@@ -5161,9 +5330,9 @@ export class CHtmlComponent extends HTMLElement {
   }
 
   /**
-   *
-   * @param {string} name
-   * @returns
+   * indicates whether the specified element has the specified attribute or not.
+   * @param {string} name The name of the attribute to look up.
+   * @returns {boolean} true if it has it, false otherwise.
    */
   has_attribute(name) {
     return this.hasAttribute(name);
@@ -5201,10 +5370,25 @@ export class CHtmlComponent extends HTMLElement {
   }
 
   /**
+   * TBD
+   * @param {string} name
+   */
+  remove_attribute(name) {
+    this.removeAttribute(name);
+  }
+
+  /**
    * Called each time the element is moved to a new document.
    * @returns {void}
    */
-  adoptedCallback() { this.#adopted_cb?.(); }
+  adoptedCallback() {
+    try {
+      this.#adopted_cb?.();
+    } catch (err) {
+      CModuleError.handle_error(err);
+      throw new CModuleError("adoptedCallback() error.", err);
+    }
+  }
 
   /**
    * Called when attributes are changed, added, removed, or replaced.
@@ -5271,16 +5455,6 @@ export class CHtmlComponent extends HTMLElement {
   }
 
   /**
-   * Forces a refresh of the component.
-   * @returns {void}
-   */
-  refresh() {
-    const display = this.style.display;
-    this.style.display = "";
-    this.style.display = display;
-  }
-
-  /**
    * Utility function to register a custom component if it has not already
    * been defined.
    * @param {string} name The name of the component.
@@ -5313,7 +5487,7 @@ export class CHtmlComponent extends HTMLElement {
    * handles the {@link connectedMoveCallback} method.
    * @param {CHtmlComponentCB} [params.disconnected_cb] The callback that
    * handles the {@link disconnectedCallback} method.
-   * @param {"none" | "open" | "closed"} [params.shadow_mode="none"] Whether
+   * @param {"none" | "open" | "closed"} [params.shadow_mode="open"] Whether
    * attach a shadow root and if we do, what mode it will be in.
    */
   constructor({
@@ -5322,7 +5496,7 @@ export class CHtmlComponent extends HTMLElement {
     connected_cb,
     connected_move_cb,
     disconnected_cb,
-    shadow_mode="none",
+    shadow_mode="open",
   } = {}) {
     super();
     try {
@@ -5382,13 +5556,495 @@ export class CHtmlComponent extends HTMLElement {
 }
 
 /**
+ * `<cm-app-sheet>` Web Component
+ *
+ * Provides a slide-up full-page overlay container with a fixed header and
+ * scrollable body. Enforces single-instance presentation across the document.
+ *
+ * Exposed Attributes / Properties:
+ * - `icon`: Emoji or image URL displayed on the left.
+ * - `title`: Text heading centered in the header bar.
+ * - `open`: Boolean attribute indicating whether the sheet is visible.
+ * - `hide_header`: Boolean attribute to hide the header bar.
+ *
+ * Exposed CSS Custom Properties:
+ * - `--z-index`: Overlay z-index (default: 1000)
+ * - `--top-offset`: Top inset offset to reveal underlying elements (default: 0px)
+ * - `--bottom-offset`: Bottom inset offset to reveal underlying elements (default: 0px)
+ * - `--header-bg`: Header background color (default: rgba(15, 23, 42, 1.0))
+ * - `--header-color`: Header text/icon color (default: #f8fafc)
+ * - `--header-height`: Height of the fixed header bar (default: 60px)
+ * - `--header-border`: Border applied beneath the header (default: 1px solid rgba(51, 65, 85, 1.0))
+ * - `--header-padding`: Header horizontal padding (default: 0 1.25rem)
+ * - `--font-family`: Sheet font family (default: inherit)
+ * - `--font-size`: Header title font size (default: 1.1rem)
+ * - `--font-weight`: Header title font weight (default: 600)
+ * - `--bg-color`: Body background color (default: #ffffff)
+ * - `--color`: Body text color (default: #0f172a)
+ * - `--bg-image`: Body background image URL (default: none)
+ * - `--bg-size`: Body background size (default: cover)
+ * - `--bg-position`: Body background position (default: center)
+ * - `--padding`: Body padding (default: 0)
+ * - `--animation-duration`: Slide-up animation duration (default: 300ms)
+ *
+ * @example
+ * <!-- Static HTML definition -->
+ * <cm-app-sheet id="settings_sheet" icon="⚙️" title="Settings">
+ *   <div class="content">
+ *     <h2>General Settings</h2>
+ *     <p>Configuration options go here...</p>
+ *   </div>
+ * </cm-app-sheet>
+ *
+ * <!-- Bottom-docked sheet leaving a 50px bottom toolbar exposed -->
+ * <style>
+ *   #photo_sheet {
+ *     --bottom-offset: 50px;
+ *   }
+ * </style>
+ * <cm-app-sheet id="photo_sheet" icon="📸" title="Photography">
+ *   <cm-embedded-frame frame_src="https://codemelted.dev/photography"></cm-embedded-frame>
+ * </cm-app-sheet>
+ *
+ * <!-- Sheet with hidden header -->
+ * <cm-app-sheet id="fullscreen_sheet" hide_header>
+ *   <div>Custom content with internal navigation...</div>
+ * </cm-app-sheet>
+ *
+ * <!-- Open / Close via JavaScript -->
+ * <script>
+ *   const sheet = document.getElementById('settings_sheet');
+ *   sheet.show(); // or sheet.open = true;
+ *
+ *   sheet.addEventListener('close', () => {
+ *     console.log('Sheet was dismissed');
+ *   });
+ * </script>
+ *
+ * @extends {CHtmlComponent}
+ */
+export class CAppSheet extends CHtmlComponent {
+  /** @type {CAppSheet | null} */
+  static #active_sheet = null;
+
+  /** @type {HTMLElement | null} */
+  #elem_icon = null;
+  /** @type {HTMLElement | null} */
+  #elem_title = null;
+  /** @type {HTMLButtonElement | null} */
+  #elem_close = null;
+
+  /**
+   * Defines the observed attributes for attributeChangedCallback.
+   * @returns {string[]}
+   */
+  static get observedAttributes() {
+    return ["open", "icon", "title", "hide_header", "hide-header"];
+  }
+
+  /**
+   * Constructs the CAppSheet custom component.
+   */
+  constructor() {
+    super({
+      shadow_mode: "open",
+      connected_cb: () => this.#on_connected(),
+      disconnected_cb: () => this.#on_disconnected(),
+      attribute_changed_cb: (name, old_value, new_value) =>
+        this.#on_attribute_changed(name, old_value, new_value),
+    });
+
+    const root = this.shadow_root();
+    root.innerHTML = `
+      <style>
+        :host {
+          --_z_index: var(--z-index, 1000);
+          --_top_offset: var(--top-offset, 0px);
+          --_bottom_offset: var(--bottom-offset, 0px);
+          --_header_bg: var(--header-bg, rgba(15, 23, 42, 1.0));
+          --_header_color: var(--header-color, #f8fafc);
+          --_header_height: var(--header-height, 60px);
+          --_header_border: var(--header-border, 1px solid rgba(51, 65, 85, 1.0));
+          --_header_padding: var(--header-padding, 0 1.25rem);
+          --_font_family: var(--font-family, inherit);
+          --_font_size: var(--font-size, 1.1rem);
+          --_font_weight: var(--font-weight, 600);
+          --_body_bg: var(--bg-color, #ffffff);
+          --_body_color: var(--color, #0f172a);
+          --_body_bg_image: var(--bg-image, none);
+          --_body_bg_size: var(--bg-size, cover);
+          --_body_bg_position: var(--bg-position, center);
+          --_body_padding: var(--padding, 0);
+          --_anim_duration: var(--animation-duration, 300ms);
+
+          display: none;
+          position: fixed;
+          top: var(--_top_offset);
+          left: 0;
+          right: 0;
+          bottom: var(--_bottom_offset);
+          z-index: var(--_z_index);
+          box-sizing: border-box;
+          font-family: var(--_font_family);
+        }
+
+        *, *::before, *::after {
+          box-sizing: border-box;
+        }
+
+        :host([open]) {
+          display: flex;
+          flex-direction: column;
+          animation: slide_up var(--_anim_duration) cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        :host([hide_header]) .header,
+        :host([hide-header]) .header {
+          display: none;
+        }
+
+        @keyframes slide_up {
+          from {
+            transform: translateY(100%);
+            opacity: 0.8;
+          }
+          to {
+            transform: translateY(0);
+            opacity: 1;
+          }
+        }
+
+        .header {
+          display: grid;
+          grid-template-columns: var(--_header_height) 1fr var(--_header_height);
+          align-items: center;
+          height: var(--_header_height);
+          min-height: var(--_header_height);
+          background: var(--_header_bg);
+          color: var(--_header_color);
+          border-bottom: var(--_header_border);
+          padding: var(--_header_padding);
+          user-select: none;
+          box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.3);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          z-index: 2;
+          width: 100%;
+        }
+
+        .icon-container {
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          height: 100%;
+          width: 100%;
+          overflow: hidden;
+        }
+
+        .icon-img {
+          max-height: calc(var(--_header_height) * 0.65);
+          max-width: calc(var(--_header_height) * 0.65);
+          object-fit: contain;
+          display: block;
+        }
+
+        .icon-text {
+          font-size: calc(var(--_header_height) * 0.5);
+          line-height: 1;
+        }
+
+        .title {
+          text-align: center;
+          font-size: var(--_font_size);
+          font-weight: var(--_font_weight);
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          padding: 0 8px;
+        }
+
+        .close-button {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: transparent;
+          border: none;
+          color: var(--_header_color);
+          width: calc(var(--_header_height) * 0.65);
+          height: calc(var(--_header_height) * 0.65);
+          border-radius: 50%;
+          cursor: pointer;
+          margin-left: auto;
+          padding: 0;
+          transition: background-color 150ms ease-in-out;
+        }
+
+        .close-button:hover,
+        .close-button:focus-visible {
+          background-color: rgba(255, 255, 255, 0.15);
+          outline: none;
+        }
+
+        .close-button svg {
+          width: calc(var(--_header_height) * 0.45);
+          height: calc(var(--_header_height) * 0.45);
+          stroke: currentColor;
+          stroke-width: 2.2;
+          stroke-linecap: round;
+        }
+
+        .body {
+          flex: 1 1 auto;
+          overflow-y: auto;
+          overflow-x: hidden;
+          background-color: var(--_body_bg);
+          color: var(--_body_color);
+          background-image: var(--_body_bg_image);
+          background-size: var(--_body_bg_size);
+          background-position: var(--_body_bg_position);
+          padding: var(--_body_padding);
+          -webkit-overflow-scrolling: touch;
+        }
+      </style>
+
+      <header class="header" role="banner" part="header">
+        <div class="icon-container" id="icon_slot"></div>
+        <div class="title" id="title_slot" role="heading" aria-level="2" part="title"></div>
+        <button type="button" class="close-button" id="close_btn" aria-label="Close sheet" part="close-button">
+          <svg viewBox="0 0 24 24" fill="none">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </header>
+
+      <main class="body" part="body">
+        <slot></slot>
+      </main>
+    `;
+
+    this.#elem_icon = root.getElementById("icon_slot");
+    this.#elem_title = root.getElementById("title_slot");
+    // @ts-ignore Will not be null.
+    this.#elem_close = root.getElementById("close_btn");
+
+    this._on_close_click = this._on_close_click.bind(this);
+    this._on_key_down = this._on_key_down.bind(this);
+  }
+
+  /**
+   * Indicates whether the sheet is open and visible.
+   * @type {boolean}
+   */
+  get open() {
+    return this.has_attribute("open");
+  }
+
+  set open(value) {
+    const is_open = Boolean(value);
+    if (is_open) {
+      if (CAppSheet.#active_sheet && CAppSheet.#active_sheet !== this) {
+        CAppSheet.#active_sheet.close();
+      }
+      CAppSheet.#active_sheet = this;
+      this.set_attribute("open", "");
+    } else {
+      if (CAppSheet.#active_sheet === this) {
+        CAppSheet.#active_sheet = null;
+      }
+      this.removeAttribute("open");
+    }
+  }
+
+  /**
+   * Indicates whether the header bar is hidden.
+   * @type {boolean}
+   */
+  get hide_header() {
+    return this.has_attribute("hide_header") || this.has_attribute("hide-header");
+  }
+
+  set hide_header(value) {
+    if (Boolean(value)) {
+      this.set_attribute("hide_header", "");
+    } else {
+      this.removeAttribute("hide_header");
+      this.removeAttribute("hide-header");
+    }
+  }
+
+  /**
+   * Title text displayed centered in the header.
+   * @type {string}
+   */
+  get title() {
+    return this.get_attribute("title") || "";
+  }
+
+  set title(val) {
+    if (val) {
+      this.set_attribute("title", val);
+    } else {
+      this.removeAttribute("title");
+    }
+  }
+
+  /**
+   * Icon representation: either an emoji/character or image URL.
+   * @type {string}
+   */
+  get icon() {
+    return this.get_attribute("icon") || "";
+  }
+
+  set icon(val) {
+    if (val) {
+      this.set_attribute("icon", val);
+    } else {
+      this.removeAttribute("icon");
+    }
+  }
+
+  /**
+   * Opens the app sheet, closing any other active sheet.
+   * @returns {void}
+   */
+  show() {
+    this.open = true;
+  }
+
+  /**
+   * Closes the app sheet and dispatches the 'close' CustomEvent.
+   * @returns {void}
+   */
+  close() {
+    if (!this.open) return;
+    this.open = false;
+    this.dispatchEvent(new CustomEvent("close", { bubbles: true, composed: true }));
+  }
+
+  /**
+   * Handles the close button click event.
+   */
+  _on_close_click() {
+    this.close();
+  }
+
+  /**
+   * Handles escape key presses while the sheet is visible.
+   * @param {KeyboardEvent} evt
+   */
+  _on_key_down(evt) {
+    if (evt.key === "Escape" && this.open) {
+      this.close();
+    }
+  }
+
+  /**
+   * Checks if an icon string represents an image path/URL.
+   * @param {string} str
+   * @returns {boolean}
+   */
+  #is_image_url(str) {
+    if (!str) return false;
+    return /^(https?:\/\/|\/|\.\/|\.\.\/|data:image\/)/i.test(str.trim());
+  }
+
+  /**
+   * Synchronizes the icon display element with the current icon attribute.
+   */
+  #sync_icon() {
+    if (!this.#elem_icon) return;
+    const icon_val = this.icon.trim();
+    this.#elem_icon.innerHTML = "";
+    if (!icon_val) return;
+
+    if (this.#is_image_url(icon_val)) {
+      const img = document.createElement("img");
+      img.src = icon_val;
+      img.alt = "Sheet icon";
+      img.className = "icon-img";
+      this.#elem_icon.appendChild(img);
+    } else {
+      const span = document.createElement("span");
+      span.className = "icon-text";
+      span.textContent = icon_val;
+      this.#elem_icon.appendChild(span);
+    }
+  }
+
+  /**
+   * Synchronizes the header title element with the current title attribute.
+   */
+  #sync_title() {
+    if (!this.#elem_title) return;
+    this.#elem_title.textContent = this.title;
+  }
+
+  /**
+   * Synchronizes all reactive attributes to the DOM.
+   */
+  #sync_all() {
+    this.#sync_title();
+    this.#sync_icon();
+  }
+
+  /**
+   * Lifecycle callback invoked when the element is connected.
+   */
+  #on_connected() {
+    this.#elem_close?.addEventListener("click", this._on_close_click);
+    window.addEventListener("keydown", this._on_key_down);
+    this.#sync_all();
+  }
+
+  /**
+   * Lifecycle callback invoked when the element is disconnected.
+   */
+  #on_disconnected() {
+    if (CAppSheet.#active_sheet === this) {
+      CAppSheet.#active_sheet = null;
+    }
+    this.#elem_close?.removeEventListener("click", this._on_close_click);
+    window.removeEventListener("keydown", this._on_key_down);
+  }
+
+  /**
+   * Callback invoked when an observed attribute changes.
+   * @param {string} name
+   * @param {string} old_val
+   * @param {string} new_val
+   */
+  #on_attribute_changed(name, old_val, new_val) {
+    if (old_val === new_val) return;
+
+    if (name === "title") {
+      this.#sync_title();
+    } else if (name === "icon") {
+      this.#sync_icon();
+    } else if (name === "open") {
+      if (this.has_attribute("open")) {
+        if (CAppSheet.#active_sheet && CAppSheet.#active_sheet !== this) {
+          CAppSheet.#active_sheet.close();
+        }
+        CAppSheet.#active_sheet = this;
+      } else if (CAppSheet.#active_sheet === this) {
+        CAppSheet.#active_sheet = null;
+      }
+    }
+  }
+}
+
+CHtmlComponent.register_component("cm-app-sheet", CAppSheet);
+
+/**
  * `<cm-app-toolbar>` Web Component
  *
  * A unified, dual-mode application toolbar supporting:
  *
- * position="top"  -> Fixed header pinned to `top: 0` with
+ * - `position="top"` -> Fixed header pinned to `top: 0` with
  * `<header role="banner">` and bottom border
- * position="bottom" -> Fixed footer pinned to `bottom: 0` with
+ * - `position="bottom"` -> Fixed footer pinned to `bottom: 0` with
  * `<footer role="contentinfo">` and top border
  *
  * Coordinates (top/bottom/left/right) are strictly managed by the component.
@@ -5402,8 +6058,7 @@ export class CHtmlComponent extends HTMLElement {
  * - --toolbar-padding     (default: 0 1.25rem)
  * - --toolbar-gap         (default: 0.75rem)
  *
- * **HTML Example:**
- * ```html
+ * @example
  * <cm-app-toolbar position="top">
  *   <!-- Toolbar Items Go Here -->
  * </cm-app-toolbar>
@@ -5563,7 +6218,7 @@ CHtmlComponent.register_component("cm-app-toolbar", CAppToolbar);
  * By default, the button places media on the LEFT and text on the RIGHT.
  * To change this, pass the "layout" attribute:
  *
- * 1. Default (Side-by-Side):
+ * Default (Side-by-Side):
  * ```html
  * <cm-button label="Launch" icon="🚀" tooltip="We are launching today">
  * </cm-button>
@@ -5584,32 +6239,27 @@ CHtmlComponent.register_component("cm-app-toolbar", CAppToolbar);
  * Override these properties using inline styles or an external stylesheet:
  *
  * Layout & Spacing:
- * -  `--padding`         : Internal padding of the button (Default: 10px 20px)
- * -  `--gap`             : Spacing between the media and text (Default: 8px)
- * -  `--border-radius`   : Roundness of the button corners (Default: 4px)
- * -  `--border`          : Button border style (Default: 1px solid #ccc)
+ *  `--padding`         : Internal padding of the button (Default: 10px 20px)
+ *  `--gap`             : Spacing between the media and text (Default: 8px)
+ *  `--border-radius`   : Roundness of the button corners (Default: 4px)
+ *  `--border`          : Button border style (Default: 1px solid #ccc)
+ *  `--justify-content` : Content alignment along main axis (Default: center)
+ *  `--text-align`      : Text alignment (Default: inherit/center)
  *
  * Typography:
- * -  `--font-size`       : Text size (Default: 16px)
- * -  `--font-weight`     : Font weight/thickness (Default: 500)
+ *  `--font-size`       : Text size (Default: 16px)
+ *  `--font-weight`     : Font weight/thickness (Default: 500)
  *
  * Color States:
- * -  `--bg-color`        : Normal background color (Default: #f0f0f0)
- * -  `--hover-bg-color`  : Background color on hover (Default: #e0e0e0)
- * -  `--color`           : Normal text color (Default: #333333)
- * -  `--hover-color`     : Text color on hover (Default: #000000)
- *
- * **Example:**
- * ```css
- * cm-button {
- *   --border: none;
- * }
- * ```
+ *  `--bg-color`        : Normal background color (Default: #f0f0f0)
+ *  `--hover-bg-color`  : Background color on hover (Default: #e0e0e0)
+ *  `--color`           : Normal text color (Default: #333333)
+ *  `--hover-color`     : Text color on hover (Default: #000000)
  *
  * ACCESSIBILITY & EVENTS
  *
- * - Standard native "click" events automatically bubble up to this component.
- * - Built-in Keyboard Accessibility allows users to focus the button using
+ * Standard native "click" events automatically bubble up to this component.
+ * Built-in Keyboard Accessibility allows users to focus the button using
  *   the "Tab" key and trigger it using "Enter" or "Space".
  *
  * @extends {CHtmlComponent}
@@ -5618,6 +6268,17 @@ export class CButton extends CHtmlComponent {
   static get observedAttributes() {
     return ["layout", "icon-only", "label", "icon", "tooltip"];
   }
+
+  #params = {
+    /** @type {string | undefined} */
+    label: undefined,
+    /** @type {string | undefined} */
+    icon: undefined,
+    /** @type {string | undefined} */
+    tooltip: undefined,
+    /** @type {CEventHandler | undefined} */
+    click_handler: undefined,
+  };
 
   /**
    * @param {object} [params]
@@ -5630,238 +6291,13 @@ export class CButton extends CHtmlComponent {
     super({
       shadow_mode: "open",
       connected_cb: () => {
-        const is_icon_only = this.has_attribute("icon-only");
-        const raw_label = this.get_attribute("label") ?? label ?? "";
-        const effective_label = is_icon_only ? "" : raw_label;
-        const effective_icon = this.get_attribute("icon") ?? icon;
-        const button_title = this.get_attribute("tooltip") ?? tooltip ?? "";
-
-        if (!effective_label && !effective_icon) {
-          throw new CModuleError("<cm-button> expects label or icon to be set");
-        }
-
-        this.title = button_title;
-
-        // Auto-detect mode so CSS can adapt layout & sizing
-        const has_label = Boolean(effective_label.trim());
-        const has_icon = Boolean(effective_icon);
-
-        if (has_icon && !has_label) {
-          this.setAttribute("mode", "icon-only");
-        } else if (has_icon && has_label) {
-          this.setAttribute("mode", "combo");
-        } else {
-          this.setAttribute("mode", "label-only");
-        }
-
-        const is_emoji = (/** @type {string} */ str) => /\p{Extended_Pictographic}/u.test(str);
-        let media_html = "";
-
-        if (effective_icon) {
-          if (is_emoji(effective_icon)) {
-            media_html = `<span class="btn-emoji">${effective_icon}</span>`;
-          } else {
-            const safe_src = effective_icon.replace(/"/g, "&quot;");
-            media_html = `<img class="btn-media" src="${safe_src}" alt="" />`;
-          }
-        }
-
-        const accessible_label = effective_label || button_title || raw_label;
-
-        this.shadow_root().innerHTML = `
-          <style>
-            :host {
-              display: inline-block;
-              cursor: pointer;
-              box-sizing: border-box;
-              vertical-align: middle;
-
-              /* Base defaults */
-              --btn-width: auto;
-              --btn-height: auto;
-              --btn-padding-y: 10px;
-              --btn-padding-x: 20px;
-              --btn-gap: 8px;
-              --btn-border-radius: 4px;
-              --btn-border: 1px solid #ccc;
-              --btn-font-weight: 500;
-              --btn-font-size: 16px;
-              --btn-bg: #f0f0f0;
-              --btn-hover-bg: #e0e0e0;
-              --btn-color: #333333;
-              --btn-hover-color: #000000;
-              --btn-icon-size: 1.5em;
-            }
-
-            /* Inherit sizing if set externally on host */
-            :host {
-              width: var(--width, var(--btn-width));
-              height: var(--height, var(--btn-height));
-            }
-
-            button {
-              display: inline-flex;
-              align-items: center;
-              justify-content: center;
-              width: 100%;
-              height: 100%;
-              cursor: inherit;
-              font-family: inherit;
-              box-sizing: border-box;
-              overflow: hidden;
-              position: relative;
-              transition: background-color 0.2s ease,
-                          color 0.2s ease,
-                          outline 0.1s ease;
-
-              flex-direction: row;
-              gap: var(--gap, var(--btn-gap));
-              padding: var(
-                --padding,
-                var(--padding-y, var(--btn-padding-y)) var(--padding-x, var(--btn-padding-x))
-              );
-              border-radius: var(--border-radius, var(--btn-border-radius));
-              border: var(--border, var(--btn-border));
-              font-weight: var(--font-weight, var(--btn-font-weight));
-              font-size: var(--font-size, var(--btn-font-size));
-              background-color: var(--bg-color, var(--btn-bg));
-              color: var(--color, var(--btn-color));
-            }
-
-            button:focus-visible {
-              outline: 2px solid var(--hover-bg-color, var(--btn-hover-bg));
-              outline-offset: 2px;
-            }
-
-            /* Shared Slot Styles */
-            slot[name="media"],
-            slot:not([name]) {
-              display: inline-flex;
-              align-items: center;
-              justify-content: center;
-              min-width: 0;
-              min-height: 0;
-            }
-
-            /* Hide empty label slot when no label exists */
-            :host([mode="icon-only"]) slot:not([name]) {
-              display: none;
-            }
-
-            /* Hide media slot when no icon exists */
-            :host([mode="label-only"]) slot[name="media"] {
-              display: none;
-            }
-
-            /* -----------------------------------------------------------
-               CASE 1: ICON-ONLY (Fills the button interior / scales cleanly)
-               ----------------------------------------------------------- */
-            :host([mode="icon-only"]) slot[name="media"] {
-              width: 100%;
-              height: 100%;
-              flex: 1 1 100%;
-            }
-
-            :host([mode="icon-only"]) .btn-media,
-            :host([mode="icon-only"]) ::slotted([slot="media"]) {
-              width: 100%;
-              height: 100%;
-              max-width: 100%;
-              max-height: 100%;
-              object-fit: contain;
-            }
-
-            :host([mode="icon-only"]) .btn-emoji {
-              font-size: var(--icon-size, clamp(1.5rem, 50%, 5rem));
-              line-height: 1;
-            }
-
-            /* -----------------------------------------------------------
-               CASE 2: COMBO - DEFAULT / HORIZONTAL (Icon Left, Label Right)
-               ----------------------------------------------------------- */
-            :host([mode="combo"]:not([layout="stacked"])) .btn-media,
-            :host([mode="combo"]:not([layout="stacked"])) ::slotted([slot="media"]) {
-              height: var(--icon-size, var(--btn-icon-size));
-              width: auto;
-              max-height: 100%;
-              max-width: 100%;
-              object-fit: contain;
-              flex-shrink: 0;
-            }
-
-            :host([mode="combo"]:not([layout="stacked"])) .btn-emoji {
-              font-size: var(--icon-size, var(--btn-icon-size));
-              line-height: 1;
-              flex-shrink: 0;
-            }
-
-            /* -----------------------------------------------------------
-               CASE 3: COMBO - STACKED (Icon Top, Label Bottom)
-               ----------------------------------------------------------- */
-            :host([layout="stacked"]) button {
-              flex-direction: column;
-              text-align: center;
-            }
-
-            :host([layout="stacked"]) slot[name="media"] {
-              flex: 1 1 auto;
-              width: 100%;
-              min-height: 0;
-            }
-
-            :host([layout="stacked"]) slot:not([name]) {
-              flex: 0 0 auto;
-              max-width: 100%;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              white-space: nowrap;
-            }
-
-            :host([layout="stacked"]) .btn-media,
-            :host([layout="stacked"]) ::slotted([slot="media"]) {
-              width: 100%;
-              height: 100%;
-              max-height: 100%;
-              max-width: 100%;
-              object-fit: contain;
-            }
-
-            :host([layout="stacked"]) .btn-emoji {
-              font-size: var(--icon-size, clamp(1.5rem, 35%, 3.5rem));
-              line-height: 1;
-            }
-
-            /* -----------------------------------------------------------
-               CASE 4: LABEL-ONLY
-               ----------------------------------------------------------- */
-            :host([mode="label-only"]) slot:not([name]) {
-              width: 100%;
-              text-align: center;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              white-space: nowrap;
-            }
-
-            :host(:hover) button {
-              background-color: var(--hover-bg-color, var(--btn-hover-bg));
-              color: var(--hover-color, var(--btn-hover-color));
-            }
-          </style>
-
-          <button type="button" aria-label="${accessible_label}">
-            <slot name="media">${media_html}</slot>
-            <slot>${effective_label}</slot>
-          </button>
-        `;
-
-        if (click_handler) {
-          runtime_event({
-            request: EVENT_REQUEST.Add,
-            type: "click",
-            handler: click_handler,
-            target: this
-          });
-        }
+        this.#params = {
+          label: label,
+          icon: icon,
+          tooltip: tooltip,
+          click_handler: click_handler,
+        };
+        this.#render();
       },
       disconnected_cb: () => {
         if (click_handler) {
@@ -5872,10 +6308,268 @@ export class CButton extends CHtmlComponent {
             target: this
           });
         }
+      },
+      attribute_changed_cb: (name, old_value, new_value) => {
+        const is_changed = old_value != new_value;
+        if (is_changed) {
+          if (name === "label" || name === "icon") {
+            this.set_attribute(name, new_value);
+            this.#render();
+          }
+        }
       }
     });
   }
+
+  /**
+   * @returns {void}
+   */
+  #render() {
+    const is_icon_only = this.has_attribute("icon-only");
+    const raw_label = this.get_attribute("label") ?? this.#params.label ?? "";
+    const effective_label = is_icon_only ? "" : raw_label;
+    const effective_icon = this.get_attribute("icon") ?? this.#params.icon;
+    const button_title = this.get_attribute("tooltip") ??
+      this.#params.tooltip ?? "";
+
+    if (!effective_label && !effective_icon) {
+      throw new CModuleError("<cm-button> expects label or icon to be set");
+    }
+
+    this.title = button_title;
+
+    // Auto-detect mode so CSS can adapt layout & sizing
+    const has_label = Boolean(effective_label.trim());
+    const has_icon = Boolean(effective_icon);
+
+    if (has_icon && !has_label) {
+      this.set_attribute("mode", "icon-only");
+    } else if (has_icon && has_label) {
+      this.set_attribute("mode", "combo");
+    } else {
+      this.set_attribute("mode", "label-only");
+    }
+
+    const is_emoji = (/** @type {string} */ str) =>
+      /\p{Extended_Pictographic}/u.test(str);
+    let media_html = "";
+
+    if (effective_icon) {
+      if (is_emoji(effective_icon)) {
+        media_html = `<span class="btn-emoji">${effective_icon}</span>`;
+      } else {
+        const safe_src = effective_icon.replace(/"/g, "&quot;");
+        media_html = `<img class="btn-media" src="${safe_src}" alt="" />`;
+      }
+    }
+
+    const accessible_label = effective_label || button_title || raw_label;
+
+    this.shadow_root().innerHTML = `
+      <style>
+        :host {
+          display: inline-block;
+          cursor: pointer;
+          box-sizing: border-box;
+          vertical-align: middle;
+
+          /* Base defaults */
+          --btn-width: auto;
+          --btn-height: auto;
+          --btn-padding-y: 10px;
+          --btn-padding-x: 20px;
+          --btn-gap: 8px;
+          --btn-border-radius: 4px;
+          --btn-border: 1px solid #ccc;
+          --btn-font-weight: 500;
+          --btn-font-size: 16px;
+          --btn-bg: #f0f0f0;
+          --btn-hover-bg: #e0e0e0;
+          --btn-color: #333333;
+          --btn-hover-color: #000000;
+          --btn-icon-size: 1.5em;
+        }
+
+        /* Inherit sizing if set externally on host */
+        :host {
+          width: var(--width, var(--btn-width));
+          height: var(--height, var(--btn-height));
+        }
+
+        button {
+          display: inline-flex;
+          align-items: center;
+          justify-content: var(--justify-content, center);
+          text-align: var(--text-align, inherit);
+          width: 100%;
+          height: 100%;
+          cursor: inherit;
+          font-family: inherit;
+          box-sizing: border-box;
+          overflow: hidden;
+          position: relative;
+          transition: background-color 0.2s ease,
+                      color 0.2s ease,
+                      outline 0.1s ease;
+
+          flex-direction: row;
+          gap: var(--gap, var(--btn-gap));
+          padding: var(
+            --padding,
+            var(--padding-y, var(--btn-padding-y)) var(--padding-x, var(--btn-padding-x))
+          );
+          border-radius: var(--border-radius, var(--btn-border-radius));
+          border: var(--border, var(--btn-border));
+          font-weight: var(--font-weight, var(--btn-font-weight));
+          font-size: var(--font-size, var(--btn-font-size));
+          background-color: var(--bg-color, var(--btn-bg));
+          color: var(--color, var(--btn-color));
+        }
+
+        button:focus-visible {
+          outline: 2px solid var(--hover-bg-color, var(--btn-hover-bg));
+          outline-offset: 2px;
+        }
+
+        /* Shared Slot Styles */
+        slot[name="media"],
+        slot:not([name]) {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 0;
+          min-height: 0;
+        }
+
+        /* Hide empty label slot when no label exists */
+        :host([mode="icon-only"]) slot:not([name]) {
+          display: none;
+        }
+
+        /* Hide media slot when no icon exists */
+        :host([mode="label-only"]) slot[name="media"] {
+          display: none;
+        }
+
+        /* -----------------------------------------------------------
+            CASE 1: ICON-ONLY (Fills the button interior / scales cleanly)
+            ----------------------------------------------------------- */
+        :host([mode="icon-only"]) slot[name="media"] {
+          width: 100%;
+          height: 100%;
+          flex: 1 1 100%;
+        }
+
+        :host([mode="icon-only"]) .btn-media,
+        :host([mode="icon-only"]) ::slotted([slot="media"]) {
+          width: 100%;
+          height: 100%;
+          max-width: 100%;
+          max-height: 100%;
+          object-fit: contain;
+        }
+
+        :host([mode="icon-only"]) .btn-emoji {
+          font-size: var(--icon-size, clamp(1.5rem, 50%, 5rem));
+          line-height: 1;
+        }
+
+        /* -----------------------------------------------------------
+            CASE 2: COMBO - DEFAULT / HORIZONTAL (Icon Left, Label Right)
+            ----------------------------------------------------------- */
+        :host([mode="combo"]:not([layout="stacked"])) .btn-media,
+        :host([mode="combo"]:not([layout="stacked"])) ::slotted([slot="media"]) {
+          height: var(--icon-size, var(--btn-icon-size));
+          width: auto;
+          max-height: 100%;
+          max-width: 100%;
+          object-fit: contain;
+          flex-shrink: 0;
+        }
+
+        :host([mode="combo"]:not([layout="stacked"])) .btn-emoji {
+          font-size: var(--icon-size, var(--btn-icon-size));
+          line-height: 1;
+          flex-shrink: 0;
+        }
+
+        /* -----------------------------------------------------------
+            CASE 3: COMBO - STACKED (Icon Top, Label Bottom)
+            ----------------------------------------------------------- */
+        :host([layout="stacked"]) button {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        :host([layout="stacked"]) slot[name="media"] {
+          flex: 1 1 auto;
+          width: 100%;
+          min-height: 0;
+        }
+
+        :host([layout="stacked"]) slot:not([name]) {
+          flex: 0 0 auto;
+          max-width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        :host([layout="stacked"]) .btn-media,
+        :host([layout="stacked"]) ::slotted([slot="media"]) {
+          width: 100%;
+          height: 100%;
+          max-height: 100%;
+          max-width: 100%;
+          object-fit: contain;
+        }
+
+        :host([layout="stacked"]) .btn-emoji {
+          font-size: var(--icon-size, clamp(1.5rem, 35%, 3.5rem));
+          line-height: 1;
+        }
+
+        /* -----------------------------------------------------------
+            CASE 4: LABEL-ONLY
+            ----------------------------------------------------------- */
+        :host([mode="label-only"]) slot:not([name]) {
+          width: 100%;
+          text-align: var(--text-align, center);
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        :host(:hover) button {
+          background-color: var(--hover-bg-color, var(--btn-hover-bg));
+          color: var(--hover-color, var(--btn-hover-color));
+        }
+      </style>
+
+      <button type="button" aria-label="${accessible_label}">
+        <slot name="media">${media_html}</slot>
+        <slot>${effective_label}</slot>
+      </button>
+    `;
+
+    // Ensure we remove and add new event handlers.
+    if (this.#params.click_handler) {
+      runtime_event({
+        request: EVENT_REQUEST.Remove,
+        type: "click",
+        handler: this.#params.click_handler,
+        target: this
+      });
+      runtime_event({
+        request: EVENT_REQUEST.Add,
+        type: "click",
+        handler: this.#params.click_handler,
+        target: this
+      });
+    }
+  }
 }
+
 CHtmlComponent.register_component("cm-button", CButton);
 
 /**
@@ -5896,20 +6590,10 @@ CHtmlComponent.register_component("cm-button", CButton);
  * THEMING (SAME EXPOSED CSS VARIABLES)
  *
  * This component accepts the exact same styling variables as `<cm-button>`:
- *  --padding, --gap, --border-radius, --border, --font-size, --font-weight,
- *  --bg-color, --hover-bg-color, --color, --hover-color
- *
- * **Example:**
- *
- * ```css
- * cm-print-button {
- *   --border: none;
- * }
- * ```
  *
  * > [!NOTE]
  * > Even though this extends CButton, you need to manage styles on specific
- * > tag name as shown above.
+ * > tag name of this component.
  *
  * SELF-MANAGED AVAILABILITY
  *
@@ -5947,39 +6631,30 @@ CHtmlComponent.register_component("cm-print-button", CPrintButton);
  * `<cm-share-button>` Subcomponent Documentation
  *
  * A specialized instance of `<cm-button>` that completely locks down
- * the text ("Print") and icon (🖨️) so they cannot be overwritten.
+ * the text ("Share") and icon (🔗) so they cannot be overwritten.
  *
  * USAGE
  *
  * Content passed between the tags is ignored to preserve structural intent:
  *
  * ```html
- * <cm-print-button></cm-print-button>
- * <cm-print-button icon-only></cm-print-button>
+ * <cm-share-button></cm-share-button>
+ * <cm-share-button icon-only></cm-share-button>
  * ```
  *
  * THEMING (SAME EXPOSED CSS VARIABLES)
  *
  * This component accepts the exact same styling variables as `<cm-button>`:
- *  --padding, --gap, --border-radius, --border, --font-size, --font-weight,
- *  --bg-color, --hover-bg-color, --color, --hover-color
- *
- * **Example:**
- *
- * ```css
- * cm-print-button {
- *   --border: none;
- * }
- * ```
  *
  * > [!NOTE]
  * > Even though this extends CButton, you need to manage styles on specific
- * > tag name as shown above.
+ * > tag name of this component.
  *
  * SELF-MANAGED AVAILABILITY
  *
- * Upon entering the DOM, this component automatically determines if print is
- * available. If the internal verification fails, the button quietly applies
+ * Upon entering the DOM, this component automatically determines if share
+ * is available. If not it will fallback to determine if copy is available.
+ * If both internal verifications fail, the button quietly applies
  * "display: none" to itself internally logging a warning to the console.
  *
  * @extends {CButton}
@@ -5994,15 +6669,46 @@ export class CShareButton extends CButton {
       label: "Share",
       tooltip: "Shares the current page",
       click_handler: async (_ev) => {
-        console.log("share");
-        // ui_action({request: ACTION_REQUEST.Print});
+        const title = ui_document({request: DOCUMENT_REQUEST.Title});
+        const href = runtime_query({request: QUERY_REQUEST.Href});
+        if (runtime_available({request: AVAILABILITY_REQUEST.Share})) {
+          ui_action({
+            request: ACTION_REQUEST.Share,
+            data: {
+              title: title,
+              url: href,
+            }
+          });
+        } else if (runtime_available({
+            request: AVAILABILITY_REQUEST.Clipboard})) {
+          const result = await ui_action({
+            request: ACTION_REQUEST.Copy,
+            // @ts-ignore Data returned will be a string.
+            data: href
+          });
+          if (result.is_ok()) {
+            ui_notify({
+              request: NOTIFY_REQUEST.SnackBar,
+              message: "URL Copied!"
+            });
+          } else {
+            const msg = `Failed to copy. Reason: ${result.error()}`;
+            ui_notify({
+              request: NOTIFY_REQUEST.Alert,
+              message: msg
+            });
+          }
+        } else {
+          // Do nothing, button will be hidden if neither option is available.
+        }
       }
     });
-    if (!runtime_available({request: AVAILABILITY_REQUEST.Print})) {
+    if (!runtime_available({request: AVAILABILITY_REQUEST.Share}) &&
+        !runtime_available({request: AVAILABILITY_REQUEST.Clipboard})) {
       this.style.display = "none";
       logger_log({
         level: LOGGER.Warning,
-        data: "<cm-print-button> print not detected, button hidden."
+        data: "<cm-share-button> Share / Clipboard not detected, button hidden."
       });
     }
   }
@@ -6010,47 +6716,41 @@ export class CShareButton extends CButton {
 CHtmlComponent.register_component("cm-share-button", CShareButton);
 
 /**
- * `<cm-share-button>` Subcomponent Documentation
+ * `<cm-tts-button>` Subcomponent Documentation
  *
  * A specialized instance of `<cm-button>` that completely locks down
- * the text ("Print") and icon (🖨️) so they cannot be overwritten.
+ * the text ("Read Aloud") and icon (▶️) so they cannot be overwritten.
  *
  * USAGE
  *
  * Content passed between the tags is ignored to preserve structural intent:
  *
  * ```html
- * <cm-print-button></cm-print-button>
- * <cm-print-button icon-only></cm-print-button>
+ * <cm-tts-button></cm-tts-button>
+ * <cm-tts-button icon-only></cm-tts-button>
  * ```
  *
  * THEMING (SAME EXPOSED CSS VARIABLES)
  *
- * This component accepts the exact same styling variables as `<cm-button>`:
- *  --padding, --gap, --border-radius, --border, --font-size, --font-weight,
- *  --bg-color, --hover-bg-color, --color, --hover-color
- *
- * **Example:**
- *
- * ```css
- * cm-print-button {
- *   --border: none;
- * }
- * ```
+ * This component accepts the exact same styling variables as `<cm-button>`.
  *
  * > [!NOTE]
  * > Even though this extends CButton, you need to manage styles on specific
- * > tag name as shown above.
+ * > tag name of this component.
  *
  * SELF-MANAGED AVAILABILITY
  *
- * Upon entering the DOM, this component automatically determines if print is
- * available. If the internal verification fails, the button quietly applies
- * "display: none" to itself internally logging a warning to the console.
+ * Upon entering the DOM, this component automatically determines if
+ * text-to-speech is available. If the internal verification fails, the
+ * button quietly applies "display: none" to itself internally logging a
+ * warning to the console.
  *
  * @extends {CButton}
  */
 export class CTextToSpeechButton extends CButton {
+  /** @type {boolean} */
+  #is_playing = false;
+
   /**
    * Construct our component.
    */
@@ -6060,45 +6760,335 @@ export class CTextToSpeechButton extends CButton {
       label: "Read Aloud",
       tooltip: "Reads the current page aloud",
       click_handler: async (_ev) => {
-        console.log("share");
-        // ui_action({request: ACTION_REQUEST.Print});
+        if (!this.#is_playing) {
+          const text = (document.querySelector('main') || document.body).innerText;
+          ui_audio({
+            request: AUDIO_REQUEST.TextToSpeech,
+            data: text,
+            event_handler: (evt) => {
+              this.#reset_button_state();
+            }
+          });
+          this.set_attribute("label", "Stop Reading");
+          this.set_attribute("icon", "🛑");
+          this.#is_playing = true;
+        } else {
+          this.#reset_button_state();
+        }
       }
     });
-    if (!runtime_available({request: AVAILABILITY_REQUEST.Print})) {
+
+    if (!runtime_available({request: AVAILABILITY_REQUEST.TextToSpeech})) {
       this.style.display = "none";
       logger_log({
         level: LOGGER.Warning,
-        data: "<cm-print-button> print not detected, button hidden."
+        data: "<cm-tts-button> TextToSpeech not detected, button hidden."
       });
     }
+  }
+
+  /**
+   * Helper to gracefully reset component visual properties and internal
+   * flags.
+   */
+  #reset_button_state() {
+    ui_audio({request: AUDIO_REQUEST.TextToSpeech});
+    this.#is_playing = false;
+    this.set_attribute("label", "Read Aloud");
+    this.set_attribute("icon", "▶️");
   }
 }
 CHtmlComponent.register_component("cm-tts-button", CTextToSpeechButton);
 
 /**
- * A layout utility component designed to act as flexible, invisible whitespace.
- * Expands along its specified axis to absorb remaining track space in CSS Grid
- * or Flexbox containers, pushing adjacent siblings apart.
+ * Custom collapsible list component wrapping the semantic HTML details/summary elements.
+ * Provides accessible disclosure, header title configured via a required attribute, and
+ * configurable right-indentation for any child elements placed directly in the body.
  *
- * @extends {CHtmlComponent}
+ * Supported Attributes:
+ * - label: (Required) The title text displayed in the permanent summary trigger row.
+ * - open: Reflects the expanded/collapsed state.
  *
- * @attribute {"horizontal" | "vertical"} [orientation="horizontal"]
- * Controls the expansion axis:
- * - `"horizontal"`: Expands horizontally (margin: 0 auto, flex: 1 1 auto).
- * - `"vertical"`: Expands vertically (margin: auto 0, flex: 1 1 auto).
- *
- * @attribute {string} [data-spacer=""]
- * Automatically populated on connect for compatibility with slotted parent CSS selectors.
- *
- * @attribute {string} [aria-hidden="true"]
- * Automatically populated on connect to hide whitespace from assistive technology trees.
+ * Supported CSS Custom Properties:
+ * - --bg-color: Background color of the component (default: transparent).
+ * - --color: Foreground text/icon color (default: inherit).
+ * - --indent: Indentation distance for child items (default: 1.25rem).
+ * - --header-padding: Padding around the summary trigger row (default: 0.5rem 0).
+ * - --body-padding: Padding around the indented body container (default: 0.25rem 0).
+ * - --gap: Vertical spacing between child elements (default: 0.5rem).
  *
  * @example
+ * <!-- HTML Example -->
+ * <cm-collapsible-list label="Documentation" open>
+ *   <a href="#getting-started">Getting Started</a>
+ *   <a href="#components">Web Components</a>
+ *   <a href="#tauri">Tauri Integration</a>
+ * </cm-collapsible-list>
+ *
+ * @example
+ * /* CSS Example *\/
+ * cm-collapsible-list {
+ *   --bg-color: transparent;
+ *   --color: #e8eaed;
+ *   --indent: 1.5rem;
+ *   --header-padding: 0.5rem 0.25rem;
+ *   --gap: 0.75rem;
+ * }
+ *
+ * @class
+ * @extends CHtmlComponent
+ */
+class CCollapsibleList extends CHtmlComponent {
+  static get observedAttributes() {
+    return ["label", "open"];
+  }
+
+  /** @type {HTMLDetailsElement | null} */
+  #details_element = null;
+
+  /** @type {HTMLSpanElement | null} */
+  #label_element = null;
+
+  /** @type {() => void} */
+  #on_toggle = () => this.#handle_toggle();
+
+  /**
+   * Initializes the cm-collapsible-list instance and registers lifecycle hooks.
+   */
+  constructor() {
+    super({
+      connected_cb: () => this.#handle_connected(),
+      disconnected_cb: () => this.#handle_disconnected(),
+      attribute_changed_cb: (name, old_val, new_val) =>
+        this.#handle_attribute_changed(name, old_val, new_val),
+    });
+  }
+
+  // =========================================================================
+  // Public Methods
+  // =========================================================================
+
+  /**
+   * Expands the collapsible list.
+   */
+  open() {
+    this.set_attribute("open", "");
+  }
+
+  /**
+   * Collapses the list.
+   */
+  close() {
+    this.remove_attribute("open");
+  }
+
+  /**
+   * Toggles the expanded/collapsed state.
+   */
+  toggle() {
+    if (this.has_attribute("open")) {
+      this.close();
+    } else {
+      this.open();
+    }
+  }
+
+  // =========================================================================
+  // Private Members & Lifecycle
+  // =========================================================================
+
+  /**
+   * Handles DOM connection and initial render.
+   */
+  #handle_connected() {
+    this.#render_template();
+    this.#details_element = this.shadow_root().querySelector("details");
+    this.#label_element = this.shadow_root().querySelector(".summary-label");
+
+    this.#update_label();
+
+    if (this.#details_element) {
+      this.#details_element.addEventListener("toggle", this.#on_toggle);
+      if (this.has_attribute("open")) {
+        this.#details_element.open = true;
+      }
+    }
+  }
+
+  /**
+   * Handles DOM disconnection and listener cleanup.
+   */
+  #handle_disconnected() {
+    if (this.#details_element) {
+      this.#details_element.removeEventListener("toggle", this.#on_toggle);
+    }
+  }
+
+  /**
+   * Handles attribute changes.
+   * @param {string} name - Attribute name.
+   * @param {string|null} old_val - Old attribute value.
+   * @param {string|null} new_val - New attribute value.
+   */
+  #handle_attribute_changed(name, old_val, new_val) {
+    if (old_val === new_val) return;
+
+    if (name === "label") {
+      this.#update_label();
+    } else if (name === "open") {
+      const is_open = new_val !== null;
+      if (this.#details_element && this.#details_element.open !== is_open) {
+        this.#details_element.open = is_open;
+      }
+    }
+  }
+
+  /**
+   * Synchronizes the label text element with the label attribute.
+   */
+  #update_label() {
+    if (this.#label_element) {
+      this.#label_element.textContent = this.get_attribute("label");
+    }
+  }
+
+  /**
+   * Handles the native toggle event from <details>.
+   */
+  #handle_toggle() {
+    if (!this.#details_element) return;
+
+    if (this.#details_element.open) {
+      if (!this.has_attribute("open")) {
+        this.set_attribute("open", "");
+      }
+      this.dispatchEvent(
+        new CustomEvent("cm-collapsible-opened", { bubbles: true, composed: true })
+      );
+    } else {
+      if (this.has_attribute("open")) {
+        this.remove_attribute("open");
+      }
+      this.dispatchEvent(
+        new CustomEvent("cm-collapsible-closed", { bubbles: true, composed: true })
+      );
+    }
+  }
+
+  /**
+   * Renders the component HTML and CSS styles into Shadow DOM.
+   * @returns {void}
+   */
+  #render_template() {
+    this.shadow_root().innerHTML = `
+      <style>
+        :host {
+          display: block;
+          box-sizing: border-box;
+          background-color: var(--bg-color, transparent);
+          color: var(--color, inherit);
+        }
+
+        *, *::before, *::after {
+          box-sizing: border-box;
+        }
+
+        details {
+          width: 100%;
+          box-sizing: border-box;
+        }
+
+        /* Summary trigger container */
+        summary {
+          cursor: pointer;
+          user-select: none;
+          padding: var(--header-padding, 0.5rem 0);
+          align-items: center;
+          outline: none;
+          text-align: left;
+        }
+
+        summary::-webkit-details-marker {
+          margin-right: 0.5rem;
+        }
+
+        .summary-label {
+          display: inline;
+          font-weight: 500;
+        }
+
+        /* Indented Body Container */
+        .body {
+          display: flex;
+          flex-direction: column;
+          align-items: stretch;
+          text-align: left;
+          gap: var(--gap, 0.5rem);
+          padding: var(--body-padding, 0.25rem 0);
+          padding-left: var(--indent, 1.25rem);
+          box-sizing: border-box;
+        }
+
+        /* Enforce left layout on slotted children */
+        ::slotted(*) {
+          display: flex;
+          width: 100%;
+          box-sizing: border-box;
+          justify-content: flex-start;
+          text-align: left;
+          --justify-content: flex-start;
+          --width: 100%;
+        }
+      </style>
+
+      <details>
+        <summary>
+          <span class="summary-label"></span>
+        </summary>
+        <div class="body">
+          <slot></slot>
+        </div>
+      </details>
+    `;
+  }
+}
+CHtmlComponent.register_component("cm-collapsible-list", CCollapsibleList);
+
+/**
+ * A layout utility component designed to act as flexible, invisible
+ * whitespace. Expands along its specified axis to absorb remaining track
+ * space in CSS Grid or Flexbox containers, or holds a fixed/bounded
+ * dimension when styled  via CSS custom properties.
+ *
+ * ### Supported Attributes
+ * - `orientation`: `"horizontal"` (default) or `"vertical"`. Controls
+ *    the expansion axis.
+ * - `data-spacer`: Empty attribute applied automatically for parent selector
+ *    queries.
+ * - `aria-hidden`: Automatically set to `"true"` to hide layout filler from
+ *   the accessibility tree.
+ *
+ * ### Exposed CSS Custom Properties
+ * - `--size`: Explicit dimension along the active axis
+ *   (defaults to `auto`).
+ * - `--min-size`: Minimum allowable dimension along the active axis
+ *   (defaults to `0`).
+ * - `--max-size`: Maximum allowable dimension along the active axis
+ *   (defaults to `none`).
+ *
+ * @example
+ * <!-- Flexible auto-expansion -->
  * <cm-app-toolbar position="top">
  *   <img src="logo.png" alt="Company Logo" />
  *   <cm-data-spacer></cm-data-spacer>
  *   <button type="button">Log In</button>
  * </cm-app-toolbar>
+ *
+ * @example
+ * <!-- Fixed gap using inline custom property -->
+ * <cm-data-spacer style="--size: 16px;"></cm-data-spacer>
+ *
+ * @extends {CHtmlComponent}
  */
 export class CDataSpacer extends CHtmlComponent {
   static get observedAttributes() {
@@ -6113,25 +7103,7 @@ export class CDataSpacer extends CHtmlComponent {
       shadow_mode: "open",
       attribute_changed_cb: (name, old_value, new_value) => {
         if (name === "orientation" && old_value !== new_value) {
-          const isVertical = new_value === "vertical";
-          const style = this.shadow_root().querySelector("style");
-          if (style) {
-            style.textContent = `
-              :host {
-                display: block;
-                box-sizing: border-box;
-                pointer-events: none;
-                user-select: none;
-                visibility: hidden;
-                flex: 1 1 auto;
-                ${
-                  isVertical
-                    ? "height: auto; width: 0; min-height: 0; margin-top: auto; margin-bottom: auto;"
-                    : "width: auto; height: 0; min-width: 0; margin-left: auto; margin-right: auto;"
-                }
-              }
-            `;
-          }
+          this.#update_styles();
         }
       },
       connected_cb: () => {
@@ -6147,87 +7119,874 @@ export class CDataSpacer extends CHtmlComponent {
           this.set_attribute("aria-hidden", "true");
         }
 
-        const isVertical = this.get_attribute("orientation") === "vertical";
-
-        this.shadow_root().innerHTML = `
-          <style>
-            :host {
-              display: block;
-              box-sizing: border-box;
-              pointer-events: none;
-              user-select: none;
-              visibility: hidden;
-
-              /* Flexbox fallback */
-              flex: 1 1 auto;
-
-              /* Grid alignment: auto margins absorb available track space */
-              ${
-                isVertical
-                  ? "height: auto; width: 0; min-height: 0; margin-top: auto; margin-bottom: auto;"
-                  : "width: auto; height: 0; min-width: 0; margin-left: auto; margin-right: auto;"
-              }
-            }
-          </style>
-        `;
+        this.#render();
       },
     });
   }
+
+  /**
+   * Generates the component stylesheet based on orientation and CSS tokens.
+   * @returns {string}
+   */
+  #compute_css() {
+    const is_vertical = this.get_attribute("orientation") === "vertical";
+
+    return `
+      :host {
+        display: block;
+        box-sizing: border-box;
+        pointer-events: none;
+        user-select: none;
+        visibility: hidden;
+
+        /* Flexbox fallback */
+        flex: 1 1 auto;
+
+        /* Grid and Flex sizing tokens */
+        ${
+          is_vertical
+            ? `
+              width: 0;
+              height: var(--size, auto);
+              min-height: var(--min-size, 0);
+              max-height: var(--max-size, none);
+              margin-top: auto;
+              margin-bottom: auto;
+            `
+            : `
+              height: 0;
+              width: var(--size, auto);
+              min-width: var(--min-size, 0);
+              max-width: var(--max-size, none);
+              margin-left: auto;
+              margin-right: auto;
+            `
+        }
+      }
+    `;
+  }
+
+  /**
+   * Updates shadow root style definitions without replacing the DOM tree.
+   */
+  #update_styles() {
+    const style_el = this.shadow_root().querySelector("style");
+    if (style_el) {
+      style_el.textContent = this.#compute_css();
+    }
+  }
+
+  /**
+   * Injects the initial Shadow DOM template on connect.
+   */
+  #render() {
+    this.shadow_root().innerHTML = `<style>${this.#compute_css()}</style>`;
+  }
 }
 CHtmlComponent.register_component("cm-data-spacer", CDataSpacer);
+
+/**
+ * CDialog provides an accessible modal layer for alerts, confirms, prompts,
+ * selectors, wait spinners, and custom slotted forms/iframes.
+ *
+ * Exposed CSS Variables (targeted via `cm-dialog` or `:root`):
+ * - `--background`    : Dialog surface background (Default: adaptive neutral)
+ * - `--color`         : Foreground text color (Default: adaptive high-contrast text)
+ * - `--border`        : Surface border (Default: 1px solid rgba(0, 0, 0, 0.12) / 255, 255, 255, 0.12)
+ * - `--border-radius` : Modal corner rounding (Default: 8px)
+ * - `--padding`       : Internal padding (Default: 20px 24px)
+ * - `--gap`           : Spacing between title, content, and actions (Default: 16px)
+ * - `--backdrop-bg`   : Backdrop overlay color (Default: rgba(0, 0, 0, 0.45) / 0.65)
+ * - `--width`         : Modal width (Default: auto)
+ * - `--height`        : Modal height (Default: auto)
+ * - `--max-width`     : Maximum modal width (Default: 90vw)
+ * - `--max-height`    : Maximum modal height (Default: 90vh)
+ * - `--accent-color`  : Primary button and spinner accent color (Default: #0066cc)
+ *
+ * @example
+ * cm-dialog {
+ *   --background: #1e1e1e;
+ *   --color: #ffffff;
+ *   --border: 1px solid rgba(255, 255, 255, 0.12);
+ *   --border-radius: 8px;
+ *   --padding: 20px 24px;
+ *   --accent-color: #007acc;
+ *   --backdrop-bg: rgba(0, 0, 0, 0.6);
+ *   --max-width: 480px;
+ * }
+ */
+export class CDialog extends CHtmlComponent {
+  static TAG_NAME = "cm-dialog";
+
+  /** @type {HTMLDialogElement | null} */
+  #dialog = null;
+  /** @type {((value: any) => void) | null} */
+  #resolve_cb = null;
+  /** @type {boolean} */
+  #allow_cancel = true;
+
+  constructor() {
+    super({ shadow_mode: "open" });
+
+    const root = this.shadow_root();
+    root.innerHTML = `
+      <style>
+        :host {
+          --_default-bg: #ffffff;
+          --_default-color: #1a1a1a;
+          --_default-border: 1px solid rgba(0, 0, 0, 0.12);
+          --_default-backdrop: rgba(0, 0, 0, 0.45);
+          --_default-accent: #0066cc;
+
+          font-family: inherit;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          :host {
+            --_default-bg: #242424;
+            --_default-color: #f0f0f0;
+            --_default-border: 1px solid rgba(255, 255, 255, 0.12);
+            --_default-backdrop: rgba(0, 0, 0, 0.65);
+            --_default-accent: #3b82f6;
+          }
+        }
+
+        dialog {
+          background: var(--background, var(--_default-bg));
+          color: var(--color, var(--_default-color));
+          border: var(--border, var(--_default-border));
+          border-radius: var(--border-radius, 8px);
+          padding: var(--padding, 20px 24px);
+          width: var(--width, auto);
+          height: var(--height, auto);
+          min-width: var(--min-width, 300px);
+          max-width: var(--max-width, 90vw);
+          max-height: var(--max-height, 90vh);
+          box-sizing: border-box;
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+          display: flex;
+          flex-direction: column;
+          gap: var(--gap, 16px);
+          overflow: hidden;
+        }
+
+        dialog:not([open]) {
+          display: none;
+        }
+
+        dialog::backdrop {
+          background: var(--backdrop-bg, var(--_default-backdrop));
+          backdrop-filter: blur(2px);
+        }
+
+        .title {
+          font-size: 1.15rem;
+          font-weight: 600;
+          margin: 0;
+          flex-shrink: 0;
+        }
+
+        .message {
+          font-size: 0.95rem;
+          line-height: 1.45;
+          margin: 0;
+          opacity: 0.92;
+          flex-shrink: 0;
+        }
+
+        .input-box, .select-box {
+          display: none;
+          padding: 8px 12px;
+          border-radius: 4px;
+          border: 1px solid rgba(128, 128, 128, 0.4);
+          background: transparent;
+          color: inherit;
+          font-size: 0.95rem;
+          box-sizing: border-box;
+          width: 100%;
+        }
+
+        .select-box option {
+          background-color: var(--background, var(--_default-bg));
+          color: var(--color, var(--_default-color));
+        }
+
+        .spinner-container {
+          display: none;
+          align-items: center;
+          gap: 12px;
+        }
+
+        .spinner {
+          width: 24px;
+          height: 24px;
+          border: 3px solid rgba(128, 128, 128, 0.3);
+          border-top-color: var(--accent-color, var(--_default-accent));
+          border-radius: 50%;
+          animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+
+        .content-slot-wrapper {
+          display: flex;
+          flex-direction: column;
+          flex: 1 1 auto;
+          overflow: auto;
+          min-height: 0;
+        }
+
+        ::slotted(*) {
+          box-sizing: border-box;
+        }
+
+        .actions {
+          display: flex;
+          justify-content: flex-end;
+          gap: 8px;
+          margin-top: auto;
+          flex-shrink: 0;
+        }
+
+        button {
+          padding: 8px 16px;
+          border-radius: 4px;
+          border: 1px solid transparent;
+          background: rgba(128, 128, 128, 0.2);
+          color: inherit;
+          font-weight: 500;
+          font-size: 0.9rem;
+          cursor: pointer;
+        }
+
+        button.primary {
+          background: var(--accent-color, var(--_default-accent));
+          color: #ffffff;
+        }
+      </style>
+
+      <dialog id="modal">
+        <h3 id="title-slot" class="title"></h3>
+        <p id="message-slot" class="message"></p>
+
+        <div id="spinner-slot" class="spinner-container">
+          <div class="spinner"></div>
+          <span id="spinner-msg" class="message"></span>
+        </div>
+
+        <input type="text" id="input-slot" class="input-box" />
+        <select id="select-slot" class="select-box"></select>
+
+        <div class="content-slot-wrapper" id="slot-wrapper">
+          <slot></slot>
+        </div>
+
+        <div class="actions" id="action-bar">
+          <button id="btn-cancel">Cancel</button>
+          <button id="btn-confirm" class="primary">OK</button>
+        </div>
+      </dialog>
+    `;
+
+    // @ts-ignore Should be ok.
+    this.#dialog = root.getElementById("modal");
+
+    // @ts-ignore Should be ok.
+    this.#dialog.addEventListener("cancel", (e) => {
+      e.preventDefault();
+      if (this.#allow_cancel) {
+        this.close(null);
+      }
+    });
+
+    // @ts-ignore Should be ok.
+    root.getElementById("btn-cancel").addEventListener(
+      "click",
+      () => this.close(false)
+    );
+
+    // @ts-ignore Should be ok.
+    root.getElementById("btn-confirm").addEventListener("click", () => {
+      const input = root.getElementById("input-slot");
+      const select = root.getElementById("select-slot");
+
+      // @ts-ignore Should be ok.
+      if (input.style.display === "block") {
+        // @ts-ignore Should be ok.
+        this.close(input.value);
+      // @ts-ignore Should be ok.
+      } else if (select.style.display === "block") {
+        // @ts-ignore Should be ok.
+        this.close(select.selectedIndex);
+      } else {
+        this.close(true);
+      }
+    });
+  }
+
+  /**
+   * Configures and displays the modal.
+   * @param {object} params
+   * @param {string} params.type Alert, Confirm, Prompt, Choose, Wait, Custom
+   * @param {string} [params.title]
+   * @param {string} [params.message]
+   * @param {string[]} [params.choices] Choices for the Choose mode
+   * @param {string} [params.default_value=""] Default string for Prompt mode
+   * @param {boolean} [params.show_actions=true] Whether to show standard
+   * OK/Cancel actions
+   * @returns {Promise<any>}
+   */
+  prompt_modal({
+    type,
+    title,
+    message,
+    choices = [],
+    default_value = "",
+    show_actions = true,
+  }) {
+    const root = this.shadow_root();
+    const title_el = root.getElementById("title-slot");
+    const msg_el = root.getElementById("message-slot");
+    const input_el = root.getElementById("input-slot");
+    const select_el = root.getElementById("select-slot");
+    const spinner_slot = root.getElementById("spinner-slot");
+    const spinnerMsg = root.getElementById("spinner-msg");
+    const action_bar = root.getElementById("action-bar");
+    const cancel_btn = root.getElementById("btn-cancel");
+
+    // @ts-ignore Should be ok.
+    title_el.textContent = title || "";
+    // @ts-ignore Should be ok.
+    title_el.style.display = title ? "block" : "none";
+    // @ts-ignore Should be ok.
+    msg_el.textContent = message || "";
+    // @ts-ignore Should be ok.
+    msg_el.style.display = message ? "block" : "none";
+    // @ts-ignore Should be ok.
+    input_el.style.display = "none";
+    // @ts-ignore Should be ok.
+    select_el.style.display = "none";
+    // @ts-ignore Should be ok.
+    spinner_slot.style.display = "none";
+    // @ts-ignore Should be ok.
+    action_bar.style.display = show_actions ? "flex" : "none";
+    // @ts-ignore Should be ok.
+    cancel_btn.style.display = "inline-block";
+    this.#allow_cancel = true;
+
+    switch (type) {
+      case "alert":
+        // @ts-ignore Should be ok.
+        cancel_btn.style.display = "none";
+        break;
+      case "confirm":
+        break;
+      case "prompt":
+        // @ts-ignore Should be ok.
+        input_el.style.display = "block";
+        // @ts-ignore Should be ok.
+        input_el.value = default_value;
+        break;
+      case "choose":
+        // @ts-ignore Should be ok.
+        select_el.style.display = "block";
+        // @ts-ignore Should be ok.
+        select_el.innerHTML = "";
+        choices.forEach((choice, index) => {
+          const opt = document.createElement("option");
+          opt.value = String(index);
+          opt.textContent = choice;
+          // @ts-ignore Should be ok.
+          select_el.appendChild(opt);
+        });
+        break;
+      case "wait":
+        this.#allow_cancel = false;
+        // @ts-ignore Should be ok.
+        action_bar.style.display = "none";
+        // @ts-ignore Should be ok.
+        msg_el.style.display = "none";
+        // @ts-ignore Should be ok.
+        spinner_slot.style.display = "flex";
+        // @ts-ignore Should be ok.
+        spinnerMsg.textContent = message || "Please wait...";
+        break;
+      case "custom":
+        break;
+    }
+
+    // @ts-ignore Should be ok.
+    this.#dialog.showModal();
+
+    // @ts-ignore Should be ok.
+    if (type === "prompt") input_el.focus();
+    // @ts-ignore Should be ok.
+    if (type === "choose") select_el.focus();
+
+    return new Promise((resolve) => {
+      this.#resolve_cb = resolve;
+    });
+  }
+
+  /**
+   * Closes the dialog.
+   * If dynamically instantiated, cleans up from DOM.
+   * If pre-declared with an ID, remains in DOM for future invocations.
+   * @param {any} result
+   */
+  close(result = null) {
+    if (this.#dialog && this.#dialog.open) {
+      this.#dialog.close();
+    }
+    if (this.#resolve_cb) {
+      this.#resolve_cb(result);
+      this.#resolve_cb = null;
+    }
+    if (!this.id) {
+      this.remove();
+    }
+  }
+}
+CHtmlComponent.register_component(CDialog.TAG_NAME, CDialog);
+
+/**
+ * Custom modal navigation drawer component adhering to Material 3 specifications.
+ * Supports sliding positioning on either left or right edges, full backdrop scrim
+ * dismissal, optional fixed header image banner and footer text attributes, and a
+ * scrollable content body for arbitrary child elements.
+ *
+ * Supported Attributes:
+ * - position: Side edge position ("left" or "right", default: "left").
+ * - open: Reflects drawer visibility state.
+ * - header_image: Image URL for the fixed top banner (hidden if omitted).
+ * - footer_text: String content for the fixed bottom bar (hidden if omitted).
+ *
+ * Supported CSS Custom Properties:
+ * - --z-index: Stacking index for the modal drawer overlay (default: 1000).
+ * - --bg-color: Surface background color (default: light-dark(#ffffff, #1e1e1e)).
+ * - --color: Foreground text/icon color (default: light-dark(#1f1f1f, #e3e3e3)).
+ * - --width: Width of the drawer panel (default: 360px).
+ * - --transition-duration: Slide animation timing (default: 300ms).
+ * - --header-height: Height of the header banner image (default: 160px).
+ * - --footer-padding: Padding for the footer container (default: 0.75rem 1rem).
+ * - --border-color: Border line color between footer and body (default: rgba(128, 128, 128, 0.2)).
+ *
+ * @example
+ * <!-- HTML Example -->
+ * <button onclick="document.querySelector('cm-drawer').open()">Open Navigation</button>
+ *
+ * <cm-drawer
+ *   position="left"
+ *   header_image="banner.png"
+ *   footer_text="© 2026 CodeMeltedDEV"
+ * >
+ *   <a href="#dashboard">Dashboard</a>
+ *   <a href="#documentation">Documentation</a>
+ *   <a href="#settings">Settings</a>
+ * </cm-drawer>
+ *
+ * @example
+ * /* CSS Example *\/
+ * cm-drawer {
+ *   --z-index: 2000;
+ *   --bg-color: #202124;
+ *   --color: #e8eaed;
+ *   --width: 320px;
+ *   --header-height: 140px;
+ *   --border-color: #3c4043;
+ *   --transition-duration: 250ms;
+ * }
+ *
+ * @class
+ * @extends CHtmlComponent
+ */
+class CDrawer extends CHtmlComponent {
+  static get observedAttributes() {
+    return ["position", "open", "header_image", "footer_text"];
+  }
+
+  /** @type {HTMLDivElement | null} */
+  #scrim_element = null;
+
+  /** @type {HTMLElement | null} */
+  #panel_element = null;
+
+  /** @type {HTMLImageElement | null} */
+  #header_img_element = null;
+
+  /** @type {HTMLElement | null} */
+  #footer_element = null;
+
+  /** @type {boolean} */
+  #is_animating = false;
+
+  /** @type {() => void} */
+  #on_scrim_click = () => this.close();
+
+  /** @type {(e: KeyboardEvent) => void} */
+  #on_key_down = (e) => this.#handle_key_down(e);
+
+  /**
+   * Initializes the cm-drawer instance and registers lifecycle hooks.
+   */
+  constructor() {
+    super({
+      connected_cb: () => this.#handle_connected(),
+      disconnected_cb: () => this.#handle_disconnected(),
+      attribute_changed_cb: (name, old_val, new_val) =>
+        this.#handle_attribute_changed(name, old_val, new_val),
+    });
+  }
+
+  // =========================================================================
+  // Public Methods
+  // =========================================================================
+
+  /**
+   * Opens the drawer with a slide animation.
+   */
+  open() {
+    this.set_attribute("open", "");
+  }
+
+  /**
+   * Closes the drawer with a slide animation.
+   */
+  close() {
+    if (this.#is_animating || !this.has_attribute("open")) {
+      return;
+    }
+
+    this.#is_animating = true;
+    if (this.#panel_element && this.#scrim_element) {
+      this.#panel_element.classList.remove("active");
+      this.#scrim_element.classList.remove("active");
+
+      const on_transition_end = (/** @type {TransitionEvent} */ evt) => {
+        if (evt.target !== this.#panel_element) return;
+        this.#panel_element?.removeEventListener("transitionend", on_transition_end);
+        this.#is_animating = false;
+        this.remove_attribute("open");
+        this.dispatchEvent(
+          new CustomEvent("cm-drawer-closed", { bubbles: true, composed: true })
+        );
+      };
+
+      this.#panel_element.addEventListener("transitionend", on_transition_end);
+    } else {
+      this.#is_animating = false;
+      this.remove_attribute("open");
+    }
+  }
+
+  /**
+   * Toggles drawer open/close state.
+   */
+  toggle() {
+    if (this.has_attribute("open")) {
+      this.close();
+    } else {
+      this.open();
+    }
+  }
+
+  // =========================================================================
+  // Private Members & Lifecycle
+  // =========================================================================
+
+  /**
+   * Handles DOM connection and initial render.
+   */
+  #handle_connected() {
+    this.#render_template();
+    this.#scrim_element = this.shadow_root().querySelector(".scrim");
+    this.#panel_element = this.shadow_root().querySelector(".panel");
+    this.#header_img_element = this.shadow_root().querySelector(".header-img");
+    this.#footer_element = this.shadow_root().querySelector(".footer");
+
+    this.#update_header();
+    this.#update_footer();
+
+    if (this.#scrim_element) {
+      this.#scrim_element.addEventListener("click", this.#on_scrim_click);
+    }
+
+    window.addEventListener("keydown", this.#on_key_down);
+
+    if (this.has_attribute("open")) {
+      this.#activate();
+    }
+  }
+
+  /**
+   * Handles DOM disconnection and listener cleanup.
+   */
+  #handle_disconnected() {
+    if (this.#scrim_element) {
+      this.#scrim_element.removeEventListener("click", this.#on_scrim_click);
+    }
+    window.removeEventListener("keydown", this.#on_key_down);
+  }
+
+  /**
+   * Handles attribute changes.
+   * @param {string} name - Attribute name.
+   * @param {string|null} old_val - Old attribute value.
+   * @param {string|null} new_val - New attribute value.
+   */
+  #handle_attribute_changed(name, old_val, new_val) {
+    if (old_val === new_val) return;
+
+    if (name === "open") {
+      if (new_val !== null) {
+        this.#activate();
+      }
+    } else if (name === "header_image") {
+      this.#update_header();
+    } else if (name === "footer_text") {
+      this.#update_footer();
+    }
+  }
+
+  /**
+   * Updates the header banner image based on the header_image attribute.
+   */
+  #update_header() {
+    if (!this.#header_img_element) return;
+    const src = this.get_attribute("header_image");
+    if (src) {
+      this.#header_img_element.src = src;
+      this.#header_img_element.style.display = "block";
+    } else {
+      this.#header_img_element.removeAttribute("src");
+      this.#header_img_element.style.display = "none";
+    }
+  }
+
+  /**
+   * Updates the footer text based on the footer_text attribute.
+   */
+  #update_footer() {
+    if (!this.#footer_element) return;
+    const text = this.get_attribute("footer_text");
+    if (text) {
+      this.#footer_element.textContent = text;
+      this.#footer_element.style.display = "flex";
+    } else {
+      this.#footer_element.textContent = "";
+      this.#footer_element.style.display = "none";
+    }
+  }
+
+  /**
+   * Triggers the activation transition when opening.
+   */
+  #activate() {
+    if (!this.#panel_element || !this.#scrim_element) return;
+
+    requestAnimationFrame(() => {
+      this.#scrim_element?.classList.add("active");
+      this.#panel_element?.classList.add("active");
+      this.dispatchEvent(
+        new CustomEvent("cm-drawer-opened", { bubbles: true, composed: true })
+      );
+    });
+  }
+
+  /**
+   * Handles Escape key press to dismiss drawer.
+   * @param {KeyboardEvent} e - Key down event.
+   */
+  #handle_key_down(e) {
+    if (e.key === "Escape" && this.has_attribute("open")) {
+      this.close();
+    }
+  }
+
+  /**
+   * Renders the component HTML and CSS styles into Shadow DOM.
+   */
+  #render_template() {
+    this.shadow_root().innerHTML = `
+      <style>
+        :host {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          z-index: var(--z-index, 1000);
+          box-sizing: border-box;
+          pointer-events: none;
+        }
+
+        :host([open]) {
+          display: block;
+          pointer-events: auto;
+        }
+
+        *, *::before, *::after {
+          box-sizing: border-box;
+        }
+
+        /* Fixed Scrim Overlay */
+        .scrim {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.4);
+          opacity: 0;
+          transition: opacity var(--transition-duration, 300ms) cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .scrim.active {
+          opacity: 1;
+        }
+
+        /* Drawer Sliding Panel */
+        .panel {
+          position: fixed;
+          top: 0;
+          bottom: 0;
+          width: var(--width, 360px);
+          max-width: 85vw;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          background-color: var(--bg-color, var(--toolbar-bg, #24292e));
+          color: var(--color, var(--toolbar-color, #ffffff));
+          box-shadow: 0px 8px 10px -5px rgba(0, 0, 0, 0.4), 0px 16px 24px 2px rgba(0, 0, 0, 0.28);
+          transition: transform var(--transition-duration, 300ms) cubic-bezier(0, 0, 0.2, 1);
+          will-change: transform;
+        }
+
+        /* Position: Left (Default) */
+        :host(:not([position="right"])) .panel {
+          left: 0;
+          transform: translateX(-100%);
+        }
+
+        :host(:not([position="right"])) .panel.active {
+          transform: translateX(0);
+        }
+
+        /* Position: Right */
+        :host([position="right"]) .panel {
+          right: 0;
+          transform: translateX(100%);
+        }
+
+        :host([position="right"]) .panel.active {
+          transform: translateX(0);
+        }
+
+        /* Header Image Banner */
+        .header-img {
+          flex: 0 0 auto;
+          width: 100%;
+          height: var(--header-height, 160px);
+          object-fit: cover;
+          display: none;
+        }
+
+        /* Body Container for Slotted Content */
+        .body {
+          flex: 1 1 auto;
+          overflow-y: auto;
+          overflow-x: hidden;
+          padding: 0.75rem 1rem;
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+          -webkit-overflow-scrolling: touch;
+        }
+
+        /* Footer Container */
+        .footer {
+          flex: 0 0 auto;
+          display: none;
+          align-items: center;
+          padding: var(--footer-padding, 0.75rem 1rem);
+          font-size: 0.875rem;
+          opacity: 0.85;
+          border-top: 1px solid var(--border-color, rgba(128, 128, 128, 0.2));
+        }
+      </style>
+
+      <div class="scrim"></div>
+      <aside class="panel" role="dialog" aria-modal="true">
+        <img class="header-img" alt="" />
+        <main class="body">
+          <slot></slot>
+        </main>
+        <footer class="footer"></footer>
+      </aside>
+    `;
+  }
+}
+CHtmlComponent.register_component("cm-drawer", CDrawer);
 
 /**
  * Embedded responsive iframe widget with adaptive launch controls.
  * Fills 100% of its parent container by default while providing theming
  * overrides and standard iframe permission policies.
  *
- * **HTML Usage:**
- * ```html
+ * ### Supported Attributes
+ * - `frame_src`: URL to load directly within the embedded iframe.
+ * - `open_src`: External URL targeted by the secondary action/launch button.
+ * - `label`: Accessible text label displayed above the viewer controls.
+ * - `allow`: Standard iframe feature/permission policy string
+ *   (e.g. fullscreen, camera).
+ * - `sandbox`: Standard iframe security sandbox restrictions.
+ *
+ * ### Exposed CSS Custom Properties
+ * - `--width`: Component container width (defaults to `100%`).
+ * - `--height`: Iframe viewport height (defaults to `600px`).
+ * - `--controls-padding`: Inset padding for the top controls bar
+ *   (defaults to `8px 0`).
+ * - `--controls-gap`: Spacing between controls bar child items
+ *   (defaults to `12px`).
+ * - `--label-color`: Foreground text color of the label
+ *   (defaults to `CanvasText`).
+ * - `--label-font-size`: Font size of the label text (defaults to `13px`).
+ * - `--btn-bg`: Action button background color (defaults to `#2563eb`).
+ * - `--btn-hover-bg`: Action button hover state background
+ *   (defaults to `#1d4ed8`).
+ * - `--btn-active-bg`: Action button active/pressed background
+ *   (defaults to `#1e40af`).
+ * - `--btn-color`: Action button typography color (defaults to `#ffffff`).
+ * - `--btn-border`: Action button border style (defaults to `none`).
+ * - `--btn-border-radius`: Action button corner rounding (defaults to `6px`).
+ * - `--btn-padding`: Action button interior padding (defaults to `0 16px`).
+ * - `--btn-height`: Action button height (defaults to `32px`).
+ * - `--btn-font-size`: Action button font size (defaults to `13px`).
+ * - `--btn-font-weight`: Action button font weight (defaults to `600`).
+ * - `--switch-track-bg`: Toggle switch inactive background
+ *   (defaults to `rgba(125, 125, 125, 0.35)`).
+ * - `--switch-active-bg`: Toggle switch active/checked track background
+ *   (defaults to `#2563eb`).
+ * - `--switch-knob-bg`: Toggle switch thumb/knob color
+ *   (defaults to `#ffffff`).
+ * - `--switch-focus-ring`: Focus outline/ring color for the toggle switch
+ *   (defaults to `#2563eb`).
+ * - `--frame-border`: Border surrounding the iframe element
+ *   (defaults to `1px solid rgba(125, 125, 125, 0.2)`).
+ * - `--frame-border-radius`: Border radius applied to the iframe corners
+ *   (defaults to `6px`).
+ *
+ * @example
  * <cm-embedded-frame
- *   frame_src="[https://example.com/embed](https://example.com/embed)"
- *   open_src="[https://example.com/post](https://example.com/post)"
+ *   frame_src="https://example.com/embed"
+ *   open_src="https://example.com/post"
  *   label="Embedded Content Viewer"
  *   allow="camera; microphone; fullscreen; display-capture"
  *   sandbox="allow-scripts allow-same-origin allow-forms"
  * ></cm-embedded-frame>
- * ```
- *
- * **Exposed CSS Custom Properties:**
- * ```css
- * cm-embedded-frame {
- *   // Dimensions (Defaults to 100%)
- *   --width: 100%;
- *   --height: 600px;
- *
- *   // Controls Layout & Typography
- *   --controls-padding: 8px 0;
- *   --controls-gap: 12px;
- *   --label-color: CanvasText;
- *   --label-font-size: 13px;
- *
- *   // Action Button
- *   --btn-bg: #2563eb;
- *   --btn-hover-bg: #1d4ed8;
- *   --btn-active-bg: #1e40af;
- *   --btn-color: #ffffff;
- *   --btn-border: none;
- *   --btn-border-radius: 6px;
- *   --btn-padding: 0 16px;
- *   --btn-height: 32px;
- *   --btn-font-size: 13px;
- *   --btn-font-weight: 600;
- *
- *   // Switch Control
- *   --switch-track-bg: rgba(125, 125, 125, 0.35);
- *   --switch-active-bg: #2563eb;
- *   --switch-knob-bg: #ffffff;
- *   --switch-focus-ring: #2563eb;
- *
- *   // Frame Container
- *   --frame-border: 1px solid rgba(125, 125, 125, 0.2);
- *   --frame-border-radius: 6px;
- * }
- * ```
  *
  * @extends {CHtmlComponent}
  */
@@ -6257,14 +8016,17 @@ export class CEmbeddedFrame extends CHtmlComponent {
         const label = this.get_attribute("label") ?? "Embedded Content";
         const allow = this.get_attribute("allow") ?? "fullscreen";
         const sandbox = this.get_attribute("sandbox");
-        const referrerpolicy = this.get_attribute("referrerpolicy") ?? "strict-origin-when-cross-origin";
+        const referrerpolicy = this.get_attribute("referrerpolicy")
+          ?? "strict-origin-when-cross-origin";
         const loading = this.get_attribute("loading") ?? "lazy";
 
         const safe_src = src.replace(/"/g, "&quot;");
         const safe_title = label.replace(/"/g, "&quot;");
         const safe_allow = allow.replace(/"/g, "&quot;");
         const safe_referrer = referrerpolicy.replace(/"/g, "&quot;");
-        const sandbox_attr = sandbox ? `sandbox="${sandbox.replace(/"/g, "&quot;")}"` : "";
+        const sandbox_attr = sandbox
+          ? `sandbox="${sandbox.replace(/"/g, "&quot;")}"`
+          : "";
 
         this.shadow_root().innerHTML = `
           <style>
@@ -6437,7 +8199,6 @@ export class CEmbeddedFrame extends CHtmlComponent {
               allow="${safe_allow}"
               referrerpolicy="${safe_referrer}"
               loading="${loading}"
-              allowfullscreen
               ${sandbox_attr}>
             </iframe>
           </div>
@@ -6493,10 +8254,507 @@ export class CEmbeddedFrame extends CHtmlComponent {
     /** @type {HTMLIFrameElement|null} */
     const frm = this.shadow_root().querySelector("#frm_content");
     if (!frm || !frm.contentWindow) {
-      console.warn("CEmbeddedFrame: iframe contentWindow not ready for post_message.");
+      logger_log({
+        level: LOGGER.Warning,
+        data: "CEmbeddedFrame: iframe contentWindow not ready for " +
+          "post_message."
+      });
       return;
     }
     frm.contentWindow.postMessage(data, target_origin);
   }
 }
 CHtmlComponent.register_component("cm-embedded-frame", CEmbeddedFrame);
+
+/**
+ * CSnackBar provides a lightweight, non-blocking notification banner.
+ * Extends CHtmlComponent with adaptive neutral styling and exposed CSS variables.
+ *
+ * Exposed CSS Variables (targeted via `cm-snack-bar` or `:root`):
+ * - `--background`    : Background color (Default: adaptive neutral charcoal)
+ * - `--color`         : Foreground text color (Default: high-contrast off-white)
+ * - `--border`        : Container border (Default: 1px solid rgba(255, 255, 255, 0.12))
+ * - `--border-radius` : Corner rounding (Default: 6px)
+ * - `--padding`       : Inner padding (Default: 12px 18px)
+ * - `--gap`           : Spacing between title and message (Default: 4px)
+ * - `--bottom`        : Distance from screen bottom (Default: 24px)
+ * - `--box-shadow`    : Elevation drop shadow profile
+ * - `--max-width`     : Maximum width constraint (Default: 520px)
+ * - `--min-width`     : Minimum width constraint (Default: 280px)
+ * - `--z-index`       : Stacking level (Default: 10000)
+ *
+ * @example
+ * cm-snack-bar {
+ *   --background: #1e1e1e;
+ *   --color: #ffffff;
+ *   --border: 1px solid #333333;
+ *   --border-radius: 4px;
+ *   --padding: 10px 16px;
+ *   --gap: 6px;
+ *   --bottom: 32px;
+ * }
+ */
+export class CSnackBar extends CHtmlComponent {
+  static TAG_NAME = "cm-snack-bar";
+
+  /** @type {number | null} */
+  #timer_id = null;
+  /** @type {() => void} */
+  #resolve_cb = () => {};
+
+  constructor() {
+    super({ shadow_mode: "open" });
+
+    const root = this.shadow_root();
+    root.innerHTML = `
+      <style>
+        :host {
+          --_default-bg: #212121;
+          --_default-color: #f5f5f5;
+          --_default-border: 1px solid rgba(255, 255, 255, 0.12);
+          --_default-shadow: 0 4px 12px rgba(0, 0, 0, 0.28);
+
+          position: fixed;
+          bottom: var(--bottom, 24px);
+          left: 50%;
+          transform: translateX(-50%) translateY(16px);
+          z-index: var(--z-index, 10000);
+          display: flex;
+          flex-direction: column;
+          gap: var(--gap, 4px);
+          min-width: var(--min-width, 280px);
+          max-width: var(--max-width, 520px);
+          box-sizing: border-box;
+          padding: var(--padding, 12px 18px);
+          background: var(--background, var(--_default-bg));
+          color: var(--color, var(--_default-color));
+          border: var(--border, var(--_default-border));
+          border-radius: var(--border-radius, 6px);
+          box-shadow: var(--box-shadow, var(--_default-shadow));
+          font-family: inherit;
+          font-size: 0.95rem;
+          line-height: 1.4;
+          cursor: pointer;
+          user-select: none;
+          opacity: 0;
+          pointer-events: none;
+          transition: transform 0.22s cubic-bezier(0.0, 0.0, 0.2, 1),
+                      opacity 0.22s cubic-bezier(0.0, 0.0, 0.2, 1);
+        }
+
+        @media (prefers-color-scheme: dark) {
+          :host {
+            --_default-bg: #2a2a2a;
+            --_default-color: #fbfbfb;
+            --_default-border: 1px solid rgba(255, 255, 255, 0.16);
+            --_default-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+          }
+        }
+
+        :host(.visible) {
+          transform: translateX(-50%) translateY(0);
+          opacity: 1;
+          pointer-events: auto;
+        }
+
+        .title {
+          font-weight: 600;
+          font-size: 0.95rem;
+          color: inherit;
+        }
+
+        .message {
+          font-weight: 400;
+          font-size: 0.88rem;
+          color: inherit;
+          opacity: 0.92;
+        }
+      </style>
+      <div id="title-slot" class="title"></div>
+      <div id="message-slot" class="message"></div>
+    `;
+
+    this.addEventListener("click", () => this.dismiss());
+  }
+
+  /**
+   * Displays the snackbar and awaits dismissal.
+   * @param {object} params
+   * @param {string} [params.title]
+   * @param {string} params.message
+   * @param {number} [params.duration=3500] Milliseconds before
+   * auto-dismissal. 0 requires manual click.
+   * @returns {Promise<void>}
+   */
+  show({ title, message, duration = 3500 }) {
+    const root = this.shadow_root();
+    const title_el = root.getElementById("title-slot");
+    const message_el = root.getElementById("message-slot");
+    if (title && title.trim().length > 0) {
+      // @ts-ignore Should be fine unless developer messes up class.
+      title_el.textContent = title;
+      // @ts-ignore Should be fine unless developer messes up class.
+      title_el.style.display = "block";
+    } else {
+      // @ts-ignore Should be fine unless developer messes up class.
+      title_el.style.display = "none";
+    }
+    // @ts-ignore Should be fine unless developer messes up class.
+    message_el.textContent = message;
+    return new Promise((resolve) => {
+      this.#resolve_cb = resolve;
+      globalThis.requestAnimationFrame(() => {
+        this.classList.add("visible");
+      });
+      if (duration > 0) {
+        this.#timer_id = globalThis.setTimeout(() => {
+          this.dismiss();
+        }, duration);
+      }
+    });
+  }
+
+  /**
+   * Dismisses and unmounts the snackbar.
+   */
+  dismiss() {
+    if (this.#timer_id !== null) {
+      globalThis.clearTimeout(this.#timer_id);
+      this.#timer_id = null;
+    }
+    this.classList.remove("visible");
+    globalThis.setTimeout(() => {
+      this.#resolve_cb();
+      this.remove();
+    }, 220);
+  }
+}
+CHtmlComponent.register_component(CSnackBar.TAG_NAME, CSnackBar);
+
+/**
+ * `<cm-switch>` Web Component Documentation
+ *
+ * A lightweight, accessible toggle switch component wrapping a semantic checkbox
+ * with `role="switch"`. Provides keyboard support, synchronized state reflection,
+ * and CSS custom property theming.
+ *
+ * ### Supported Attributes
+ * - `label`: The text label displayed beside the switch track.
+ * - `checked`: Boolean attribute indicating whether the switch is in the active/on state.
+ * - `disabled`: Boolean attribute disabling interactions and dimming the switch.
+ *
+ * ### Exposed CSS Custom Properties
+ * - `--controls-gap`: Spacing between the switch track and the label text (Default: `10px`).
+ * - `--label-color`: Foreground text color of the label (Default: `CanvasText`).
+ * - `--label-font-size`: Font size of the label text (Default: `13px`).
+ * - `--switch-track-bg`: Toggle switch inactive background (Default: `rgba(125, 125, 125, 0.35)`).
+ * - `--switch-active-bg`: Toggle switch active/checked track background (Default: `#2563eb`).
+ * - `--switch-knob-bg`: Toggle switch thumb/knob color (Default: `#ffffff`).
+ * - `--switch-focus-ring`: Focus outline/ring color for the toggle switch (Default: `#2563eb`).
+ *
+ * ### Events
+ * - `change`: Dispatched when the switch state changes via user interaction.
+ *
+ * @example
+ * <!-- HTML Usage -->
+ * <cm-switch label="Open in popup window" checked></cm-switch>
+ *
+ * @example
+ * // Programmatic Usage
+ * const toggle = new CSwitch({ label: "Notifications", checked: true });
+ * toggle.addEventListener("change", (e) => console.log(e.target.checked));
+ * document.body.appendChild(toggle);
+ *
+ * @extends {CHtmlComponent}
+ */
+export class CSwitch extends CHtmlComponent {
+  static get observedAttributes() {
+    return ["label", "checked", "disabled"];
+  }
+
+  /** @type {HTMLInputElement | null} */
+  #input_element = null;
+
+  /** @type {HTMLSpanElement | null} */
+  #label_element = null;
+
+  #params = {
+    /** @type {string | undefined} */
+    label: undefined,
+    /** @type {boolean | undefined} */
+    checked: undefined,
+    /** @type {boolean | undefined} */
+    disabled: undefined,
+    /** @type {CEventHandler | undefined} */
+    change_handler: undefined,
+  };
+
+  /**
+   * @param {object} [params]
+   * @param {string} [params.label]
+   * @param {boolean} [params.checked]
+   * @param {boolean} [params.disabled]
+   * @param {CEventHandler} [params.change_handler]
+   */
+  constructor({ label, checked = false, disabled = false, change_handler } = {}) {
+    super({
+      shadow_mode: "open",
+      connected_cb: () => {
+        this.#params = {
+          label: label,
+          checked: checked,
+          disabled: disabled,
+          change_handler: change_handler,
+        };
+        this.#render_template();
+        this.#input_element = this.shadow_root().querySelector(".switch-input");
+        this.#label_element = this.shadow_root().querySelector(".switch-text");
+
+        if (label && !this.has_attribute("label")) {
+          this.set_attribute("label", label);
+        }
+        if (checked && !this.has_attribute("checked")) {
+          this.set_attribute("checked", "");
+        }
+        if (disabled && !this.has_attribute("disabled")) {
+          this.set_attribute("disabled", "");
+        }
+
+        this.#bind_events();
+        this.#update_view();
+      },
+      disconnected_cb: () => {
+        if (this.#input_element) {
+          this.#input_element.onchange = null;
+        }
+        if (this.#params.change_handler) {
+          runtime_event({
+            request: EVENT_REQUEST.Remove,
+            type: "change",
+            handler: this.#params.change_handler,
+            target: this,
+          });
+        }
+      },
+      attribute_changed_cb: (name, old_value, new_value) => {
+        if (old_value !== new_value) {
+          this.#update_view();
+        }
+      },
+    });
+  }
+
+  // =========================================================================
+  // Getters & Setters
+  // =========================================================================
+
+  /**
+   * @returns {boolean}
+   */
+  get checked() {
+    return this.has_attribute("checked");
+  }
+
+  /**
+   * @param {boolean} val
+   */
+  set checked(val) {
+    if (val) {
+      this.set_attribute("checked", "");
+    } else {
+      this.remove_attribute("checked");
+    }
+  }
+
+  /**
+   * @returns {boolean}
+   */
+  get disabled() {
+    return this.has_attribute("disabled");
+  }
+
+  /**
+   * @param {boolean} val
+   */
+  set disabled(val) {
+    if (val) {
+      this.set_attribute("disabled", "");
+    } else {
+      this.remove_attribute("disabled");
+    }
+  }
+
+  /**
+   * @returns {string}
+   */
+  get label() {
+    return this.get_attribute("label") ?? "";
+  }
+
+  /**
+   * @param {string} val
+   */
+  set label(val) {
+    this.set_attribute("label", val);
+  }
+
+  // =========================================================================
+  // Internal Rendering & Synchronization
+  // =========================================================================
+
+  /**
+   * Binds internal change listeners and runtime handlers.
+   * @returns {void}
+   */
+  #bind_events() {
+    if (!this.#input_element) return;
+
+    this.#input_element.onchange = () => {
+      // @ts-ignore Check done above on binding.
+      const is_checked = this.#input_element.checked;
+      if (is_checked) {
+        this.set_attribute("checked", "");
+      } else {
+        this.remove_attribute("checked");
+      }
+
+      this.dispatchEvent(
+        new CustomEvent("change", {
+          bubbles: true,
+          composed: true,
+          detail: { checked: is_checked },
+        })
+      );
+    };
+
+    if (this.#params.change_handler) {
+      runtime_event({
+        request: EVENT_REQUEST.Add,
+        type: "change",
+        handler: this.#params.change_handler,
+        target: this,
+      });
+    }
+  }
+
+  /**
+   * Synchronizes internal DOM nodes with current attribute states.
+   * @returns {void}
+   */
+  #update_view() {
+    const is_checked = this.has_attribute("checked");
+    const is_disabled = this.has_attribute("disabled");
+    const text_label = this.get_attribute("label") ?? this.#params.label ?? "";
+
+    if (this.#input_element) {
+      this.#input_element.checked = is_checked;
+      this.#input_element.disabled = is_disabled;
+    }
+
+    if (this.#label_element) {
+      this.#label_element.textContent = text_label;
+      this.#label_element.style.display = text_label.trim() ? "inline" : "none";
+    }
+  }
+
+  /**
+   * Renders the component HTML and CSS styles into Shadow DOM.
+   * @returns {void}
+   */
+  #render_template() {
+    this.shadow_root().innerHTML = `
+      <style>
+        :host {
+          display: inline-block;
+          box-sizing: border-box;
+          vertical-align: middle;
+
+          /* Default Theme Tokens from CEmbeddedFrame */
+          --label-color-default: CanvasText;
+          --switch-track-default: rgba(125, 125, 125, 0.35);
+          --switch-active-default: #2563eb;
+          --switch-knob-default: #ffffff;
+        }
+
+        :host([disabled]) {
+          opacity: 0.55;
+          pointer-events: none;
+        }
+
+        *, *::before, *::after {
+          box-sizing: border-box;
+        }
+
+        /* --- Custom Theme-Agnostic Switch --- */
+        .switch-container {
+          display: inline-flex;
+          align-items: center;
+          gap: var(--controls-gap, 10px);
+          cursor: pointer;
+          user-select: none;
+          font-family: inherit;
+          font-size: var(--label-font-size, 13px);
+          font-weight: 600;
+          color: var(--label-color, var(--label-color-default));
+        }
+
+        .switch-input {
+          position: absolute;
+          opacity: 0;
+          width: 0;
+          height: 0;
+          margin: 0;
+        }
+
+        .switch-track {
+          position: relative;
+          display: inline-block;
+          width: 42px;
+          height: 24px;
+          background-color: var(--switch-track-bg, var(--switch-track-default));
+          border-radius: 9999px;
+          transition: background-color 0.2s ease;
+          flex-shrink: 0;
+        }
+
+        .switch-knob {
+          position: absolute;
+          top: 2px;
+          left: 2px;
+          width: 20px;
+          height: 20px;
+          background-color: var(--switch-knob-bg, var(--switch-knob-default));
+          border-radius: 50%;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+          transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .switch-input:checked + .switch-track {
+          background-color: var(--switch-active-bg, var(--switch-active-default));
+        }
+
+        .switch-input:checked + .switch-track .switch-knob {
+          transform: translateX(18px);
+        }
+
+        .switch-input:focus-visible + .switch-track {
+          outline: 2px solid var(--switch-focus-ring, var(--switch-active-default));
+          outline-offset: 2px;
+        }
+
+        .switch-text {
+          min-width: 0;
+        }
+      </style>
+
+      <label class="switch-container">
+        <input class="switch-input" type="checkbox" role="switch">
+        <span class="switch-track" aria-hidden="true">
+          <span class="switch-knob"></span>
+        </span>
+        <span class="switch-text"></span>
+      </label>
+    `;
+  }
+}
+CHtmlComponent.register_component("cm-switch", CSwitch);

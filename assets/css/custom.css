@@ -8,3 +8,165 @@ summary[data-key="Articles"] > svg,
 summary[data-key="Articles"] .tsd-accordion-summary-icon {
   display: none !important;
 }
+
+/* ==========================================================================
+   TypeDoc Header & Navigation Overrides
+   ========================================================================== */
+
+/* 1. Header Container: Dimensions, Background, and Border */
+header.tsd-page-toolbar,
+.tsd-page-toolbar {
+  --color-toolbar-bg: rgba(15, 23, 42, 0.9) !important;
+  --color-icon: #f8fafc !important;
+  --color-text: #f8fafc !important;
+  --color-link: #f8fafc !important;
+  background: rgba(15, 23, 42, 0.9) !important;
+  background-color: rgba(15, 23, 42, 0.9) !important;
+  background-image: none !important;
+  border-bottom: 1px solid rgba(51, 65, 85, 0.7) !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  padding: 0 !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* 2. Inner Contents Wrapper: Layout, Height, and Reset */
+header.tsd-page-toolbar .tsd-toolbar-contents {
+  background: transparent !important;
+  background-color: transparent !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* 3. Text, Navigation Links, and General Widgets */
+header.tsd-page-toolbar a,
+header.tsd-page-toolbar .title,
+header.tsd-page-toolbar .tsd-widget,
+header.tsd-page-toolbar span {
+  color: #f8fafc !important;
+}
+
+/* 4. Search Trigger: Mask Replacement */
+#tsd-search-trigger,
+.tsd-page-toolbar #tsd-search-trigger {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+}
+
+#tsd-search-trigger svg,
+.tsd-page-toolbar #tsd-search-trigger svg {
+  display: none !important;
+}
+
+#tsd-search-trigger::before,
+.tsd-page-toolbar #tsd-search-trigger::before {
+  content: "" !important;
+  display: block !important;
+  width: 16px !important;
+  height: 16px !important;
+  background-color: #f8fafc !important;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E") no-repeat center / contain !important;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E") no-repeat center / contain !important;
+}
+
+/* 5. Hamburger Menu Trigger: Responsive Visibility & Mask */
+html body header.tsd-page-toolbar #tsd-toolbar-menu-trigger,
+.tsd-page-toolbar .tsd-toolbar-contents #tsd-toolbar-menu-trigger,
+.tsd-page-toolbar .tsd-toolbar-contents .tsd-widget.menu,
+#tsd-toolbar-menu-trigger[data-has-instance] {
+  display: none !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+}
+
+#tsd-toolbar-menu-trigger svg,
+.tsd-page-toolbar #tsd-toolbar-menu-trigger svg {
+  display: none !important;
+}
+
+#tsd-toolbar-menu-trigger::before,
+.tsd-page-toolbar #tsd-toolbar-menu-trigger::before {
+  content: "" !important;
+  display: block !important;
+  width: 18px !important;
+  height: 18px !important;
+  background-color: #f8fafc !important;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='3' y1='6' x2='21' y2='6'%3E%3C/line%3E%3Cline x1='3' y1='12' x2='21' y2='12'%3E%3C/line%3E%3Cline x1='3' y1='18' x2='21' y2='18'%3E%3C/line%3E%3C/svg%3E") no-repeat center / contain !important;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='3' y1='6' x2='21' y2='6'%3E%3C/line%3E%3Cline x1='3' y1='12' x2='21' y2='12'%3E%3C/line%3E%3Cline x1='3' y1='18' x2='21' y2='18'%3E%3C/line%3E%3C/svg%3E") no-repeat center / contain !important;
+}
+
+@media screen and (max-width: 770px) {
+  html body header.tsd-page-toolbar #tsd-toolbar-menu-trigger,
+  .tsd-page-toolbar .tsd-toolbar-contents #tsd-toolbar-menu-trigger,
+  .tsd-page-toolbar .tsd-toolbar-contents .tsd-widget.menu,
+  #tsd-toolbar-menu-trigger[data-has-instance] {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+}
+
+/* 6. Main Content Clearance: Reveal Top Rounded Border */
+.container-main,
+.container-main .col-content {
+  margin-top: 0.7rem !important;
+}
+
+.container-main .col-content {
+  border-top-left-radius: 1.5rem !important;
+  border-top-right-radius: 1.5rem !important;
+}
+
+/* ==========================================================================
+   Scrollbar Presentation Configuration
+   ========================================================================== */
+
+/* 1. Global Scrollbar Suppression (Zero Visual Footprint) */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+html,
+body,
+* {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+/* 2. Minimal Theme-Agnostic Slim Scrollbar (Uncomment to switch) */
+/* * {
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(148, 163, 184, 0.35) transparent !important;
+}
+
+*::-webkit-scrollbar {
+  width: 6px !important;
+  height: 6px !important;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(148, 163, 184, 0.35) !important;
+  border-radius: 9999px !important;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(148, 163, 184, 0.6) !important;
+} */
