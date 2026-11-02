@@ -7902,8 +7902,17 @@ class CDrawer extends CHtmlComponent {
           padding: 0.75rem 1rem;
           display: flex;
           flex-direction: column;
+          align-items: stretch;
           gap: 0.5rem;
           -webkit-overflow-scrolling: touch;
+        }
+
+        /* Ensure slotted buttons and links expand full width and align left */
+        ::slotted(cm-button),
+        ::slotted(*) {
+          width: 100%;
+          --justify-content: flex-start;
+          --text-align: left;
         }
 
         /* Footer Container */
@@ -8185,7 +8194,7 @@ export class CEmbeddedFrame extends CHtmlComponent {
               <span class="switch-track" aria-hidden="true">
                 <span class="switch-knob"></span>
               </span>
-              <span>Open in popup window</span>
+              <span>Open in Popup Window?</span>
             </label>
 
             <button id="btn_open_page" class="open-button" type="button">Open</button>
@@ -8432,7 +8441,7 @@ export class CSnackBar extends CHtmlComponent {
 CHtmlComponent.register_component(CSnackBar.TAG_NAME, CSnackBar);
 
 /**
- * `<cm-switch>` Web Component Documentation
+ * <cm-switch> Web Component Documentation
  *
  * A lightweight, accessible toggle switch component wrapping a semantic checkbox
  * with `role="switch"`. Provides keyboard support, synchronized state reflection,
@@ -8452,18 +8461,12 @@ CHtmlComponent.register_component(CSnackBar.TAG_NAME, CSnackBar);
  * - `--switch-knob-bg`: Toggle switch thumb/knob color (Default: `#ffffff`).
  * - `--switch-focus-ring`: Focus outline/ring color for the toggle switch (Default: `#2563eb`).
  *
- * ### Events
- * - `change`: Dispatched when the switch state changes via user interaction.
- *
  * @example
- * <!-- HTML Usage -->
- * <cm-switch label="Open in popup window" checked></cm-switch>
- *
- * @example
- * // Programmatic Usage
- * const toggle = new CSwitch({ label: "Notifications", checked: true });
- * toggle.addEventListener("change", (e) => console.log(e.target.checked));
- * document.body.appendChild(toggle);
+ * // Click-and-query usage without listening to change:
+ * const toggle = document.querySelector("cm-switch");
+ * toggle.addEventListener("click", () => {
+ *   console.log("Current state:", toggle.checked);
+ * });
  *
  * @extends {CHtmlComponent}
  */
@@ -8485,8 +8488,6 @@ export class CSwitch extends CHtmlComponent {
     checked: undefined,
     /** @type {boolean | undefined} */
     disabled: undefined,
-    /** @type {CEventHandler | undefined} */
-    change_handler: undefined,
   };
 
   /**
@@ -8494,9 +8495,8 @@ export class CSwitch extends CHtmlComponent {
    * @param {string} [params.label]
    * @param {boolean} [params.checked]
    * @param {boolean} [params.disabled]
-   * @param {CEventHandler} [params.change_handler]
    */
-  constructor({ label, checked = false, disabled = false, change_handler } = {}) {
+  constructor({ label, checked = false, disabled = false } = {}) {
     super({
       shadow_mode: "open",
       connected_cb: () => {
@@ -8504,8 +8504,8 @@ export class CSwitch extends CHtmlComponent {
           label: label,
           checked: checked,
           disabled: disabled,
-          change_handler: change_handler,
         };
+
         this.#render_template();
         this.#input_element = this.shadow_root().querySelector(".switch-input");
         this.#label_element = this.shadow_root().querySelector(".switch-text");
@@ -8525,15 +8525,7 @@ export class CSwitch extends CHtmlComponent {
       },
       disconnected_cb: () => {
         if (this.#input_element) {
-          this.#input_element.onchange = null;
-        }
-        if (this.#params.change_handler) {
-          runtime_event({
-            request: EVENT_REQUEST.Remove,
-            type: "change",
-            handler: this.#params.change_handler,
-            target: this,
-          });
+          this.#input_element.oninput = null;
         }
       },
       attribute_changed_cb: (name, old_value, new_value) => {
@@ -8549,17 +8541,25 @@ export class CSwitch extends CHtmlComponent {
   // =========================================================================
 
   /**
+   * Directly queries the live state of the underlying input element.
    * @returns {boolean}
    */
   get checked() {
-    return this.has_attribute("checked");
+    if (this.#input_element) {
+      return this.#input_element.checked;
+    }
+    return this.has_attribute("checked") || Boolean(this.#params.checked);
   }
 
   /**
    * @param {boolean} val
    */
   set checked(val) {
-    if (val) {
+    const is_active = Boolean(val);
+    if (this.#input_element) {
+      this.#input_element.checked = is_active;
+    }
+    if (is_active) {
       this.set_attribute("checked", "");
     } else {
       this.remove_attribute("checked");
@@ -8570,14 +8570,21 @@ export class CSwitch extends CHtmlComponent {
    * @returns {boolean}
    */
   get disabled() {
-    return this.has_attribute("disabled");
+    if (this.#input_element) {
+      return this.#input_element.disabled;
+    }
+    return this.has_attribute("disabled") || Boolean(this.#params.disabled);
   }
 
   /**
    * @param {boolean} val
    */
   set disabled(val) {
-    if (val) {
+    const is_disabled = Boolean(val);
+    if (this.#input_element) {
+      this.#input_element.disabled = is_disabled;
+    }
+    if (is_disabled) {
       this.set_attribute("disabled", "");
     } else {
       this.remove_attribute("disabled");
@@ -8588,7 +8595,7 @@ export class CSwitch extends CHtmlComponent {
    * @returns {string}
    */
   get label() {
-    return this.get_attribute("label") ?? "";
+    return this.get_attribute("label") ?? this.#params.label ?? "";
   }
 
   /**
@@ -8603,38 +8610,21 @@ export class CSwitch extends CHtmlComponent {
   // =========================================================================
 
   /**
-   * Binds internal change listeners and runtime handlers.
+   * Synchronizes the DOM attribute whenever the input flips.
    * @returns {void}
    */
   #bind_events() {
     if (!this.#input_element) return;
 
-    this.#input_element.onchange = () => {
-      // @ts-ignore Check done above on binding.
-      const is_checked = this.#input_element.checked;
-      if (is_checked) {
+    // Use input event so the attribute is mirrored as early as possible
+    this.#input_element.oninput = () => {
+      // @ts-ignore
+      if (this.#input_element.checked) {
         this.set_attribute("checked", "");
       } else {
         this.remove_attribute("checked");
       }
-
-      this.dispatchEvent(
-        new CustomEvent("change", {
-          bubbles: true,
-          composed: true,
-          detail: { checked: is_checked },
-        })
-      );
     };
-
-    if (this.#params.change_handler) {
-      runtime_event({
-        request: EVENT_REQUEST.Add,
-        type: "change",
-        handler: this.#params.change_handler,
-        target: this,
-      });
-    }
   }
 
   /**
@@ -8669,7 +8659,6 @@ export class CSwitch extends CHtmlComponent {
           box-sizing: border-box;
           vertical-align: middle;
 
-          /* Default Theme Tokens from CEmbeddedFrame */
           --label-color-default: CanvasText;
           --switch-track-default: rgba(125, 125, 125, 0.35);
           --switch-active-default: #2563eb;
@@ -8685,7 +8674,6 @@ export class CSwitch extends CHtmlComponent {
           box-sizing: border-box;
         }
 
-        /* --- Custom Theme-Agnostic Switch --- */
         .switch-container {
           display: inline-flex;
           align-items: center;
