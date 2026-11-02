@@ -40,7 +40,7 @@ class CPageHeader extends CHtmlComponent {
       <h1>${title}</h1>
       <center id="center_header">
         <hr>
-        <img style="max-height: 300px; width: 100%;" src="https://codemelted.com/assets/images/logo-codemelted-dev.png" />
+        <img style="max-height: 300px; width: 100%;" src="https://codemelted.dev/assets/images/logo-codemelted-dev.png" />
         <div id="github-controls">
           <a aria-label="Follow @CodeMeltedDEV on GitHub" class="github-button" data-color-scheme="no-preference: dark; light: dark; dark: dark;" data-show-count="true" data-size="small" href="https://github.com/CodeMeltedDEV" title="Follow @CodeMeltedDEV on GitHub">CodeMeltedDEV</a>
           <a aria-label="Watch CodeMeltedDEV on GitHub" class="github-button" data-color-scheme="no-preference: dark; light: dark; dark: dark;" data-icon="octicon-eye" data-show-count="true" data-size="small" href="https://github.com/CodeMeltedDEV/CodeMeltedDEV/subscription" title="Watch CodeMeltedDEV on GitHub">Watch</a>
@@ -108,7 +108,7 @@ class CPageFooter extends CHtmlComponent {
             <br><br>
             <cm-button
               id="btn_bmc"
-              icon="https://codemelted.com/assets/images/icon-bmc-button.png">
+              icon="https://codemelted.dev/assets/images/icon-bmc-button.png">
             </cm-button>
             <p>
               If you are enjoying the content any support is appreciated. Click the button above
@@ -117,11 +117,11 @@ class CPageFooter extends CHtmlComponent {
           </center>
           <hr>
           <div class="cm-button-container">
-            <cm-button tooltip="Newsletter / Services / Support" onclick="window.open('/About/Me/Buy_Me_A_Coffee/index.html', target='_self');" icon="https://codemelted.com/assets/images/icon-buy-me-a-coffee.png"></cm-button>
-            <cm-button tooltip="My Professional Experience as a Software Engineering" onclick="window.open('/About/Me/LinkedIn/index.html', target='_self');" icon="https://codemelted.com/assets/images/icon-linkedin.png"></cm-button>
-            <cm-button tooltip="The CodeMeltedDEV Podcast" onclick="window.open('/About/Me/Spotify/index.html', target='_self');" icon="https://codemelted.com/assets/images/icon-spotify.png"></cm-button>
-            <cm-button tooltip="Where all the Tech Peeps Hang Out" onclick="window.open('/About/Me/TwitterX/index.html', target='_self');" icon="https://codemelted.com/assets/images/icon-twitterx.png"></cm-button>
-            <cm-button tooltip="Where to Find My Videos" onclick="window.open('/About/Me/YouTube/index.html', target='_self');" icon="https://codemelted.com/assets/images/icon-youtube.png"></cm-button>
+            <cm-button tooltip="Newsletter / Services / Support" onclick="window.open('/About/Me/Buy_Me_A_Coffee/index.html', target='_self');" icon="https://codemelted.dev/assets/images/icon-buy-me-a-coffee.png"></cm-button>
+            <cm-button tooltip="My Professional Experience as a Software Engineering" onclick="window.open('/About/Me/LinkedIn/index.html', target='_self');" icon="https://codemelted.dev/assets/images/icon-linkedin.png"></cm-button>
+            <cm-button tooltip="The CodeMeltedDEV Podcast" onclick="window.open('/About/Me/Spotify/index.html', target='_self');" icon="https://codemelted.dev/assets/images/icon-spotify.png"></cm-button>
+            <cm-button tooltip="Where all the Tech Peeps Hang Out" onclick="window.open('/About/Me/TwitterX/index.html', target='_self');" icon="https://codemelted.dev/assets/images/icon-twitterx.png"></cm-button>
+            <cm-button tooltip="Where to Find My Videos" onclick="window.open('/About/Me/YouTube/index.html', target='_self');" icon="https://codemelted.dev/assets/images/icon-youtube.png"></cm-button>
           </div>
           </p>
         `;
@@ -194,7 +194,7 @@ class CProjectToolbar extends CHtmlComponent {
           <cm-drawer
             id="drawer_external_services"
             position="left"
-            header_image="https://codemelted.com/assets/images/logo-codemelted-dev-twitterx.png"
+            header_image="https://codemelted.dev/assets/images/logo-codemelted-dev-twitterx.png"
             footer_text="© 2026 CodeMeltedDEV. All Rights Reserved."
           >
             <!-- Determine popup window or not -->
@@ -288,7 +288,7 @@ class CProjectToolbar extends CHtmlComponent {
           </cm-drawer>
 
           <cm-app-toolbar position="bottom">
-            <cm-button id="btn_drawer" tooltip="Access External Services" icon="https://codemelted.com/assets/images/logo-codemelted-dev-twitterx.png"></cm-button>
+            <cm-button id="btn_drawer" tooltip="Access External Services" icon="https://codemelted.dev/assets/images/logo-codemelted-dev-twitterx.png"></cm-button>
             <cm-data-spacer></cm-data-spacer>
             <cm-button id="btn_photography" tooltip="Photography" style="margin-right: auto;" icon="📸"></cm-button>
           </cm-app-toolbar>
@@ -498,8 +498,8 @@ class CSwEngButtons extends CHtmlComponent {
             }
           </style>
           <div class="button-container">
-            <cm-button id="btn_acm" class="left-btn" icon="https://codemelted.com/assets/images/logo-acm.png"></cm-button>
-            <cm-button id="btn_ieee" class="right-btn" icon="https://codemelted.com/assets/images/logo-ieee.png"></cm-button>
+            <cm-button id="btn_acm" class="left-btn" icon="https://codemelted.dev/assets/images/logo-acm.png"></cm-button>
+            <cm-button id="btn_ieee" class="right-btn" icon="https://codemelted.dev/assets/images/logo-ieee.png"></cm-button>
           </div>
         `;
 

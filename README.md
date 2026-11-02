@@ -4,7 +4,7 @@ date: 2026-OCT-11
 author: "Mark Shaffer"
 description: "A Software Engineer over engineering two modules for a full stack solution in an AI era. This will allow on delivering on the Sun Microsystems premise utilizing modern tooling without the garbage collector."
 tags: [codemelted.js, ES6 Module, JavaScript, TypeScript, HTML, CSS, Web Worker, full-stack, codemelted.rs, Rust, Native, TAURI, Android, iOS, BSD, Mac, Linux, Windows]
-image: "https://codemelted.com/assets/images/logo-codemelted-dev.png"
+image: "https://codemelted.dev/assets/images/logo-codemelted-dev.png"
 twitter_site: "@CodeMeltedDEV"
 ---
 <cm-page-header></cm-page-header>
@@ -82,8 +82,8 @@ Support for this project is appreciated. I am just getting started so follow the
 
 | Where                                                                                                                                                             | Description                                                                                                                    |
 |-------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
-| <a href="https://www.buymeacoffee.com/codemelteddev"><img src="https://codemelted.com/assets/images/icon-buy-me-a-coffee.png" height="35px" />Buy Me A Coffee</a> | Direct support for the CodeMeltedDEV website content and services offered.                                                     |
-| <a href="https://github.com/sponsors/CodeMeltedDEV"><img src="https://codemelted.com/assets/images/icon-github.png" height="35px" /> GitHub Sponsorship</a>       | Direct support for the CodeMeltedDEV repo and module development either through a one time donation or a monthly subscription. |
+| <a href="https://www.buymeacoffee.com/codemelteddev"><img src="https://codemelted.dev/assets/images/icon-buy-me-a-coffee.png" height="35px" />Buy Me A Coffee</a> | Direct support for the CodeMeltedDEV website content and services offered.                                                     |
+| <a href="https://github.com/sponsors/CodeMeltedDEV"><img src="https://codemelted.dev/assets/images/icon-github.png" height="35px" /> GitHub Sponsorship</a>       | Direct support for the CodeMeltedDEV repo and module development either through a one time donation or a monthly subscription. |
 | <a href="https://codemelted.dev"><img src="https://codemelted.com/assets/favicon/apple-touch-icon.png" height="35px" /> CodeMeltedDEV PWA</a>                 | The [CodeMeltedDEV PWA Companion](#pwa-companion) for this repo.                                                               |
 
 <cm-page-footer></cm-page-footer>

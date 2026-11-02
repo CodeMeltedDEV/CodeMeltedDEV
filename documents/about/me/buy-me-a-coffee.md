@@ -4,7 +4,7 @@ date: 2026-OCT-25
 author: "Mark Shaffer"
 description: "Where the CodeMeltedDEV Newsletter is hosted along with services offered as a result of this project."
 tags: [Support CodeMeltedDEV, CodeMeltedDEV Services, CodeMeltedDEV Project, CodeMeltedDEV Newsletter]
-image: "https://codemelted.com/assets/images/logo-codemelted-dev.png"
+image: "https://codemelted.dev/assets/images/logo-codemelted-dev.png"
 twitter_site: "@CodeMeltedDEV"
 ---
 

@@ -8,7 +8,7 @@
  * @file <br />
  * <center>
  * <img style="width: 100%; max-width: 375px;"
- *  src="https://codemelted.com/assets/images/logo-codemelted-rs.png"
+ *  src="https://codemelted.dev/assets/images/logo-codemelted-rs.png"
  * /></center>
  * <h3>Introduction</h3>
  * <p>

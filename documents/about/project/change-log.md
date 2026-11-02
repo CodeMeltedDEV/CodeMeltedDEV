@@ -4,7 +4,7 @@ date: 2026-OCT-25
 author: "Mark Shaffer"
 description: "Reflects the overall updates to the codemelted.js, codemelted.rs, and the companion PWA hosting this site."
 tags: [Software Engineering, Developer, Programmer, ACM, IEEE]
-image: "https://codemelted.com/assets/images/logo-codemelted-dev.png"
+image: "https://codemelted.dev/assets/images/logo-codemelted-dev.png"
 twitter_site: "@CodeMeltedDEV"
 ---
 
