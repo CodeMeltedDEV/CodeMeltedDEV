@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <title>CodeMeltedDEV TV</title>
+  <meta charset="UTF-8">
+  <meta name="description" content="A feed of the @codemelted podcast and video content for the codemelted.com domains.">
+  <meta name="keywords" content="YouTube, Feed, CodeMelted, CodeMelted DEV, CodeMelted PWA">
+  <meta name="author" content="Mark Shaffer">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/x-icon" href="https://codemelted.com/favicon.png">
+  <style>
+    body {
+      font-size: large;
+      margin: 0;
+      margin-top: 5px;
+      padding: 0;
+      background-color: #222222;
+    }
+
+    .content-container {
+      display: flex;
+      overflow: auto;
+      position: fixed;
+      background-image: url("https://codemelted.dev/assets/images/background-gemini-tv.png");
+      background-repeat: no-repeat;
+      background-attachment: center;
+      background-size: 100% 100%;
+      top: 55px;
+      left: 0px;
+      right: 0px;
+      bottom: 0;
+    }
+    .content-container iframe {
+      flex-grow: 1;
+    }
+
+    #tvContent {
+      position: fixed;
+      top: 15.5vh;
+      left: 7.5vw;
+      width: 70.0%;
+      height: 55.0%;
+      background-color: black;
+      background-image: url("https://codemelted.dev/assets/images/background-gemini-tv-snow.png");
+    }
+    @media screen and (max-height: 525px) {
+      #tvContent {
+        top: 16.5vh;
+      }
+    }
+    @media screen and (max-height: 475px) {
+      #tvContent {
+        top: 17.5vh;
+      }
+    }
+    @media screen and (max-height: 435px) {
+      #tvContent {
+        top: 18.5vh;
+      }
+    }
+    @media screen and (max-height: 395px) {
+      #tvContent {
+        top: 20.5vh;
+        height: 52.0%;
+      }
+    }
+    @media screen and (max-height: 355px) {
+      #tvContent {
+        top: 21.5vh;
+        height: 51.0%;
+      }
+    }
+    @media screen and (max-height: 330px) {
+      #tvContent {
+        top: 22.5vh;
+        height: 51.0%;
+      }
+    }
+    @media screen and (max-height: 305px) {
+      #tvContent {
+        top: 24.5vh;
+        height: 49.0%;
+      }
+    }
+    @media screen and (max-height: 275px) {
+      #tvContent {
+        top: 28.5vh;
+        height: 49.0%;
+      }
+    }
+    .playlist-selection-container {
+      font-size: small;
+      padding: 3px;
+      border: 3px solid black;
+      background-color: #222222;
+      color: white;
+      text-align: center;
+      position: fixed;
+      top: 0;
+      right: 3px;
+    }
+
+    #tvPlaylistSelection {
+      background-color: black;
+      color: white;
+      font-size: small;
+      width: 100%;
+      max-width: 200px;
+      cursor: pointer;
+    }
+  </style>
+</head><body>
+  <script src="https://apis.google.com/js/platform.js"></script>
+
+  <div class="g-ytsubscribe" data-channelid="UChrf2GS6hyluDU3S5wGorcA" data-layout="full" data-theme="dark" data-count="default"></div>
+  <div class="content-container">
+    <iframe id="tvContent" src="" title="Vintage TV" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen;" referrerpolicy="strict-origin-when-cross-origin"  referrerpolicy="strict-origin-when-cross-origin"></iframe>
+  </div>
+
+  <div class="playlist-selection-container">
+    <select id="tvPlaylistSelection">
+      <option selected value="">Select Playlist</option>
+      <option value="https://www.youtube.com/embed/videoseries?si=FRin4nR-IPcgMH_J&amp;list=PLxnavV3INH6Nc6yHIVXViMK3PGo3S07zm">CodeMelted Podcast</option>
+      <option value="https://www.youtube.com/embed/videoseries?si=BhMMfYU8nnVIAB8F&amp;list=PLxnavV3INH6OdcqznFnAWzfEEFkR15_pG">CodeMelted Presentations</option>
+    </select>
+  </div>
+
+  <script>
+    const tvContent = document.getElementById("tvContent");
+    const tvPlaylistSelection = document.getElementById("tvPlaylistSelection");
+    tvPlaylistSelection.onchange = (evt) => {
+        tvContent.src = evt.target.value;
+    };
+  </script>
+</body></html>

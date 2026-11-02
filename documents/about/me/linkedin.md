@@ -12,7 +12,7 @@ twitter_site: "@CodeMeltedDEV"
 
 <cm-embedded-frame
   style="height: 4350px;"
-  frame_src="https://codemelted.com/app/dev/resume/index.html"
+  frame_src="/app/resume.html"
   open_src="https://www.linkedin.com/in/codemelteddev/">
 </cm-embedded-frame>
 

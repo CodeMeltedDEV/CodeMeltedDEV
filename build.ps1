@@ -80,6 +80,8 @@ function main {
     }
 
     # Finish up the the prepping of the documentation
+    Copy-Item $PSScriptRoot/app $PSScriptRoot/dev -Force -Recurse `
+      -ErrorAction Stop
     Copy-Item $PSScriptRoot/assets $PSScriptRoot/dev -Force -Recurse `
       -ErrorAction Stop
     Copy-Item $PSScriptRoot/codemelted.js $PSScriptRoot/assets/js -Force `

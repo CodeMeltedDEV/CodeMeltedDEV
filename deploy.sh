@@ -48,6 +48,7 @@ function main {
     if test -d ./public_html/dev; then
       rm -rf ./public_html/About
       rm -rf ./public_html/Articles
+      rm -rf ./public_html/app
       rm -rf ./public_html/assets
       rm -rf ./public_html/codemelted-cli
       rm -rf ./public_html/codemelted.js_SDK

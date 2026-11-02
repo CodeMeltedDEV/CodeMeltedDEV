@@ -12,7 +12,7 @@ twitter_site: "@CodeMeltedDEV"
 
 <cm-embedded-frame
   style="height: 600px;"
-  frame_src="https://codemelted.com/app/dev/tv/index.html"
+  frame_src="/app/tv.html"
   open_src="https://youtube.com/@CodeMeltedDEV/">
 </cm-embedded-frame>
 
