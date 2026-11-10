@@ -4825,7 +4825,6 @@ export async function ui_audio({request, data, event_handler, should_loop=false}
 
           // Give Chrome 100ms to free up its native audio
           // hardware thread
-          await async_sleep(100);
           utterance.rate = 1.0;
           utterance.pitch = 1.0;
           utterance.volume = 1.0;
@@ -4838,11 +4837,11 @@ export async function ui_audio({request, data, event_handler, should_loop=false}
             utterance.onend = event_handler;
             utterance.onerror = (evt) => {
               if (evt.error !== 'interrupted') {
-                 event_handler(evt);
+                event_handler(evt);
               }
             }
           }
-          synth.speak(utterance);
+            synth.speak(utterance);
         } else {
           // We have been signaled to stop. So go stop.
           if (utterance) {
@@ -6761,7 +6760,7 @@ export class CTextToSpeechButton extends CButton {
       tooltip: "Reads the current page aloud",
       click_handler: async (_ev) => {
         if (!this.#is_playing) {
-          const text = (document.querySelector('main') || document.body).innerText;
+          const text = document.body.innerText;
           ui_audio({
             request: AUDIO_REQUEST.TextToSpeech,
             data: text,
