@@ -5194,15 +5194,20 @@ export function ui_open({
 
     // Now go build the URL to open.
     let url_to_launch = schema;
-    if (schema === SCHEMA_TYPE.File ||
-        schema === SCHEMA_TYPE.Http ||
-        schema === SCHEMA_TYPE.Https ||
+    if (schema === SCHEMA_TYPE.Http || schema === SCHEMA_TYPE.Https) {
+      json_check_type({type: "string", data: url, should_throw: true});
+      // @ts-ignore will not be null
+      const resolved_url = /^https?:\/\//i.test(url)
+        ? url
+        // @ts-ignore will not be null
+        : new URL(url, window.location.href).href;
+      // @ts-ignore will not be null
+      url_to_launch = resolved_url;
+    } else if (schema === SCHEMA_TYPE.File ||
         schema === SCHEMA_TYPE.Sms ||
         schema === SCHEMA_TYPE.Tel) {
       json_check_type({type: "string", data: url, should_throw: true});
       url_to_launch += url?.replace(SCHEMA_TYPE.File, "")
-        .replace(SCHEMA_TYPE.Http, "")
-        .replace(SCHEMA_TYPE.Https, "")
         .replace(SCHEMA_TYPE.Sms, "")
         .replace(SCHEMA_TYPE.Tel, "");
     } else if (schema === "mailto:") {
@@ -5253,9 +5258,9 @@ export function ui_open({
 
     // Determine how we are opening the item.
     if (popup_window) {
-      // @ts-ignore
+      // @ts-ignore Will be a number.
       const top = (ui_screen(SCREEN_REQUEST.Height) - height) / 2;
-      // @ts-ignore
+      // @ts-ignore Will be a number
       const left = (ui_screen(SCREEN_REQUEST.Width) - width) / 2;
       const settings = `toolbar=no, location=no, ` +
         `directories=no, status=no, menubar=no, ` +

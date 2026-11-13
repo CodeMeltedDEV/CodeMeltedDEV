@@ -9,6 +9,7 @@ tags: [ES6, JavaScript, Rust, Modules, TAURI, codemelted.js, codemelted.rs]
 children:
   - buy-me-a-coffee.md
   - linkedin.md
+  - rss.md
   - spotify.md
   - twitterx.md
   - youtube.md
@@ -33,6 +34,7 @@ children:
 |:----------------------------------------------------------------------------------------------------------------------------------:|------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | <a href="./buy-me-a-coffee.md"><img style="height: 50px;" src="https://codemelted.dev/assets/images/icon-buy-me-a-coffee.png"></a> | Where the CodeMeltedDEV Newsletter is hosted along with services offered as a result of this project. Also, just general support for the project's effort. |
 |        <a href="./linkedin.md"><img style="height: 50px;" src="https://codemelted.dev/assets/images/icon-linkedin.png"></a>        | Where professional networking happens. Want to know my software engineering background, that's where to find it 😁.                                        |
+|             <a href="./rss.md"><img style="height: 50px;" src="https://codemelted.dev/assets/images/icon-rss.png"></a>             | A generated feed from the olden days to follow the latest updates to the codemelted.dev site.                                                              |
 |         <a href="./spotify.md"><img style="height: 50px;" src="https://codemelted.dev/assets/images/icon-spotify.png"></a>         | Hosts the CodeMeltedDEV Podcast. Discussions of project progress, any reviews, and the happenings of the tech industry.                                    |
 |        <a href="./twitterx.md"><img style="height: 50px;" src="https://codemelted.dev/assets/images/icon-twitterx.png"></a>        | It's where all the Tech people hang out and network. So I guess I will to.                                                                                 |
 |         <a href="./youtube.md"><img style="height: 50px;" src="https://codemelted.dev/assets/images/icon-youtube.png"></a>         | When I make videos about this project or other topics of interest, that is where to find them.                                                             |

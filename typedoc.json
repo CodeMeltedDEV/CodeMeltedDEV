@@ -18,7 +18,8 @@
     "./codemelted.js"
   ],
   "plugin": [
-    "./assets/js/typedoc-plugin-og.js",
+    "./assets/js/typedoc-og-plugin.js",
+    "./assets/js/typedoc-rss-plugin.js",
     "typedoc-material-theme",
     "@boneskull/typedoc-plugin-mermaid"
   ],
@@ -47,7 +48,6 @@
     "documents/domain-use-cases/index.md",
     "documents/software-engineering/index.md",
     "documents/codemelted-cli.md",
-    "documents/codemelted-rs.md"
   ],
   "navigation": {
     "includeCategories": false,
