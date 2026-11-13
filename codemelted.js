@@ -4495,24 +4495,20 @@ export const AUDIO_REQUEST = Object.freeze({
 });
 
 /**
- * Provides a {@link ui_document} to interact with the loaded HTML document.
+ * Enumeration of supported DOM query and mutation operations for `ui_document()`.
+ *
  * @readonly
  * @enum {string}
- * @property {string} CssVariable Will query the document for a CSS variable.
- * @property {string} ElementById Will query the document for a particular
- * HTMLElement.
- * @property {string} ElementsByClassName Will query for a collection of
- * HTMLElements by class name.
- * @property {string} ElementsByTagName Will query for a collection of
- * HTMLElements by tag name.
- * @property {string} Title Retrieves the title of the document.
+ * @property {string} CssVariable Reads or writes a resolved CSS custom property on `:root` or a scoped element.
+ * @property {string} QuerySelector Queries a single `HTMLElement` matching a CSS selector.
+ * @property {string} QuerySelectorAll Queries all `HTMLElement` instances matching a CSS selector.
+ * @property {string} Title Gets or sets the current `document.title`.
  */
 export const DOCUMENT_REQUEST = Object.freeze({
-  CssVariable: "css_variable",
-  ElementById: "element_by_id",
-  ElementsByClassName: "elements_by_class_name",
-  ElementsByTagName: "elements_by_tag_name",
-  Title: "title"
+  CssVariable: "CssVariable",
+  QuerySelector: "QuerySelector",
+  QuerySelectorAll: "QuerySelectorAll",
+  Title: "Title",
 });
 
 /**
@@ -4867,59 +4863,121 @@ export async function ui_audio({request, data, event_handler, should_loop=false}
 }
 
 /**
- * Provides the ability to interact with the loaded browser runtime HTML
- * document.
- * @param {object} params The named parameters
- * @param {DOCUMENT_REQUEST} params.request The request to carry out with
- * the document.
- * @param {string} [params.name] The name of the element to perform the action.
- * @returns {HTMLElement | HTMLElement[] | string | null}
+ * Provides a uniform, fail-fast API to query or mutate the loaded browser
+ * runtime HTML document or a scoped DOM root (such as a `ShadowRoot` or
+ * container `HTMLElement`).
+ *
+ * Missing elements or unset CSS variables throw a `CModuleError` rather than
+ * returning `null`, surfacing selector typos and DOM mismatches immediately.
+ *
+ * @param {object} params The named parameters.
+ * @param {DOCUMENT_REQUEST} params.request The document operation to execute.
+ * @param {string} [params.name=""] The CSS selector or CSS variable name (with
+ * or without leading `--`) to query or target.
+ * @param {string} [params.value] Optional value to assign when updating a CSS
+ * custom property (`CssVariable`) or the page title (`Title`). Omit to read.
+ * @param {Document | ShadowRoot | HTMLElement} [params.root=globalThis.document]
+ * Optional DOM root to scope element queries or CSS variable lookups.
+ * @returns {HTMLElement | HTMLElement[] | string} The matched `HTMLElement`,
+ * array of `HTMLElement` instances, or resolved/updated string value.
+ * @throws {CModuleError} If parameters are invalid, a selector matches no
+ * `HTMLElement`, or a requested CSS variable is undefined.
+ *
  * @example
- * // To query for an element within the document. Not being found will fire
- * // a CModuleError so no need to check for null as it is expected you should
- * // know how to name your stuff. This will help in quickly finding quirks in
- * // your built UI.
- * const el = ui_document({
- *  request: DOCUMENT_REQUEST.ElementById,
- *  name: "id_value"
+ * // Query a single element by ID, class, tag, or attribute
+ * const toolbar = ui_document({
+ *   request: DOCUMENT_REQUEST.QuerySelector,
+ *   name: "#main-toolbar"
  * });
+ *
+ * @example
+ * // Query multiple elements scoped inside a custom component's Shadow DOM
+ * const buttons = ui_document({
+ *   request: DOCUMENT_REQUEST.QuerySelectorAll,
+ *   name: "cm-button.primary",
+ *   root: this.shadowRoot
+ * });
+ *
+ * @example
+ * // Read or override a CSS custom property on :root or a specific component
+ * const gap = ui_document({
+ *   request: DOCUMENT_REQUEST.CssVariable,
+ *   name: "--gap"
+ * });
+ * ui_document({
+ *   request: DOCUMENT_REQUEST.CssVariable,
+ *   name: "--gap",
+ *   value: "12px",
+ *   root: toolbar
+ * });
+ *
+ * @example
+ * // Read or update the browser page title
+ * const current_title = ui_document({ request: DOCUMENT_REQUEST.Title });
+ * ui_document({ request: DOCUMENT_REQUEST.Title, value: "CodeMeltedDEV" });
  */
-export function ui_document({request, name=""}) {
+export function ui_document({
+  request,
+  name = "",
+  value,
+  root = globalThis.document,
+}) {
   try {
-    json_check_type({type: "string", data: name, should_throw: true});
+    json_check_type({ type: "string", data: name, should_throw: true });
+
     switch (request) {
       case DOCUMENT_REQUEST.CssVariable: {
-        const cs = globalThis.window.getComputedStyle(
-          globalThis.document.documentElement
-        );
-        return cs.getPropertyValue(name) ?? "";
+        const target =
+          root instanceof HTMLElement
+            ? root
+            : root instanceof ShadowRoot && root.host instanceof HTMLElement
+              ? root.host
+              : globalThis.document.documentElement;
+        const var_name = name.startsWith("--") ? name : `--${name}`;
+
+        if (value !== undefined) {
+          json_check_type({ type: "string", data: value, should_throw: true });
+          target.style.setProperty(var_name, value);
+          return value;
+        }
+
+        const cs = globalThis.window.getComputedStyle(target);
+        const resolved = cs.getPropertyValue(var_name).trim();
+        if (resolved === "") {
+          throw new CModuleError(
+            `${CModuleError.MISUSE} CSS variable "${var_name}" not found`
+          );
+        }
+        return resolved;
       }
-      case DOCUMENT_REQUEST.ElementById: {
-        const el = globalThis.document.getElementById(name);
-        if (!el) {
-          throw new CModuleError(CModuleError.MISUSE + name + " not found");
+
+      case DOCUMENT_REQUEST.QuerySelector: {
+        const el = root.querySelector(name);
+        if (!(el instanceof HTMLElement)) {
+          throw new CModuleError(`${CModuleError.MISUSE} "${name}" not found`);
         }
         return el;
       }
-      case DOCUMENT_REQUEST.ElementsByClassName: {
-        const col1 = globalThis.document.getElementsByClassName(name);
-        if (col1.length === 0) {
-          throw new CModuleError(CModuleError.MISUSE + name + " not found");
+
+      case DOCUMENT_REQUEST.QuerySelectorAll: {
+        const nodes = root.querySelectorAll(name);
+        const elements = Array.from(nodes).filter(
+          (el) => el instanceof HTMLElement
+        );
+        if (elements.length === 0) {
+          throw new CModuleError(`${CModuleError.MISUSE} "${name}" not found`);
         }
-        // @ts-ignore
-        return Array.from(col1);
+        return elements;
       }
-      case DOCUMENT_REQUEST.ElementsByTagName: {
-        const col2 = globalThis.document.getElementsByTagName(name);
-        if (col2.length === 0) {
-          throw new CModuleError(CModuleError.MISUSE + name + " not found");
-        }
-        // @ts-ignore
-        return Array.from(col2);
-      }
+
       case DOCUMENT_REQUEST.Title: {
+        if (value !== undefined) {
+          json_check_type({ type: "string", data: value, should_throw: true });
+          globalThis.document.title = value;
+        }
         return globalThis.document.title;
       }
+
       default:
         throw new CModuleError(CModuleError.MISUSE);
     }
