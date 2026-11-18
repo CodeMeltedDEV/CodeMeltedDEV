@@ -1,9 +1,11 @@
 import {
   CHtmlComponent,
+  DOCUMENT_REQUEST,
   SCHEMA_TYPE,
   TARGET_TYPE,
   storage_get,
   storage_set,
+  ui_document,
   ui_open
 } from "./codemelted.js";
 
@@ -46,7 +48,7 @@ class CPageHeader extends CHtmlComponent {
           <a aria-label="Watch CodeMeltedDEV on GitHub" class="github-button" data-color-scheme="no-preference: dark; light: dark; dark: dark;" data-icon="octicon-eye" data-show-count="true" data-size="small" href="https://github.com/CodeMeltedDEV/CodeMeltedDEV/subscription" title="Watch CodeMeltedDEV on GitHub">Watch</a>
           <a aria-label="Sponsor @CodeMeltedDEV on GitHub" class="github-button" data-color-scheme="no-preference: dark; light: dark; dark: dark;" data-icon="octicon-heart" data-size="small" href="https://github.com/sponsors/CodeMeltedDEV" title="Sponsor @CodeMeltedDEV and the CodeMeltedDEV Modules on GitHub">Sponsor</a>
           <a aria-label="Discuss CodeMeltedDEV on GitHub" class="github-button" data-color-scheme="no-preference: dark; light: dark; dark: dark;" data-icon="octicon-comment-discussion" data-size="small" href="https://github.com/CodeMeltedDEV/CodeMeltedDEV/discussions" title="Discuss CodeMeltedDEV on GitHub">Discuss</a>
-          <a aria-label="Download CodeMeltedDEV on GitHub" class="github-button" data-color-scheme="no-preference: dark; light: dark; dark: dark;" data-size="small" href="https://github.com/CodeMeltedDEV/CodeMeltedDEV/archive/HEAD.zip" tabindex="1" title="Download CodeMeltedDEV on GitHu">Download</a>
+          <a aria-label="Download CodeMeltedDEV on GitHub" class="github-button" data-color-scheme="no-preference: dark; light: dark; dark: dark;" data-size="small" href="https://github.com/CodeMeltedDEV/CodeMeltedDEV/archive/HEAD.zip" title="Download CodeMeltedDEV on GitHu">Download</a>
           <a aria-label="Issue CodeMeltedDEV on GitHub" class="github-button" data-color-scheme="no-preference: dark; light: dark; dark: dark;" data-icon="octicon-issue-opened" data-size="small" href="https://github.com/CodeMeltedDEV/CodeMeltedDEV/issues" title="Issue CodeMeltedDEV on GitHub">Issue</a>
         </div>
         <div>
@@ -61,6 +63,37 @@ class CPageHeader extends CHtmlComponent {
     const script = document.createElement('script');
     script.src = "https://buttons.github.io/buttons.js";
     this.appendChild(script);
+
+    // Setup github button actions
+    setTimeout(() => {
+      let github_controls = ui_document({
+        request: DOCUMENT_REQUEST.QuerySelector,
+        name: "#github-controls",
+        root: this
+      });
+      Array.from(github_controls.children).forEach((el, index) => {
+        el.id = `span${index}`;
+      });
+      github_controls.onclick = (ev) => {
+        const github_urls = {
+          "span0" : "https://github.com/CodeMeltedDEV",
+          "span1" : "https://github.com/CodeMeltedDEV/CodeMeltedDEV/subscription",
+          "span2" : "https://github.com/sponsors/CodeMeltedDEV",
+          "span3" : "https://github.com/CodeMeltedDEV/CodeMeltedDEV/discussions",
+          "span4" : "https://github.com/CodeMeltedDEV/CodeMeltedDEV/archive/HEAD.zip",
+          "span5" : "https://github.com/CodeMeltedDEV/CodeMeltedDEV/issues",
+        };
+        storage_get({key: "cm_is_popup_window"}).then((val) => {
+          ui_open({
+            schema: SCHEMA_TYPE.Https,
+            url: github_urls[ev.target.id],
+            popup_window: val === "true",
+            target: TARGET_TYPE.Blank
+          });
+        });
+        ev.preventDefault();
+      };
+    }, 250);
   }
 }
 CHtmlComponent.register_component("cm-page-header", CPageHeader);
@@ -290,8 +323,20 @@ class CProjectToolbar extends CHtmlComponent {
           <cm-app-toolbar position="bottom">
             <cm-button id="btn_drawer" tooltip="Access External Services" icon="https://codemelted.dev/assets/images/logo-codemelted-dev-twitterx.png"></cm-button>
             <cm-data-spacer></cm-data-spacer>
+            <cm-button style="--height: 50px;" id="btn_modeler" tooltip="Document / UML Modeler" style="margin-right: auto;" icon="/assets/images/icon-uml.png"></cm-button>
             <cm-button id="btn_photography" tooltip="Photography" style="margin-right: auto;" icon="📸"></cm-button>
+            <cm-button style="--height: 50px;" id="btn_rust" tooltip="codemelted.rs Crate SDK" style="margin-right: auto;" icon="/assets/images/icon-rust.png"></cm-button>
           </cm-app-toolbar>
+
+          <cm-app-sheet
+            id="app_sheet_modeler"
+            icon="/assets/images/icon-uml.png"
+            title="Modeler"
+          >
+            <cm-embedded-frame
+              frame_src="/app/modeler.html"
+            ></cm-embedded-frame>
+          </cm-app-sheet>
           <cm-app-sheet
             id="app_sheet_photography"
             icon="📸"
@@ -299,6 +344,15 @@ class CProjectToolbar extends CHtmlComponent {
           >
             <cm-embedded-frame
               frame_src="https://codemelted.dev/photography"
+            ></cm-embedded-frame>
+          </cm-app-sheet>
+          <cm-app-sheet
+            id="app_sheet_rust"
+            icon="/assets/images/icon-rust.png"
+            title="codemelted.rs Library SDK"
+          >
+            <cm-embedded-frame
+              frame_src="/codemelted.rs/codemelted/index.html"
             ></cm-embedded-frame>
           </cm-app-sheet>
         `;
@@ -415,17 +469,31 @@ class CProjectToolbar extends CHtmlComponent {
     });
     ui_open({
       schema: SCHEMA_TYPE.Https,
-      url: EXTERNAL_SERVICES_URLS[key],
+      url: `https://${EXTERNAL_SERVICES_URLS[key]}`,
       popup_window: is_popup_window === "true",
       target: TARGET_TYPE.Blank
     });
+    const drawer = this.shadow_root().getElementById(
+      "drawer_external_services"
+    );
+    drawer.close();
   }
 
   #btn_clicked = async (evt) => {
     const target = evt.target.id;
-    if (target === "btn_photography") {
+    if (target === "btn_modeler") {
+      const sheet = this.shadow_root().getElementById(
+        "app_sheet_modeler"
+      );
+      sheet.show();
+    } else if (target === "btn_photography") {
       const sheet = this.shadow_root().getElementById(
         "app_sheet_photography"
+      );
+      sheet.show();
+    } else if (target === "btn_rust") {
+      const sheet = this.shadow_root().getElementById(
+        "app_sheet_rust"
       );
       sheet.show();
     } else if (target === "btn_drawer") {

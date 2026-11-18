@@ -45,9 +45,10 @@
   "projectDocuments": [
     "documents/about/index.md",
     "documents/articles/index.md",
+    // Will be brought back when we have actual data.
+    // "documents/cli.md",
     "documents/domain-use-cases/index.md",
     "documents/software-engineering/index.md",
-    "documents/codemelted-cli.md",
   ],
   "navigation": {
     "includeCategories": false,
