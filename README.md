@@ -4,7 +4,7 @@ date: 2026-OCT-11
 author: "Mark Shaffer"
 description: "A Software Engineer over engineering two modules for a full stack solution in an AI era. This will allow on delivering on the Sun Microsystems premise utilizing modern tooling without the garbage collector."
 tags: [codemelted.js, ES6 Module, JavaScript, TypeScript, HTML, CSS, Web Worker, full-stack, codemelted.rs, Rust, Native, TAURI, Android, iOS, BSD, Mac, Linux, Windows]
-image: "https://codemelted.com/assets/images/logo-codemelted-dev.png"
+image: "https://codemelted.dev/assets/images/logo-codemelted-dev.png"
 twitter_site: "@CodeMeltedDEV"
 ---
 <cm-page-header></cm-page-header>
@@ -74,8 +74,7 @@ The `codemelted.dev` domain is more than just a website. It serves a Software En
 | Code Editor (Future)                  | An online editor for quickly writing snippets of code and UML models based on the project modules and starter templates.                                                        |
 | Chat (Future)                         | Bringing back online text chat rooms in the style of AOL / MSN with audio and video chat so like-minded software engineers can collaborate.                                     |
 | External Services (Future)            | Access to external services that make the PWA a one-stop solution for a software engineer regardless of how they access this PWA.                                               |
-| Page Controls (Future)                | The full ability to print, share (utilizing OpenGraph), and read the page aloud via Text To Speech (TTS)                                                                        |
-| codemelted.com Domain Access (Future) | Quick access to the other subdomain projects under the `codemelted.com` domain.                                                                                                 |
+| Page Controls                         | The full ability to print, share (utilizing OpenGraph), and read the page aloud via Text To Speech (TTS)                                                                        |
 
 # Support
 
@@ -83,8 +82,8 @@ Support for this project is appreciated. I am just getting started so follow the
 
 | Where                                                                                                                                                             | Description                                                                                                                    |
 |-------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
-| <a href="https://www.buymeacoffee.com/codemelteddev"><img src="https://codemelted.com/assets/images/icon-buy-me-a-coffee.png" height="35px" />Buy Me A Coffee</a> | Direct support for the CodeMeltedDEV website content and services offered.                                                     |
-| <a href="https://github.com/sponsors/CodeMeltedDEV"><img src="https://codemelted.com/assets/images/icon-github.png" height="35px" /> GitHub Sponsorship</a>       | Direct support for the CodeMeltedDEV repo and module development either through a one time donation or a monthly subscription. |
+| <a href="https://www.buymeacoffee.com/codemelteddev"><img src="https://codemelted.dev/assets/images/icon-buy-me-a-coffee.png" height="35px" />Buy Me A Coffee</a> | Direct support for the CodeMeltedDEV website content and services offered.                                                     |
+| <a href="https://github.com/sponsors/CodeMeltedDEV"><img src="https://codemelted.dev/assets/images/icon-github.png" height="35px" /> GitHub Sponsorship</a>       | Direct support for the CodeMeltedDEV repo and module development either through a one time donation or a monthly subscription. |
 | <a href="https://codemelted.dev"><img src="https://codemelted.com/assets/favicon/apple-touch-icon.png" height="35px" /> CodeMeltedDEV PWA</a>                 | The [CodeMeltedDEV PWA Companion](#pwa-companion) for this repo.                                                               |
 
 <cm-page-footer></cm-page-footer>

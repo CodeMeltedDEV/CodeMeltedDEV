@@ -4,7 +4,7 @@ date: 2026-OCT-25
 author: "Mark Shaffer"
 description: "Where professional networking happens. Want to know my software engineering background, that's where to find it 😁."
 tags: [CodeMeltedDEV LinkedIn, Professional Networking, Software Engineering]
-image: "https://codemelted.com/assets/images/logo-codemelted-dev.png"
+image: "https://codemelted.dev/assets/images/logo-codemelted-dev.png"
 twitter_site: "@CodeMeltedDEV"
 ---
 
@@ -12,7 +12,7 @@ twitter_site: "@CodeMeltedDEV"
 
 <cm-embedded-frame
   style="height: 4350px;"
-  frame_src="https://codemelted.com/app/dev/resume/index.html"
+  frame_src="/app/resume.html"
   open_src="https://www.linkedin.com/in/codemelteddev/">
 </cm-embedded-frame>
 
